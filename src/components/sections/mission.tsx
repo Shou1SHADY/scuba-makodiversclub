@@ -1,53 +1,60 @@
 import React from 'react';
+import WaveSeparator from '../ui/wave-separator';
 
 /**
  * MissionSection Component
  * 
- * A premium, minimal "Our Mission" section centered on professional typography
- * and ample negative space, adhering to the Mako Divers dark navy and gold theme.
+ * Redesigned with a creative "fading effect" using fixed background parallax.
  */
 const MissionSection: React.FC = () => {
+  const missionBg = "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/images_4.png";
+
   return (
-    <section 
-      className="bg-[#0D2451] py-[120px] px-6 md:px-24 flex flex-col items-center justify-center text-center"
+    <section
+      className="relative py-48 md:py-64 flex items-center bg-fixed bg-center bg-cover overflow-hidden pb-64 md:pb-80"
+      style={{ backgroundImage: `url("${missionBg}")` }}
       aria-labelledby="mission-title"
     >
-      <div className="max-w-[800px] w-full mx-auto space-y-8">
-        {/* Section Heading - Matches H2 style from design system */}
-        <h2 
-          id="mission-title"
-          className="font-display text-[48px] md:text-[64px] font-bold text-[#CFB27F] leading-tight mb-8"
-          style={{ 
-            fontFamily: '"Bitter", serif',
-            textShadow: '2px 2px 8px rgba(0, 0, 0, 0.5)'
-          }}
-        >
-          Our Mission
-        </h2>
+      {/* Dynamic Overlays for "Fading Effect" */}
+      <div className="absolute inset-0 bg-brand-navy/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-brand-navy via-transparent to-brand-navy" />
+      <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/80 via-transparent to-brand-navy/80" />
 
-        {/* Mission Content - Focuses on readability and premium spacing */}
-        <div className="space-y-6">
-          <p 
-            className="text-[#FFFFFF] text-[18px] md:text-[22px] font-medium leading-[1.8] opacity-95 transition-opacity duration-500 hover:opacity-100"
-            style={{ fontFamily: '"Bitter", serif' }}
-          >
-            Our mission at Mako Divers is to enable divers to pursue their passion for the underwater world. 
-          </p>
-          
-          <p 
-            className="text-[#FFFFFF] text-[18px] md:text-[22px] font-medium leading-[1.8] opacity-95 transition-opacity duration-500 hover:opacity-100"
-            style={{ fontFamily: '"Bitter", serif' }}
-          >
-            We offer top-notch scuba diving experiences and liveaboard trips in Egypt, 
-            designed for divers of all levels exploring the breathtaking Red Sea.
-          </p>
-        </div>
+      <div className="container-width relative z-30 text-center">
+        <div className="max-w-4xl mx-auto space-y-12">
+          {/* Section Heading */}
+          <div className="relative inline-block">
+            <span className="absolute -top-10 left-1/2 -translate-x-1/2 text-primary/10 text-7xl md:text-9xl font-display font-black uppercase whitespace-nowrap pointer-events-none select-none tracking-[0.2em]">
+              Passion
+            </span>
+            <h2
+              id="mission-title"
+              className="relative font-display text-4xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl"
+            >
+              Our <span className="text-primary italic">Mission</span>
+            </h2>
+          </div>
 
-        {/* Decorative Divider - Subtle premium touch */}
-        <div className="pt-8 flex justify-center">
-          <div className="w-24 h-[2px] bg-[#CFB27F] opacity-30 rounded-full" />
+          {/* Mission Content */}
+          <div className="space-y-8 max-w-2xl mx-auto">
+            <p className="text-white text-xl md:text-3xl font-light leading-relaxed font-body drop-shadow-lg">
+              Empowering divers to explore the uncharted beauty of the Red Sea.
+            </p>
+
+            <p className="text-gray-300 text-lg md:text-xl font-light leading-relaxed font-body animate-pulse-slow">
+              We deliver world-class scuba diving experiences with a focus on safety, community, and the professional exploration of Egypt's underwater treasures.
+            </p>
+          </div>
+
+          {/* Branding Element */}
+          <div className="pt-10 flex flex-col items-center gap-4">
+            <div className="w-24 h-[1px] bg-primary/50" />
+            <span className="text-primary text-[10px] uppercase tracking-[0.5em] font-medium font-body">Since 2011 • Exploring Excellence</span>
+          </div>
         </div>
       </div>
+
+      <WaveSeparator color="text-brand-navy" position="bottom" />
     </section>
   );
 };

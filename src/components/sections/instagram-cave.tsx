@@ -29,17 +29,17 @@ const InstagramCave = () => {
   const caveImageUrl = "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/images_4.png";
 
   return (
-    <section className="relative w-full overflow-hidden bg-[#0D2451]">
+    <section className="relative w-full overflow-hidden bg-brand-navy">
       {/* 
         Horizontal Transition Area
         Matches the screenshot's dark blue top edge before the cave visual 
       */}
-      <div className="h-10 w-full bg-[#0D2451]" />
+      <div className="h-10 w-full bg-brand-navy" />
 
       {/* Main Cave Parallax Container */}
       <div className="relative h-[600px] md:h-[700px] w-full overflow-hidden">
         {/* Parallax Background Image */}
-        <div 
+        <div
           className="absolute inset-0 w-full h-[120%] -top-[10%]"
           style={{ transform: parallaxTransform }}
         >
@@ -65,7 +65,7 @@ const InstagramCave = () => {
       </div>
 
       {/* Instagram CTA Section Below the Image */}
-      <div className="relative w-full py-20 px-6 bg-[#0D2451] flex flex-col items-center justify-center border-t border-white/5">
+      <div className="relative w-full py-20 px-6 bg-brand-navy flex flex-col items-center justify-center">
         <div className="max-w-4xl w-full text-center">
           <p className="text-[#CFB27F] font-semibold uppercase tracking-[0.2em] text-[14px] md:text-[16px] mb-4">
             Follow our adventure
@@ -73,10 +73,10 @@ const InstagramCave = () => {
           <h3 className="text-white text-[1.25rem] md:text-[1.5rem] font-semibold font-display tracking-wide mb-8">
             Behind the Scenes with Mako Divers Club on Instagram
           </h3>
-          
-          <a 
-            href="https://www.instagram.com/" 
-            target="_blank" 
+
+          <a
+            href="https://www.instagram.com/"
+            target="_blank"
             rel="noopener noreferrer"
             className="inline-block px-10 py-4 bg-[#CFB27F] text-[#0D2451] font-bold uppercase text-[14px] tracking-widest rounded-[4px] hover:bg-white transition-all duration-300 transform hover:-translate-y-1 shadow-xl"
           >
@@ -88,12 +88,6 @@ const InstagramCave = () => {
         <div className="mt-20 w-16 h-[2px] bg-[#CFB27F]/30" />
       </div>
 
-      {/* Constraints & Layout Styling from Globals/Higes */}
-      <style jsx global>{`
-        .font-display {
-          font-family: "Bitter", serif;
-        }
-      `}</style>
     </section>
   );
 };

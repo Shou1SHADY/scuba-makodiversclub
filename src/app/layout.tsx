@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
-import { Bitter } from "next/font/google";
+import { Outfit, Inter } from "next/font/google"; // Updated fonts
 import "./globals.css";
 import { VisualEditsMessenger } from "orchids-visual-edits";
+import Header from "@/components/sections/header";
+import Footer from "@/components/sections/footer";
+import ScrollToTop from "@/components/ui/scroll-to-top";
 
-const bitter = Bitter({
-  variable: "--font-bitter",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"], // Wide range for hierarchy
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -27,8 +36,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${bitter.variable} antialiased`}>
-        {children}
+      <body className={`${outfit.variable} ${inter.variable} antialiased selection:bg-primary/30`} suppressHydrationWarning>
+        <Header />
+        <main className="min-h-screen bg-brand-navy">
+          {children}
+        </main>
+        <Footer />
+        <ScrollToTop />
         <VisualEditsMessenger />
       </body>
     </html>
