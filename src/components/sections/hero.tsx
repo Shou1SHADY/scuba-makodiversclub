@@ -37,7 +37,7 @@ const HeroSection: React.FC = () => {
             <span className="font-body text-primary uppercase tracking-[0.3em] text-sm md:text-base mb-4 animate-fade-in-up">
               Welcome to the Red Sea
             </span>
-            <h1 className="font-display text-white font-extrabold text-[3.5rem] sm:text-[5rem] md:text-[6.5rem] lg:text-[7.5rem] leading-[0.9] uppercase tracking-tight mb-8 drop-shadow-2xl animate-fade-in-up delay-100">
+            <h1 className="font-display text-white font-extrabold text-5xl sm:text-[5rem] md:text-[6.5rem] lg:text-[7.5rem] leading-[0.9] uppercase tracking-tight mb-8 drop-shadow-2xl animate-fade-in-up delay-100">
               Discover <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white">The World</span>
             </h1>

@@ -30,7 +30,7 @@ const SchedulePage = () => {
     return (
         <div className="bg-brand-navy min-h-screen">
             {/* Page Header Section */}
-            <div className="relative pt-40 pb-20 overflow-hidden">
+            <div className="relative pt-32 md:pt-40 pb-20 overflow-hidden">
                 {/* Background Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-brand-navy/50 to-brand-navy z-0" />
 

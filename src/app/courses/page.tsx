@@ -76,7 +76,7 @@ const CoursesPage = () => {
     return (
         <div className="bg-brand-navy min-h-screen">
             {/* Page Header Section */}
-            <div className="relative pt-40 pb-20 overflow-hidden">
+            <div className="relative pt-32 md:pt-40 pb-20 overflow-hidden">
                 {/* Background Image from Live Site */}
                 <div className="absolute inset-0 z-0">
                     <Image

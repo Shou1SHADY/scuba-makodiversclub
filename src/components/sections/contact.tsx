@@ -13,7 +13,7 @@ const ContactSection = () => {
 
         {/* Contact Info Sidebar - spans 5 columns */}
         <div className="lg:col-span-5 space-y-8 flex flex-col">
-          <div className="glass-card p-10 rounded-[2.5rem] border border-white/5 space-y-8 flex-grow">
+          <div className="glass-card p-8 md:p-10 rounded-[2.5rem] border border-white/5 space-y-8 flex-grow">
             <div className="space-y-4">
               <span className="text-primary text-[10px] uppercase tracking-[0.3em] font-bold block">Connect With Us</span>
               <h2 className="text-4xl font-display font-medium text-white leading-tight">
@@ -68,7 +68,7 @@ const ContactSection = () => {
         {/* Main Booking/Contact Card - spans 7 columns */}
         <div className="lg:col-span-7 relative group">
           <div className="absolute inset-0 bg-primary/20 blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none" />
-          <div className="relative h-full glass-card p-10 md:p-14 rounded-[3rem] border border-white/10 flex flex-col justify-between overflow-hidden">
+          <div className="relative h-full glass-card p-8 md:p-14 rounded-[3rem] border border-white/10 flex flex-col justify-between overflow-hidden">
 
             {/* Background Accent */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -mr-32 -mt-32" />

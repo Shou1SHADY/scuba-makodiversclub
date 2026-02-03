@@ -7,7 +7,7 @@ export default function ContactPage() {
     return (
         <div className="bg-brand-navy min-h-screen">
             {/* Page Header Section */}
-            <div className="relative pt-40 pb-20 overflow-hidden">
+            <div className="relative pt-32 md:pt-40 pb-20 overflow-hidden">
                 {/* Visual Background Elements */}
                 <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-brand-navy/50 to-brand-navy z-0" />
                 <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 blur-[120px] rounded-full pointer-events-none" />

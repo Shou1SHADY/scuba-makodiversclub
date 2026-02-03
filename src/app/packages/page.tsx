@@ -42,7 +42,7 @@ const PackagesPage = () => {
     return (
         <div className="bg-brand-navy min-h-screen">
             {/* Page Header Section */}
-            <div className="relative pt-40 pb-24 overflow-hidden">
+            <div className="relative pt-32 md:pt-40 pb-24 overflow-hidden">
                 {/* Background Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-brand-navy/50 to-brand-navy z-0" />
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[60%] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
