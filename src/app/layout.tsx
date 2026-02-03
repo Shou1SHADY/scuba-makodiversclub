@@ -4,7 +4,7 @@ import "./globals.css";
 import { VisualEditsMessenger } from "orchids-visual-edits";
 import Header from "@/components/sections/header";
 import Footer from "@/components/sections/footer";
-import ScrollToTop from "@/components/ui/scroll-to-top";
+import { ScrollProgress, CustomCursor, BackToTop, PageTransition } from "@/components/ui/premium-polish";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -37,12 +37,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${outfit.variable} ${inter.variable} antialiased selection:bg-primary/30`} suppressHydrationWarning>
+        <CustomCursor />
+        <ScrollProgress />
         <Header />
         <main className="min-h-screen bg-brand-navy">
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
         </main>
         <Footer />
-        <ScrollToTop />
+        <BackToTop />
         <VisualEditsMessenger />
       </body>
     </html>
