@@ -1,124 +1,160 @@
-import { MapPin, Phone, Mail, Clock, Send, Facebook, Instagram, MessageCircle } from 'lucide-react';
-import { GOOGLE_FORM_URL } from '@/lib/config';
+import { MapPin, Phone, Mail, Clock, Send, Facebook, Instagram, MessageCircle, ArrowRight, ExternalLink } from 'lucide-react';
+import { siteConfig, GOOGLE_FORM_URL } from '@/lib/config';
+import React from 'react';
 
 const ContactSection = () => {
   return (
-    <section id="contact" className="bg-brand-navy py-24 px-6 md:px-0 relative overflow-hidden">
-      {/* Background Gradients */}
-      <div className="absolute -left-40 top-40 w-96 h-96 bg-primary/5 rounded-full blur-[40px]" />
+    <section id="contact" className="relative group/section">
+      {/* Dynamic Background Elements */}
+      <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="container-width relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-stretch">
 
-          {/* Contact Info Column */}
-          <div className="space-y-12">
-            <div>
-              <p className="text-primary text-sm uppercase tracking-[0.2em] mb-4 font-bold">Contact Us</p>
-              <h2 className="text-4xl md:text-5xl font-display font-bold text-white mb-6 leading-tight">
-                Ready to <span className="text-primary">Dive</span>?
+        {/* Contact Info Sidebar - spans 5 columns */}
+        <div className="lg:col-span-5 space-y-8 flex flex-col">
+          <div className="glass-card p-10 rounded-[2.5rem] border border-white/5 space-y-8 flex-grow">
+            <div className="space-y-4">
+              <span className="text-primary text-[10px] uppercase tracking-[0.3em] font-bold block">Connect With Us</span>
+              <h2 className="text-4xl font-display font-medium text-white leading-tight">
+                Ready to dive into the <span className="text-primary italic">Deep</span>?
               </h2>
-              <p className="text-gray-400 text-lg leading-relaxed max-w-md">
-                Book your next diving adventure with Mako Divers Club. Contact us for courses, liveaboards, or custom packages.
+              <p className="text-gray-400 text-base leading-relaxed">
+                Whether it's your first breath underwater or your next pro certification, our team is standing by to guide you.
               </p>
             </div>
 
-            <div className="space-y-8">
-              <ContactItem
-                icon={<MapPin className="w-6 h-6 text-brand-navy" />}
-                title="Our Location"
-                content="Red Sea, Egypt (Hurghada • Dahab • Sharm)"
+            <div className="grid grid-cols-1 gap-6">
+              <ContactCard
+                icon={<MapPin className="text-primary" size={20} />}
+                title="Our Base"
+                detail="Red Sea, Egypt"
+                subDetail="Hurghada • Dahab • Sharm"
               />
-              <ContactItem
-                icon={<Phone className="w-6 h-6 text-brand-navy" />}
-                title="Phone / WhatsApp"
-                content={<a href="tel:+201234567890" className="hover:text-primary transition-colors">+20 123 456 7890</a>}
+              <ContactCard
+                icon={<Phone className="text-primary" size={20} />}
+                title="Direct Lines"
+                detail={siteConfig.contact.phone}
+                subDetail="Available on WhatsApp"
+                link={`tel:${siteConfig.contact.phone.replace(/\s/g, '')}`}
               />
-              <ContactItem
-                icon={<Mail className="w-6 h-6 text-brand-navy" />}
-                title="Email Us"
-                content={<a href="mailto:info@makodivers.club" className="hover:text-primary transition-colors">info@makodivers.club</a>}
+              <ContactCard
+                icon={<Mail className="text-primary" size={20} />}
+                title="Email Support"
+                detail={siteConfig.contact.email}
+                subDetail="24h Response Time"
+                link={`mailto:${siteConfig.contact.email}`}
               />
-              <ContactItem
-                icon={<Clock className="w-6 h-6 text-brand-navy" />}
-                title="Working Hours"
-                content="Daily: 8:00 AM - 6:00 PM"
+              <ContactCard
+                icon={<Clock className="text-primary" size={20} />}
+                title="Operations"
+                detail="Daily: 8:00 AM - 6:00 PM"
+                subDetail="Red Sea Local Time"
               />
-            </div>
-
-            {/* Social Links */}
-            <div className="pt-8">
-              <p className="text-white font-display text-sm font-bold uppercase tracking-widest mb-4">Follow Our Adventures</p>
-              <div className="flex gap-4">
-                <SocialButton icon={<Instagram size={20} />} href="https://www.instagram.com/makodivers" />
-                <SocialButton icon={<Facebook size={20} />} href="https://www.facebook.com/makodivers" />
-                <SocialButton icon={<MessageCircle size={20} />} href="https://wa.me/201234567890" />
-              </div>
             </div>
           </div>
 
-          {/* CTA Card Column */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-primary blur-[20px] opacity-10 rounded-full" />
-            <div className="relative bg-white/5 border border-white/10 p-8 md:p-12 rounded-2xl shadow-2xl">
-              <div className="absolute top-0 right-0 p-8 opacity-10">
-                <Send size={64} className="text-white" />
-              </div>
+          {/* Social Presence */}
+          <div className="glass-card p-8 rounded-[2rem] border border-white/5 flex items-center justify-between">
+            <span className="text-gray-500 text-[10px] uppercase tracking-widest font-bold">Follow Our Journey</span>
+            <div className="flex gap-3">
+              <SocialIcon icon={<Instagram size={18} />} href={siteConfig.social.instagram} />
+              <SocialIcon icon={<Facebook size={18} />} href={siteConfig.social.facebook} />
+              <SocialIcon icon={<MessageCircle size={18} />} href={`https://wa.me/${siteConfig.contact.whatsapp.replace(/\+/g, '')}`} />
+            </div>
+          </div>
+        </div>
 
-              <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-2">
-                Start Your Journey
-              </h3>
-              <p className="text-gray-400 mb-8">
-                Fill out our secure booking form to reserve your spot. No payment required immediately.
-              </p>
+        {/* Main Booking/Contact Card - spans 7 columns */}
+        <div className="lg:col-span-7 relative group">
+          <div className="absolute inset-0 bg-primary/20 blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none" />
+          <div className="relative h-full glass-card p-10 md:p-14 rounded-[3rem] border border-white/10 flex flex-col justify-between overflow-hidden">
 
-              <div className="space-y-6">
-                <div className="flex items-center gap-4 text-sm text-gray-300">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  <span>Limited spots available for upcoming safaris</span>
+            {/* Background Accent */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -mr-32 -mt-32" />
+
+            <div className="relative z-10 space-y-10">
+              <div className="flex justify-between items-start">
+                <div className="space-y-2">
+                  <h3 className="text-3xl md:text-4xl font-display font-medium text-white">Let's Plan Your <br /><span className="text-primary">Expedition</span></h3>
+                  <div className="h-1 w-20 bg-primary/30 rounded-full" />
                 </div>
+                <div className="hidden md:flex w-16 h-16 rounded-2xl bg-white/5 items-center justify-center text-primary border border-white/10">
+                  <Send size={28} />
+                </div>
+              </div>
 
-                <a
-                  href={GOOGLE_FORM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full text-center bg-primary text-brand-navy font-bold uppercase text-lg py-5 px-8 rounded-sm hover:bg-white transition-all duration-300 shadow-lg hover:shadow-primary/25"
-                >
-                  Book Now
-                </a>
+              <p className="text-gray-400 text-lg leading-relaxed max-w-lg">
+                For the fastest response and accurate availability, please use our simplified booking request form. Our team reviews entries hourly.
+              </p>
 
-                <p className="text-center text-xs text-white/40 uppercase tracking-wider">
-                  Quick response • Free consultation
-                </p>
+              <div className="grid gap-6">
+                <div className="flex items-center gap-4 p-6 rounded-2xl bg-white/5 border border-white/5 group/link hover:border-primary/30 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
+                    <ExternalLink size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold">Secure Booking Portal</h4>
+                    <p className="text-gray-500 text-xs">Redirects to our encrypted Google Form</p>
+                  </div>
+                  <ArrowRight size={20} className="ml-auto text-gray-700 group-hover:text-primary transition-colors group-hover:translate-x-1" />
+                </div>
               </div>
             </div>
-          </div>
 
+            <div className="relative z-10 mt-12 space-y-8">
+              <a
+                href={GOOGLE_FORM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative inline-flex items-center justify-center w-full gap-4 bg-primary text-brand-navy py-6 px-10 rounded-2xl font-display font-black uppercase text-sm tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all duration-300 shadow-2xl overflow-hidden group/btn text-center"
+              >
+                <div className="absolute inset-0 bg-white opacity-0 group-hover/btn:opacity-10 transition-opacity" />
+                Proceed to Booking Form
+                <ArrowRight size={18} className="animate-pulse" />
+              </a>
+
+              <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                <span className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary" /> No Deposit Required</span>
+                <span className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary" /> 24h Confirmation</span>
+                <span className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-primary" /> Direct WhatsApp Link</span>
+              </div>
+            </div>
+
+            {/* Bottom Graphic Decoration */}
+            <div className="absolute bottom-0 right-0 p-12 opacity-5 scale-150 select-none pointer-events-none">
+              <h1 className="text-9xl font-display font-black uppercase italic tracking-tighter">MAKO</h1>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 };
 
-const ContactItem = ({ icon, title, content }: { icon: React.ReactNode, title: string, content: React.ReactNode }) => (
-  <div className="flex items-start gap-4 group">
-    <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/10 group-hover:scale-110 transition-transform duration-300">
-      {icon}
-    </div>
-    <div>
-      <h4 className="text-white font-bold text-lg mb-1">{title}</h4>
-      <div className="text-gray-400 text-base font-medium">
-        {content}
+const ContactCard = ({ icon, title, detail, subDetail, link }: { icon: React.ReactNode, title: string, detail: string, subDetail: string, link?: string }) => {
+  const CardContent = (
+    <div className="flex items-start gap-5 group/card cursor-pointer">
+      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover/card:scale-110 group-hover/card:border-primary/50 transition-all duration-300">
+        {icon}
+      </div>
+      <div className="space-y-1">
+        <h4 className="text-gray-500 text-[10px] uppercase font-bold tracking-widest group-hover/card:text-primary transition-colors">{title}</h4>
+        <p className="text-white font-medium text-lg leading-none">{detail}</p>
+        <p className="text-gray-600 text-xs">{subDetail}</p>
       </div>
     </div>
-  </div>
-);
+  );
 
-const SocialButton = ({ icon, href }: { icon: React.ReactNode, href: string }) => (
+  return link ? <a href={link} className="block">{CardContent}</a> : <div className="block">{CardContent}</div>;
+};
+
+const SocialIcon = ({ icon, href }: { icon: React.ReactNode, href: string }) => (
   <a
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-primary hover:text-brand-navy hover:border-primary transition-all duration-300"
+    className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-brand-navy hover:border-primary transition-all duration-300"
   >
     {icon}
   </a>
