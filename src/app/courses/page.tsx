@@ -7,8 +7,8 @@ import { GOOGLE_FORM_URL } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
 
 const CoursesPage = () => {
-    // Using project's authentic Supabase images
-    const baseImageUrl = "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images";
+    // Using images from the live makodivers.club site
+    const heroBgImage = "https://img1.wsimg.com/isteam/getty/156323241/:/rs=w:2400,h:1200,cg:true";
 
     const courses = [
         {
@@ -17,7 +17,7 @@ const CoursesPage = () => {
             desc: "Start your underwater journey with us! Begin with our Open Water Course to learn the basics of scuba diving. Explore a whole new world and get certified to dive up to 18 meters.",
             icon: <BookOpen className="w-7 h-7" />,
             color: "from-blue-500 to-cyan-400",
-            image: `${baseImageUrl}/images_1.png`,
+            image: "https://img1.wsimg.com/isteam/getty/1461642666/:/rs=w:800,h:600,cg:true",
             duration: "3-4 Days",
             highlights: ["Pool training sessions", "4 ocean certification dives", "PADI certification card"]
         },
@@ -27,7 +27,7 @@ const CoursesPage = () => {
             desc: "Take your diving skills to the next level with our Advanced Open Water training. Train with experts and gain confidence in deeper waters through our specialty adventure dives.",
             icon: <Award className="w-7 h-7" />,
             color: "from-primary to-amber-400",
-            image: `${baseImageUrl}/611970054_901071835651598_2054238453293371201_n-22.jpg`,
+            image: "https://img1.wsimg.com/isteam/getty/1131773097/:/rs=w:800,h:600,cg:true",
             duration: "2-3 Days",
             highlights: ["5 adventure dives", "Deep diving experience", "Navigation mastery"]
         },
@@ -37,7 +37,7 @@ const CoursesPage = () => {
             desc: "Nitrox training is essential for those looking to enhance their diving experience. It helps you maximize every dive, allows for more bottom time, and is perfect for advanced divers.",
             icon: <Zap className="w-7 h-7" />,
             color: "from-yellow-400 to-orange-500",
-            image: `${baseImageUrl}/612306146_904230545335727_5291961751855514070_n-20.jpg`,
+            image: "https://img1.wsimg.com/isteam/getty/538368359/:/rs=w:800,h:600,cg:true",
             duration: "1 Day",
             highlights: ["Extended bottom time", "Gas analysis training", "Theory & certification"]
         },
@@ -47,7 +47,7 @@ const CoursesPage = () => {
             desc: "Master advanced techniques for safe and exciting deep dives through our Deep Diving Specialty courses. Discover the thrill of depth up to 40 meters while enhancing your safety skills.",
             icon: <Target className="w-7 h-7" />,
             color: "from-red-500 to-pink-500",
-            image: `${baseImageUrl}/610910792_864702646531728_4520051095610570581_n-19.jpg`,
+            image: "https://img1.wsimg.com/isteam/getty/531989748/:/rs=w:800,h:600,cg:true",
             duration: "2 Days",
             highlights: ["40m depth certification", "Decompression theory", "Advanced dive planning"]
         },
@@ -57,7 +57,7 @@ const CoursesPage = () => {
             desc: "Transform your passion into a profession! Lead dives, guide others, and embrace the diving lifestyle. Begin your professional journey with the Divemaster Course.",
             icon: <Users className="w-7 h-7" />,
             color: "from-indigo-500 to-purple-500",
-            image: `${baseImageUrl}/images_2.png`,
+            image: "https://img1.wsimg.com/isteam/getty/155444888/:/rs=w:800,h:600,cg:true",
             duration: "2-4 Weeks",
             highlights: ["Leadership training", "Assist certified instructors", "Professional certification"]
         },
@@ -67,7 +67,7 @@ const CoursesPage = () => {
             desc: "Step into the world of technical diving by advancing your skills. Learn about advanced gear, techniques, and safety practices essential for extended range diving.",
             icon: <ShieldCheck className="w-7 h-7" />,
             color: "from-emerald-500 to-teal-400",
-            image: `${baseImageUrl}/images_3.png`,
+            image: "https://images.unsplash.com/photo-1605973029521-8154da591bd7?q=80&w=800",
             duration: "3 Days",
             highlights: ["Tech configuration", "Gas management", "Team diving protocols"]
         }
@@ -77,8 +77,18 @@ const CoursesPage = () => {
         <div className="bg-brand-navy min-h-screen">
             {/* Page Header Section */}
             <div className="relative pt-40 pb-20 overflow-hidden">
-                {/* Background Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-brand-navy/50 to-brand-navy z-0" />
+                {/* Background Image from Live Site */}
+                <div className="absolute inset-0 z-0">
+                    <Image
+                        src={heroBgImage}
+                        alt="Diving Background"
+                        fill
+                        className="object-cover opacity-20"
+                        priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/60 via-brand-navy/80 to-brand-navy" />
+                </div>
+
                 <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
 
                 <div className="container-width px-6 relative z-10 text-center max-w-3xl mx-auto">
