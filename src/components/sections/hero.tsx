@@ -33,22 +33,24 @@ const HeroSection: React.FC = () => {
             <p className="text-white text-lg md:text-xl max-w-[600px] mb-10 opacity-90 leading-relaxed">
               Experience world-class scuba diving in Egypt&apos;s Red Sea. Diving courses, liveaboard trips, and unforgettable underwater adventures.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a 
-                href={GOOGLE_FORM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary text-lg px-10 py-4 hover:scale-105 transition-transform"
-              >
-                Book Now
-              </a>
-              <a 
-                href="#services"
-                className="inline-block px-10 py-4 border-2 border-[#CFB27F] text-[#CFB27F] font-bold uppercase rounded hover:bg-[#CFB27F] hover:text-[#0D2451] transition-all duration-300"
-              >
-                Explore Programs
-              </a>
-            </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <a 
+                  href={GOOGLE_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-primary text-lg px-10 py-4 hover:scale-105 transition-transform text-center"
+                  aria-label="Book your diving experience now"
+                >
+                  Book Now
+                </a>
+                <a 
+                  href="#services"
+                  className="inline-block px-10 py-4 border-2 border-[#CFB27F] text-[#CFB27F] font-bold uppercase rounded hover:bg-[#CFB27F] hover:text-[#0D2451] transition-all duration-300 text-center"
+                  aria-label="Explore our diving programs and services"
+                >
+                  Explore Programs
+                </a>
+              </div>
           </div>
         </div>
 
@@ -63,20 +65,21 @@ const HeroSection: React.FC = () => {
           />
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 animate-bounce hidden md:block">
-          <svg 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="#CFB27F" 
-            strokeWidth="2"
-            className="opacity-60"
-          >
-            <path d="M12 5v14M19 12l-7 7-7-7"/>
-          </svg>
-        </div>
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 animate-bounce hidden md:block" aria-hidden="true">
+            <svg 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="#CFB27F" 
+              strokeWidth="2"
+              className="opacity-60"
+              aria-hidden="true"
+            >
+              <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+          </div>
       </section>
     </div>
   );

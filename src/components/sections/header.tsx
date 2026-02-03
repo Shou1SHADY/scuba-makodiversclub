@@ -114,7 +114,7 @@ const Header = () => {
                   </div>
                 )}
               </div>
-))}
+              ))}
               
               {/* Book Now CTA */}
               <a 
@@ -129,29 +129,35 @@ const Header = () => {
 
             {/* Mobile Menu Button */}
             <button 
-              className="lg:hidden text-[#CFB27F] p-2 focus:outline-none"
+              className="lg:hidden text-[#CFB27F] p-2 focus:outline-none focus:ring-2 focus:ring-[#CFB27F] rounded"
               onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open navigation menu"
+              aria-expanded={mobileMenuOpen}
             >
-              <Menu size={32} />
+              <Menu size={32} aria-hidden="true" />
             </button>
           </div>
         </div>
 
-      {/* Mobile Sidebar Overlay */}
-      <div 
-        className={`fixed inset-0 bg-[#0D2451]/95 z-[60] transition-transform duration-500 transform ${
-          mobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex flex-col h-full">
-          <div className="flex justify-end p-8">
-            <button 
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-[#CFB27F] hover:scale-110 transition-transform"
-            >
-              <X size={36} />
-            </button>
-          </div>
+        {/* Mobile Sidebar Overlay */}
+        <div 
+          className={`fixed inset-0 bg-[#0D2451]/95 z-[60] transition-transform duration-500 transform ${
+            mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+        >
+          <div className="flex flex-col h-full">
+            <div className="flex justify-end p-8">
+              <button 
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-[#CFB27F] hover:scale-110 transition-transform focus:outline-none focus:ring-2 focus:ring-[#CFB27F] rounded"
+                aria-label="Close navigation menu"
+              >
+                <X size={36} aria-hidden="true" />
+              </button>
+            </div>
 
           <div className="flex flex-col items-center justify-center space-y-8 flex-grow">
             {navLinks.map((link) => (
