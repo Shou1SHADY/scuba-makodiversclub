@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Star, MessageCircle, RefreshCw, ChevronLeft, ChevronRight, CheckCircle2, Facebook } from 'lucide-react';
 import { getFacebookReviews, Review } from '@/lib/api/reviews';
+import { siteConfig } from '@/lib/config';
 import useEmblaCarousel from 'embla-carousel-react';
 import Image from 'next/image';
 
@@ -218,7 +219,7 @@ const Testimonials: React.FC = () => {
         <div className="mt-20 text-center border-t border-white/5 pt-16">
           <div className="inline-block p-1 bg-white/5 rounded-2xl border border-white/10">
             <a
-              href="https://www.facebook.com/MAKODIVERSCLUB/reviews/"
+              href={`${siteConfig.social.facebook}reviews/`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-4 bg-primary text-brand-navy py-5 px-12 rounded-xl font-display font-black uppercase text-sm tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-[0_10px_40px_-10px_rgba(229,197,158,0.4)]"

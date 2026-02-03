@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Instagram, ArrowUpRight } from 'lucide-react';
+import { siteConfig } from '@/lib/config';
 
 const InstagramGrid = () => {
   const assets = [
@@ -35,7 +36,7 @@ const InstagramGrid = () => {
           </div>
 
           <a
-            href="https://www.instagram.com/makodivers"
+            href={siteConfig.social.instagram}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 bg-white/5 border border-white/10 hover:border-primary text-white py-4 px-8 rounded-sm transition-all duration-300 group"
@@ -53,7 +54,7 @@ const InstagramGrid = () => {
               className={`group relative overflow-hidden bg-card rounded-xl border border-white/5 transition-all duration-500 hover:border-primary/30 ${item.span}`}
             >
               <a
-                href="https://www.instagram.com/makodivers"
+                href={siteConfig.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full h-full"
@@ -76,13 +77,6 @@ const InstagramGrid = () => {
             </div>
           ))}
 
-          {/* Large Stat Card integrated into grid */}
-          <div className="hidden md:flex flex-col items-center justify-center md:col-span-1 md:row-span-1 bg-primary p-6 rounded-xl text-brand-navy text-center">
-            <p className="font-display text-3xl font-black mb-1">500+</p>
-            <p className="font-body text-[10px] uppercase font-bold tracking-tighter">Daily Stories</p>
-            <div className="w-8 h-[2px] bg-brand-navy/20 my-3" />
-            <p className="font-body text-xs font-medium leading-tight">Capture the magic of the Red Sea every day.</p>
-          </div>
         </div>
       </div>
     </section>
