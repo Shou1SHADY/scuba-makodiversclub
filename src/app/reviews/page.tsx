@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Star, MessageCircle, Facebook, Heart, CheckCircle2, ShieldCheck, Quote, X } from 'lucide-react';
 import { getFacebookReviews, Review } from '@/lib/api/reviews';
+import { siteConfig } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
 
 export default function ReviewsPage() {
@@ -165,7 +166,7 @@ export default function ReviewsPage() {
                             <div className="relative inline-block group">
                                 <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                                 <a
-                                    href="https://www.facebook.com/MAKODIVERSCLUB/reviews/"
+                                    href={`${siteConfig.social.facebook}reviews/`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="relative z-10 inline-flex items-center gap-4 bg-primary text-brand-navy py-6 px-14 rounded-2xl font-display font-black uppercase text-sm tracking-[0.2em] hover:scale-105 active:scale-95 transition-all duration-300 shadow-2xl"

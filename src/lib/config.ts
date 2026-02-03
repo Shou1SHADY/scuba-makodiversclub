@@ -19,8 +19,8 @@ export const siteConfig = {
 
   // Social media links
   social: {
-    instagram: "https://www.instagram.com/makodivers",
-    facebook: "https://www.facebook.com/makodivers",
+    instagram: "https://www.instagram.com/makodiversclub?igsh=em15Ym1lOHJ0YTBn",
+    facebook: "https://web.facebook.com/MAKODIVERSCLUB/",
   },
 
   // Locations
