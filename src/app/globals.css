@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-background: #0D2451;
+  --color-foreground: #FFFFFF;
+
+  --color-card: #1A3E7A;
+  --color-card-foreground: #FFFFFF;
+
+  --color-popover: #0D2451;
+  --color-popover-foreground: #FFFFFF;
+
+  --color-primary: #CFB27F;
+  --color-primary-foreground: #0D2451;
+
+  --color-secondary: #1A3E7A;
+  --color-secondary-foreground: #FFFFFF;
+
+  --color-muted: #1A3E7A;
+  --color-muted-foreground: #CFB27F;
+
+  --color-accent: #CFB27F;
+  --color-accent-foreground: #0D2451;
+
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #fafafa;
+
+  --color-border: rgba(207, 178, 127, 0.2);
+  --color-input: rgba(207, 178, 127, 0.2);
+  --color-ring: #CFB27F;
+
+  --color-brand-navy: #0D2451;
+  --color-brand-gold: #CFB27F;
+  --color-ocean-accent: #1A3E7A;
+
+  --font-display: "Bitter", serif;
+  --font-body: "Bitter", serif;
+
+  --radius-lg: 8px;
+  --radius-md: 6px;
+  --radius-sm: 4px;
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: rgba(207, 178, 127, 0.2);
+  }
+
+  :root {
+    --background: #0D2451;
+    --foreground: #FFFFFF;
+    --card: #1A3E7A;
+    --card-foreground: #FFFFFF;
+    --popover: #0D2451;
+    --popover-foreground: #FFFFFF;
+    --primary: #CFB27F;
+    --primary-foreground: #0D2451;
+    --secondary: #1A3E7A;
+    --secondary-foreground: #FFFFFF;
+    --muted: #1A3E7A;
+    --muted-foreground: #CFB27F;
+    --accent: #CFB27F;
+    --accent-foreground: #0D2451;
+    --destructive: #ef4444;
+    --destructive-foreground: #fafafa;
+    --border: rgba(207, 178, 127, 0.2);
+    --input: rgba(207, 178, 127, 0.2);
+    --ring: #CFB27F;
+    --radius: 8px;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-brand-navy);
+    color: var(--color-foreground);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-brand-gold);
+  }
+
+  h1 {
+    font-size: 4.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  h2 {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  h4 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .font-small-cap {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-brand-gold);
+  }
+
+  .hero-overlay {
+    background: linear-gradient(to bottom, transparent, var(--color-brand-navy));
+  }
+
+  .btn-primary {
+    background-color: var(--color-brand-gold);
+    color: var(--color-brand-navy);
+    padding: 12px 32px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 4px;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .service-card {
+    background-color: var(--color-ocean-accent);
+    border-top: 2px solid var(--color-brand-gold);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-5px);
+  }
+}
+
+@layer utilities {
+  .text-shadow-lg {
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  }
+  
+  .section-padding {
+    padding-top: 120px;
+    padding-bottom: 120px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

@@ -1,0 +1,30 @@
+// Mako Divers Club - Site Configuration
+// Update this file to configure site-wide settings
+
+export const siteConfig = {
+  name: "Mako Divers Club",
+  description: "Experience world-class scuba diving in Egypt's Red Sea",
+  
+  // Google Form URL for bookings
+  // Replace this with your actual Google Form URL
+  // The form should collect: name, phone, email, date, course/trip selection, notes
+  bookingFormUrl: "https://docs.google.com/forms/d/e/1FAIpQLSf_example/viewform",
+  
+  // Contact information
+  contact: {
+    phone: "+20 123 456 7890",
+    email: "info@makodivers.club",
+    whatsapp: "+201234567890",
+  },
+  
+  // Social media links
+  social: {
+    instagram: "https://www.instagram.com/makodivers",
+    facebook: "https://www.facebook.com/makodivers",
+  },
+  
+  // Locations
+  locations: ["Hurghada", "Dahab", "Sharm El-Sheikh"],
+};
+
+export const GOOGLE_FORM_URL = siteConfig.bookingFormUrl;
