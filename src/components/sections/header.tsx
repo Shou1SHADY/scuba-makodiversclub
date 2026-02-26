@@ -10,17 +10,39 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [banner, setBanner] = useState<{ text: string; link: string; active: boolean } | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
+
+    // Fetch live banner settings
+    const fetchBanner = async () => {
+      try {
+        const { createClient } = await import("@/lib/supabase/client");
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'homepage_banner')
+          .maybeSingle();
+
+        if (error) throw error;
+        if (data && data.value) setBanner(data.value as any);
+      } catch (e) {
+        console.error("Banner fetch error:", e);
+      }
+    };
+    fetchBanner();
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
     { name: "Home", href: "/" },
+    { name: "News", href: "/updates" },
     { name: "Reviews", href: "/reviews" },
     {
       name: "Liveaboards",
@@ -40,7 +62,7 @@ const Header = () => {
     <header className="fixed top-0 left-0 w-full z-50 transition-all duration-300">
       {/* Promo Banner */}
       <AnimatePresence>
-        {!isScrolled && (
+        {!isScrolled && banner?.active && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -48,14 +70,14 @@ const Header = () => {
             className="bg-brand-navy border-b border-white/5 py-2 overflow-hidden"
           >
             <a
-              href={GOOGLE_FORM_URL}
+              href={banner.link || GOOGLE_FORM_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="block text-center px-6 group"
             >
               <p className="font-body text-[10px] md:text-xs font-bold text-white/50 tracking-[0.2em] uppercase group-hover:text-primary transition-colors flex items-center justify-center gap-3">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                North Expedition Mini Safari &nbsp;•&nbsp; 24 Dec &apos;25 &nbsp;•&nbsp; Limited Spots
+                {banner.text}
                 <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
               </p>
             </a>

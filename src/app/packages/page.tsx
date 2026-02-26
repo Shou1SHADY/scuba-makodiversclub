@@ -11,9 +11,9 @@ const PackagesPage = () => {
             city: "Hurghada",
             details: "Coastal Diving Escape",
             duration: "2 Days | 2 Nights",
-            description: "Explore the legendary house reefs and iconic boat sites of Hurghada. A perfect blend of comfort and world-class diving.",
-            highlights: ["4 Professional Dives", "4* Hotel Accommodation", "Private Airport Transfers"],
-            price: "299",
+            description: "Explore the legendary house reefs and iconic boat sites of Hurghada. A perfect blend of comfort and world-class diving with early 6:00 am check-in available.",
+            highlights: ["4 Professional Dives", "New Ivory Suites Hotel", "Resident Rate Available"],
+            price: "10K EGP",
             featured: false,
             accent: "from-blue-600/20"
         },
@@ -99,7 +99,7 @@ const PackagesPage = () => {
                                     </div>
                                     <div className="flex items-baseline gap-1">
                                         <span className="text-xs text-gray-400 uppercase tracking-widest">From</span>
-                                        <span className="text-4xl font-display font-bold text-white">${pkg.price}</span>
+                                        <span className="text-4xl font-display font-bold text-white">{pkg.price.startsWith('$') || pkg.price.endsWith('EGP') ? pkg.price : `$${pkg.price}`}</span>
                                     </div>
                                 </div>
 

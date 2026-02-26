@@ -7,7 +7,7 @@ import WaveSeparator from '../ui/wave-separator';
  * Redesigned with a creative "fading effect" using fixed background parallax.
  */
 const MissionSection: React.FC = () => {
-  const missionBg = "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/images_4.png";
+  const missionBg = "/images/assets/mission.png";
 
   return (
     <section

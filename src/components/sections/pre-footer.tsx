@@ -17,7 +17,7 @@ const PreFooter = ({
     cta = "Start Your Journey"
 }: PreFooterProps) => {
     // Using a realistic adventure picture from the project assets
-    const adventureBg = "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/images_2.png";
+    const adventureBg = "/images/assets/mission.png";
 
     return (
         <section className="relative py-24 md:py-40 flex items-center justify-center overflow-hidden bg-brand-navy">

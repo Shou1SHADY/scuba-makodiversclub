@@ -1,119 +1,247 @@
 "use client";
 
-import React from 'react';
-import { Calendar, Compass, Waves, Star, Anchor, ArrowRight, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Anchor, CheckCircle2, Clock, MapPin, ArrowRight, ChevronDown, ChevronUp, Check, X, Shield, Info, DollarSign, Loader2 } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
+import { motion, AnimatePresence } from 'framer-motion';
+import { createClient } from '@/lib/supabase/client';
+
+interface ItineraryItem {
+    day?: string;
+    activities: string[];
+}
+
+interface Trip {
+    id: string;
+    title: string;
+    route: string;
+    yacht: string;
+    dates: string;
+    port: string;
+    itinerary: ItineraryItem[];
+    included: string[];
+    notIncluded: string[];
+    price?: string;
+    earlyBird?: string;
+    status: string;
+    type: string;
+    color: string;
+    bookingLink?: string;
+}
+
+const TripCard = ({ trip }: { trip: Trip }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    return (
+        <div className={`group glass-card rounded-3xl border border-white/5 hover:border-primary/40 transition-all duration-500 overflow-hidden ${isExpanded ? 'ring-1 ring-primary/20' : ''}`}>
+            {/* Top Bar / Summary */}
+            <div className="p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-10">
+                <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+                    <div className={`w-20 h-20 rounded-2xl ${trip.color || 'bg-blue-500/20'} flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-500 border border-white/5`}>
+                        <Calendar size={36} strokeWidth={1.5} />
+                    </div>
+                    <div className="space-y-2">
+                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                            <span className="bg-primary text-brand-navy text-[10px] uppercase font-bold px-2.5 py-1 rounded-md tracking-widest">
+                                {trip.type}
+                            </span>
+                            <div className="flex items-center gap-1.5 text-gray-500 text-sm font-medium">
+                                <MapPin size={14} />
+                                {trip.port}
+                            </div>
+                        </div>
+                        <h3 className="text-white text-2xl md:text-3xl font-display font-bold group-hover:text-primary transition-colors">{trip.title}</h3>
+                        <p className="text-gray-400 font-medium tracking-wide italic">{trip.dates}</p>
+                    </div>
+                </div>
+
+                <div className="flex flex-col md:items-end gap-6 w-full md:w-auto">
+                    <div className="flex items-center justify-center md:justify-end gap-2 text-primary font-bold uppercase text-[10px] tracking-widest">
+                        <Clock size={14} />
+                        <span>{trip.status}</span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <button
+                            onClick={() => setIsExpanded(!isExpanded)}
+                            className="inline-flex items-center justify-center gap-2 border border-white/10 text-white font-bold uppercase text-[10px] tracking-widest py-4 px-6 rounded-xl hover:bg-white/5 transition-all"
+                        >
+                            {isExpanded ? "Hide Details" : "View Details"}
+                            {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </button>
+                        <a
+                            href={trip.bookingLink || GOOGLE_FORM_URL}
+                            target="_blank"
+                            className="inline-flex items-center justify-center gap-2 bg-primary text-brand-navy font-bold uppercase text-[10px] tracking-widest py-4 px-8 rounded-xl hover:bg-white hover:scale-105 transition-all w-full sm:w-auto"
+                        >
+                            Book Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {/* Expandable Details Section */}
+            <AnimatePresence>
+                {isExpanded && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="border-t border-white/5 bg-white/[0.02] p-6 md:p-10"
+                    >
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10 text-sm">
+                            <div className="space-y-4">
+                                <h4 className="text-primary font-bold uppercase tracking-widest text-xs">Route Details</h4>
+                                <p className="text-white/80">{trip.route}</p>
+                                <p className="text-white/80">Yacht: {trip.yacht}</p>
+                            </div>
+                            <div className="space-y-4">
+                                <h4 className="text-emerald-400 font-bold uppercase tracking-widest text-xs">Highlights</h4>
+                                <ul className="space-y-2 text-gray-400">
+                                    {trip.itinerary[0]?.activities.map((a, i) => <li key={i}>• {a}</li>)}
+                                </ul>
+                            </div>
+                            <div className="space-y-4">
+                                <h4 className="text-primary font-bold uppercase tracking-widest text-xs">Pricing</h4>
+                                {trip.earlyBird && <p className="text-primary">Early Bird: {trip.earlyBird}</p>}
+                                {trip.price && <p className="text-white/60">Standard: {trip.price}</p>}
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
 
 const MiniSafarisPage = () => {
+    const [trips, setTrips] = useState<Trip[]>([]);
+    const [loading, setLoading] = useState(true);
+    const supabase = createClient();
+
+    useEffect(() => {
+        const fetchMiniSafaris = async () => {
+            try {
+                setLoading(true);
+                const { data, error } = await supabase
+                    .from('safaris')
+                    .select('*')
+                    .eq('type', 'Mini Safari')
+                    .order('created_at', { ascending: false });
+
+                if (data && data.length > 0) {
+                    setTrips(data as Trip[]);
+                } else {
+                    setTrips(fallbackMiniSafaris);
+                }
+            } catch (e) {
+                setTrips(fallbackMiniSafaris);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchMiniSafaris();
+    }, []);
+
     return (
         <div className="bg-brand-navy min-h-screen">
-            {/* Page Header Section */}
-            <div className="relative pt-40 pb-20 overflow-hidden">
-                {/* Background Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-brand-navy/50 to-brand-navy z-0" />
-                <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
-
-                <div className="container-width px-6 relative z-10 text-center max-w-4xl mx-auto">
-                    <span className="text-primary uppercase tracking-[0.3em] text-[10px] font-bold mb-4 block animate-fade-in">Bite-sized Adventures</span>
-                    <h1 className="text-white mb-6 text-5xl md:text-6xl font-display font-medium animate-fade-in-up">
+            <div className="relative pt-40 pb-20 overflow-hidden text-center">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-brand-navy z-0" />
+                <div className="container-width px-6 relative z-10 max-w-4xl mx-auto">
+                    <span className="text-primary uppercase tracking-[0.3em] text-[10px] font-bold mb-4 block">Bite-sized Adventures</span>
+                    <h1 className="text-white mb-6 text-5xl md:text-6xl font-display font-medium">
                         Mini <span className="text-primary">Safaris</span>
                     </h1>
-                    <p className="text-gray-400 text-lg leading-relaxed animate-fade-in-up delay-100 max-w-2xl mx-auto">
-                        The perfect introduction to liveaboard diving. Experience the magic of the Red Sea in just 3-4 days—designed for those who crave the sea but have limited time.
+                    <p className="text-gray-400 text-lg leading-relaxed max-w-2xl mx-auto">
+                        Experience the magic of the Red Sea in just 3-4 days. Perfect for those with limited time who still want the full liveaboard experience.
                     </p>
                 </div>
             </div>
 
             <div className="container-width px-6 pb-24 relative z-10">
-                <div className="grid lg:grid-cols-12 gap-12 items-start">
-                    {/* Featured Mini Safari Card */}
-                    <div className="lg:col-span-12 xl:col-span-8 group relative glass-card rounded-[2.5rem] overflow-hidden border border-white/5 hover:border-primary/30 transition-all duration-700">
-                        <div className="flex flex-col md:flex-row h-full">
-                            {/* Image Placeholder Visual */}
-                            <div className="md:w-1/2 relative min-h-[400px] bg-blue-900/10 overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
-                                <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
-                                    <Anchor size={80} strokeWidth={1} className="text-primary/20 mb-6 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-700" />
-                                    <div className="space-y-2">
-                                        <h3 className="text-white text-4xl font-display font-bold">North Expedition</h3>
-                                        <div className="flex items-center justify-center gap-2 text-primary uppercase text-xs font-bold tracking-widest">
-                                            <Calendar size={14} />
-                                            3 Days | 2 Nights
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* Ornamental Waves */}
-                                <Waves size={300} className="absolute -bottom-20 -right-20 text-white/5 rotate-12" />
-                            </div>
-
-                            {/* Content side */}
-                            <div className="md:w-1/2 p-10 md:p-14 flex flex-col justify-between">
-                                <div>
-                                    <div className="flex items-center gap-2 mb-6">
-                                        <span className="bg-primary/20 text-primary text-[10px] uppercase font-bold px-3 py-1 rounded-full tracking-widest border border-primary/20">Featured Trip</span>
-                                    </div>
-                                    <p className="text-gray-300 text-lg mb-10 leading-relaxed italic border-l-2 border-primary/30 pl-6">
-                                        Explore the iconic wrecks (including the SS Thistlegorm) and pristine reefs of the Northern Red Sea and Ras Mohammed.
-                                    </p>
-                                    <div className="space-y-6 mb-12">
-                                        <div className="flex items-center gap-4 group/item">
-                                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary group-hover/item:bg-primary/10 transition-colors">
-                                                <Waves size={18} />
-                                            </div>
-                                            <span className="text-white/80 font-medium">Up to 9 Dives Included</span>
-                                        </div>
-                                        <div className="flex items-center gap-4 group/item">
-                                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary group-hover/item:bg-primary/10 transition-colors">
-                                                <Star size={18} />
-                                            </div>
-                                            <span className="text-white/80 font-medium">Full Board Accommodation</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <a
-                                    href={GOOGLE_FORM_URL}
-                                    className="inline-flex items-center justify-center gap-3 bg-primary text-brand-navy font-bold uppercase text-xs tracking-[0.2em] py-5 px-10 rounded-2xl hover:bg-white hover:scale-105 transition-all w-full shadow-lg shadow-primary/10"
-                                >
-                                    Book Next Voyage
-                                    <ArrowRight size={18} />
-                                </a>
-                            </div>
-                        </div>
+                {loading ? (
+                    <div className="flex justify-center p-20"><Loader2 className="w-10 h-10 animate-spin text-primary" /></div>
+                ) : (
+                    <div className="grid gap-8">
+                        {trips.map((trip) => (
+                            <TripCard key={trip.id} trip={trip} />
+                        ))}
                     </div>
+                )}
 
-                    {/* Secondary Info Area */}
-                    <div className="lg:col-span-12 xl:col-span-4 space-y-6">
-                        <div className="glass-card p-10 rounded-[2rem] border border-white/5 flex flex-col gap-6 hover:border-primary/20 transition-all duration-500">
-                            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-2">
-                                <Compass size={32} />
-                            </div>
-                            <div>
-                                <h4 className="text-white font-bold text-2xl mb-4 group-hover:text-primary transition-colors">Flexible Itineraries</h4>
-                                <p className="text-gray-400 leading-relaxed">We adapt our routes based on current weather patterns and real-time marine life sightings to ensure you get the absolute best diving experience possible.</p>
-                            </div>
-                        </div>
-
-                        <div className="glass-card p-10 rounded-[2rem] border border-white/5 flex flex-col gap-6 hover:border-primary/20 transition-all duration-500">
-                            <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-primary mb-2">
-                                <ShieldCheck size={32} />
-                            </div>
-                            <div>
-                                <h4 className="text-white font-bold text-2xl mb-4 group-hover:text-primary transition-colors">Monthly Sailings</h4>
-                                <p className="text-gray-400 leading-relaxed">Join one of our scheduled mini-trips from Hurghada or Sharm El-Sheikh. We offer guaranteed departures every single month.</p>
-                            </div>
-                        </div>
-                    </div>
+                <div className="mt-20 text-center relative z-10">
+                    <p className="text-gray-500 uppercase tracking-[0.3em] text-[10px] font-bold mb-6">Looking for full expeditions?</p>
+                    <a href="/schedule-25/26" className="inline-flex items-center gap-3 text-white hover:text-primary transition-colors font-display font-medium text-xl group">
+                        View Full 2026 Safari Schedule
+                        <ArrowRight size={20} className="text-primary group-hover:translate-x-2 transition-transform" />
+                    </a>
                 </div>
             </div>
 
-            {/* Wave Separator before Footer */}
             <div className="relative">
                 <WaveSeparator position="bottom" color="text-[#020408]" />
             </div>
         </div>
     );
 };
+
+const fallbackMiniSafaris: Trip[] = [
+    {
+        id: "eid-fitr-mini",
+        title: "North Expedition (Eid El-Fitr)",
+        route: "North Wrecks (Thistlegorm & Ras Muhammad)",
+        yacht: "HH II",
+        dates: "19 to 21 March 2026",
+        port: "Hurghada",
+        type: "Mini Safari",
+        status: "Limited Spots",
+        color: "bg-blue-500/20",
+        itinerary: [{ activities: ["Check dive (Dolphin house)", "SS Thistlegorm", "Giannis D wreck"] }],
+        included: ["Full board", "Guided dives"],
+        notIncluded: ["Equipment"]
+    },
+    {
+        id: "daedalus-mini",
+        title: "Daedalus Mini Safari",
+        route: "Daedalus & Elphinstone",
+        yacht: "HH II",
+        dates: "26 to 29 August 2026",
+        port: "Marsa Alam",
+        type: "Mini Safari",
+        status: "Limited Spots",
+        color: "bg-amber-500/20",
+        itinerary: [{ activities: ["Daedalus Reef (Sharks)", "Elphinstone Reef", "Early morning hammerhead dives"] }],
+        included: ["Full board", "Guided dives"],
+        notIncluded: ["Equipment"]
+    },
+    {
+        id: "brothers-mini",
+        title: "Brothers' Mini Safari",
+        route: "Brothers' Islands & Elphinstone",
+        yacht: "HH II",
+        dates: "04 to 07 November 2026",
+        port: "Marsa Alam",
+        type: "Mini Safari",
+        status: "Booking Now",
+        color: "bg-red-500/20",
+        itinerary: [{ activities: ["Big Brother", "Little Brother", "Deep reef walls", "Oceanic whitetip sightings"] }],
+        included: ["Full board", "Guided dives"],
+        notIncluded: ["Equipment"]
+    },
+    {
+        id: "mini-wrecks-2026",
+        title: "Mini Wrecks Expedition",
+        route: "Thistlegorm, Ras Muhammad & Abu Nahas",
+        yacht: "HH II",
+        dates: "16 to 19 December 2026",
+        port: "Marsa Alam",
+        type: "Mini Safari",
+        status: "Booking Now",
+        color: "bg-cyan-500/20",
+        itinerary: [{ activities: ["SS Thistlegorm", "Ras Muhammad", "Abu Nahas"] }],
+        included: ["Full board", "Guided dives"],
+        notIncluded: ["Equipment"]
+    }
+];
 
 export default MiniSafarisPage;

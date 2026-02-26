@@ -26,7 +26,7 @@ const InstagramCave = () => {
   const parallaxTransform = `translateY(${offsetY * 0.15}px)`;
 
   // Assets retrieved from the provided section-specific list
-  const caveImageUrl = "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/images_4.png";
+  const caveImageUrl = "/images/assets/mission.png";
 
   return (
     <section className="relative w-full overflow-hidden bg-brand-navy">

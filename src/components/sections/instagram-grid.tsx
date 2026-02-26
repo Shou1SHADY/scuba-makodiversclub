@@ -7,14 +7,14 @@ import { siteConfig } from '@/lib/config';
 
 const InstagramGrid = () => {
   const assets = [
-    { src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/611970054_901071835651598_2054238453293371201_n-22.jpg", span: "md:col-span-2 md:row-span-2" },
-    { src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/611658775_866186813085132_844083688396115701_n-21.jpg", span: "md:col-span-1 md:row-span-1" },
-    { src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/612306146_904230545335727_5291961751855514070_n-20.jpg", span: "md:col-span-1 md:row-span-1" },
-    { src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/610910792_864702646531728_4520051095610570581_n-19.jpg", span: "md:col-span-1 md:row-span-2" },
-    { src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/617080460_18069600077619582_8662942157421937802_n-18.jpg", span: "md:col-span-1 md:row-span-1" },
-    { src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/622164027_897735329412567_536026549632050073_n-17.jpg", span: "md:col-span-2 md:row-span-1" },
-    { src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/622279339_1281161400582778_8860801875021881256_n-16.jpg", span: "md:col-span-1 md:row-span-1" },
-    { src: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/images_5.png", span: "md:col-span-1 md:row-span-1" },
+    { src: "/images/assets/gallery-1.jpg", span: "md:col-span-2 md:row-span-2" },
+    { src: "/images/assets/gallery-2.jpg", span: "md:col-span-1 md:row-span-1" },
+    { src: "/images/assets/gallery-3.jpg", span: "md:col-span-1 md:row-span-1" },
+    { src: "/images/assets/gallery-4.jpg", span: "md:col-span-1 md:row-span-2" },
+    { src: "/images/assets/gallery-5.jpg", span: "md:col-span-1 md:row-span-1" },
+    { src: "/images/assets/gallery-6.jpg", span: "md:col-span-2 md:row-span-1" },
+    { src: "/images/assets/gallery-7.jpg", span: "md:col-span-1 md:row-span-1" },
+    { src: "/images/assets/gallery-8.jpg", span: "md:col-span-1 md:row-span-1" },
   ];
 
   return (

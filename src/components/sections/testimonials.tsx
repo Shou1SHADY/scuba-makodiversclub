@@ -6,6 +6,7 @@ import { getFacebookReviews, Review } from '@/lib/api/reviews';
 import { siteConfig } from '@/lib/config';
 import useEmblaCarousel from 'embla-carousel-react';
 import Image from 'next/image';
+import { createClient } from '@/lib/supabase/client';
 
 const Testimonials: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -36,6 +37,11 @@ const Testimonials: React.FC = () => {
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
     onSelect();
+
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onSelect);
+    };
   }, [emblaApi, setScrollSnaps, onSelect]);
 
   useEffect(() => {
@@ -49,7 +55,25 @@ const Testimonials: React.FC = () => {
         setLoading(false);
       }
     }
+
     loadReviews();
+
+    // Set up Real-time subscription
+    const supabaseClient = createClient();
+    const channel = supabaseClient
+      .channel('reviews-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'reviews' },
+        () => {
+          loadReviews();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabaseClient.removeChannel(channel);
+    };
   }, []);
 
   return (
@@ -87,10 +111,6 @@ const Testimonials: React.FC = () => {
               <span className="text-white font-bold text-sm ml-2">5.0 Rating</span>
               <div className="w-[1px] h-4 bg-white/20 mx-2" />
               <span className="text-gray-400 text-xs">150+ Reviews</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-500 text-[11px] uppercase tracking-tighter">
-              <RefreshCw size={12} className={loading ? "animate-spin text-primary" : "text-primary/60"} />
-              <span>Real-time Sync Active</span>
             </div>
           </div>
         </div>

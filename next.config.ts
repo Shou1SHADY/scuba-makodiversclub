@@ -6,6 +6,7 @@ const loaderPath = require.resolve('orchids-visual-edits/loader.js');
 
 const nextConfig: NextConfig = {
   images: {
+    qualities: [25, 50, 75, 85, 95, 100],
     remotePatterns: [
       {
         protocol: 'https',

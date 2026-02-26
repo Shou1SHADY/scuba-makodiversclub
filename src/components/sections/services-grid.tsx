@@ -7,21 +7,21 @@ const ServicesGrid = () => {
   const services = [
     {
       title: "Diving Courses",
-      image: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/images_1.png",
+      image: "/images/assets/courses.jpg",
       description: "Discover the magic of scuba diving in Egypt with Mako Divers Club. Whether you're a beginner or aspiring to become a Divemaster, we offer a course for every level.",
       alt: "Diving instructor with student underwater",
       cta: "View Courses"
     },
     {
       title: "Liveaboards",
-      image: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/images_2.png",
+      image: "/images/assets/liveaboards.jpg",
       description: "Join us for unforgettable journeys through the stunning Red Sea. Explore fascinating wrecks in the north and dive with majestic sharks in the south.",
       alt: "Lighthouse and reef in the Red Sea",
       cta: "View Schedule"
     },
     {
       title: "Diving Packages",
-      image: "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/images_3.png",
+      image: "/images/assets/packages.jpg",
       description: "Hassle-free diving packages in Hurghada, Dahab, and Sharm El-Sheikh. All-inclusive packages ensure you have everything you need for a seamless experience.",
       alt: "Group of happy divers on a boat",
       cta: "View Packages"

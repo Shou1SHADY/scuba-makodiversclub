@@ -1,4 +1,4 @@
-// Mako Divers Club - Facebook Reviews Integration Logic
+import { createClient } from '@/lib/supabase/client';
 
 export interface Review {
     id: string;
@@ -10,20 +10,35 @@ export interface Review {
     verified?: boolean;
 }
 
-/**
- * FETCHING REAL FB REVIEWS:
- * To enable true live sync, replace the mock data below with a fetch to your backend or FB Graph API.
- * API Endpoint: https://graph.facebook.com/v19.0/{page-id}/ratings?access_token={access-token}
- */
-
 export async function getFacebookReviews(): Promise<Review[]> {
-    // For production live-sync, you would use something like:
-    /*
-    const response = await fetch('https://your-api-endpoint/reviews');
-    const data = await response.json();
-    return data;
-    */
+    const supabase = createClient();
+    try {
+        const { data, error } = await supabase
+            .from('reviews')
+            .select('*')
+            .order('date', { ascending: false });
 
+        if (error) {
+            console.warn("Supabase reviews error, using mock data:", error);
+            return getMockReviews();
+        }
+
+        if (!data || data.length === 0) {
+            return getMockReviews();
+        }
+
+        return data.map(r => ({
+            ...r,
+            id: r.id.toString(),
+            verified: r.verified ?? true
+        }));
+    } catch (e) {
+        console.error("Failed to fetch reviews:", e);
+        return getMockReviews();
+    }
+}
+
+function getMockReviews(): Review[] {
     return [
         {
             id: "fb_1",
@@ -47,30 +62,6 @@ export async function getFacebookReviews(): Promise<Review[]> {
             content: "Amazing experience with an amazing team. Very professional and helpful. From the equipment to the boat crew, everything was top-notch. Can't wait for my next trip with you guys.",
             rating: 5,
             date: "2024-11-05",
-            verified: true
-        },
-        {
-            id: "fb_4",
-            name: "Marina Wagdy",
-            content: "The best diving club in Egypt! I finished my advanced open water with them and it was such a smooth and professional journey. The underwater photos they took were also incredible!",
-            rating: 5,
-            date: "2024-12-15",
-            verified: true
-        },
-        {
-            id: "fb_5",
-            name: "Mostafa Elnaggar",
-            content: "Fantastic organization and very friendly atmosphere. They take you to the best diving spots and ensure your safety at all times. A truly elite diving experience in the Red Sea.",
-            rating: 5,
-            date: "2025-01-20",
-            verified: true
-        },
-        {
-            id: "fb_6",
-            name: "Sarah El-Sayed",
-            content: "Perfect from start to finish. The instructors are so patient and experienced. I felt very safe even during my first deep dive. The Mako family is just wonderful.",
-            rating: 5,
-            date: "2025-02-01",
             verified: true
         }
     ];

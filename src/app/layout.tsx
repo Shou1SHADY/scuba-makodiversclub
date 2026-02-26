@@ -5,6 +5,8 @@ import { VisualEditsMessenger } from "orchids-visual-edits";
 import Header from "@/components/sections/header";
 import Footer from "@/components/sections/footer";
 import { ScrollProgress, CustomCursor, BackToTop, PageTransition } from "@/components/ui/premium-polish";
+import CookieConsent from "@/components/ui/cookie-consent";
+import WhatsAppFloat from "@/components/ui/whatsapp-float";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -47,6 +49,8 @@ export default function RootLayout({
         </main>
         <Footer />
         <BackToTop />
+        <WhatsAppFloat />
+        <CookieConsent />
         <VisualEditsMessenger />
       </body>
     </html>

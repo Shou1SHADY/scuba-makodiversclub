@@ -7,8 +7,8 @@ import { ChevronDown } from 'lucide-react';
 import WaveSeparator from '../ui/wave-separator';
 
 const HeroSection: React.FC = () => {
-  const sharkBg = "https://images.unsplash.com/photo-1601662528567-526cd06f6582?q=80&w=2030&auto=format&fit=crop";
-  const makoLogo = "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/1479db51-429d-4638-bf47-6397121cd7e0-makodivers-club/assets/images/images_29.png";
+  const sharkBg = "/images/assets/mako-hero-clean.png";
+  const makoLogo = "/images/assets/logo.png";
 
   return (
     <div className="relative w-full overflow-hidden bg-brand-navy">
