@@ -87,7 +87,7 @@ const Testimonials: React.FC = () => {
 
       <div className="container-width relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-8">
+        <div className="flex flex-col md:flex-row items-center md:items-end justify-between mb-16 gap-8">
           <div className="max-w-2xl text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-3 mb-6">
               <span className="w-12 h-[1px] bg-primary/40 hidden md:block" />

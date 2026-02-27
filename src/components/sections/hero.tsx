@@ -7,7 +7,7 @@ import { ChevronDown } from 'lucide-react';
 import WaveSeparator from '../ui/wave-separator';
 
 const HeroSection: React.FC = () => {
-  const sharkBg = "/images/assets/mako-hero-premium.png";
+  const sharkBg = "/images/assets/hero-bg.webp";
   const makoLogo = "/images/assets/logo.png";
 
   return (
@@ -16,12 +16,12 @@ const HeroSection: React.FC = () => {
       <section className="relative min-h-screen w-full flex flex-col items-center justify-center pt-32 md:pt-40 pb-32 md:pb-48">
 
         {/* Background Image with modern gradient */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 text-white hover:text-white">
           <Image
             src={sharkBg}
             alt="Vibrant Red Sea coral reef with sun rays"
             fill
-            className="object-cover object-center scale-105 animate-slow-zoom"
+            className="object-cover object-center scale-105"
             priority
             sizes="100vw"
           />

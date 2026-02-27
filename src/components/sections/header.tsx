@@ -14,6 +14,17 @@ const Header = () => {
   const [banner, setBanner] = useState<{ text: string; link: string; active: boolean } | null>(null);
 
   useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -90,17 +101,17 @@ const Header = () => {
 
       {/* Main Navigation */}
       <div
-        className={`w-full transition-all duration-500 ${isScrolled
+        className={`w-full transition-all duration-500 relative z-[110] ${isScrolled || mobileMenuOpen
           ? "glass-header py-3 shadow-2xl"
           : "bg-transparent py-4 md:py-8"
           }`}
       >
         <div className="container-width flex items-center justify-between">
           {/* Logo */}
-          <div className="flex-shrink-1 z-50 min-w-0">
+          <div className="flex-shrink-1 z-[120] min-w-0">
             <a href="/" className="flex flex-col group relative max-w-full overflow-hidden">
               <span className="font-display text-2xl md:text-3xl font-black text-white leading-none tracking-tighter group-hover:text-primary transition-colors truncate">MAKO</span>
-              <span className="font-body text-[8px] tracking-[0.1em] sm:tracking-[0.5em] text-primary font-black ml-0.5 whitespace-nowrap overflow-hidden text-ellipsis">DIVERS CLUB</span>
+              <span className="font-body text-[8px] tracking-[0.1em] sm:tracking-[0.5em] text-primary font-black ml-0.5 whitespace-nowrap overflow-hidden text-ellipsis uppercase">DIVERS CLUB</span>
             </a>
           </div>
 
@@ -204,7 +215,11 @@ const Header = () => {
                     <div className="flex items-center justify-between py-2">
                       {link.dropdown ? (
                         <button
-                          onClick={() => setActiveMobileDropdown(activeMobileDropdown === link.name ? null : link.name)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setActiveMobileDropdown(activeMobileDropdown === link.name ? null : link.name);
+                          }}
                           className="font-display text-4xl font-black text-white hover:text-primary transition-colors block leading-tight tracking-tighter text-left"
                         >
                           {link.name}
