@@ -84,8 +84,8 @@ export default function ReviewsPage() {
             </div>
 
             {/* Stats Bar */}
-            <div className="container-width px-6 -mt-12 relative z-20">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 md:p-10 shadow-2xl">
+            <div className="container-width px-4 md:px-6 -mt-12 relative z-20">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 md:p-10 shadow-2xl">
                     <div className="text-center space-y-2 border-r border-white/5">
                         <div className="flex items-center justify-center gap-1.5 text-primary mb-1">
                             {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
@@ -112,7 +112,7 @@ export default function ReviewsPage() {
             </div>
 
             {/* Reviews Grid */}
-            <div className="container-width px-4 md:px-6 py-16 md:py-24 relative z-10">
+            <div className="container-width px-4 md:px-6 py-12 md:py-24 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {loading ? (
                         [...Array(6)].map((_, i) => (
@@ -150,8 +150,8 @@ export default function ReviewsPage() {
                                     </p>
                                 </blockquote>
 
-                                <div className="pt-6 border-t border-white/5 flex items-center justify-between">
-                                    <span className="text-gray-500 text-[11px] font-medium tracking-wider uppercase text-right w-full">
+                                <div className="pt-6 border-t border-white/5 flex items-center justify-between overflow-hidden">
+                                    <span className="text-gray-500 text-[11px] font-medium tracking-wider uppercase text-right w-full truncate">
                                         {new Date(review.date).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
                                     </span>
                                 </div>

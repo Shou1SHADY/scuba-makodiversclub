@@ -18,7 +18,7 @@ const InstagramGrid = () => {
   ];
 
   return (
-    <section id="gallery" className="relative bg-brand-navy py-24 px-6 md:px-0 overflow-hidden">
+    <section id="gallery" className="relative bg-brand-navy py-12 md:py-24 px-4 md:px-0 overflow-hidden">
       {/* Background Accents */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
 

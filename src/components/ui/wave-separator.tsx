@@ -28,7 +28,7 @@ const WaveSeparator: React.FC<Props> = ({
     return (
         <div className={`absolute left-0 w-full overflow-hidden leading-[0] z-20 ${position === 'bottom' ? 'bottom-0' : 'top-0'} pointer-events-none`}>
             <svg
-                className={`relative block w-[calc(100%+1.3px)] ${height} ${color} ${rotationClass} ${flipClass}`}
+                className={`relative block w-full ${height} ${color} ${rotationClass} ${flipClass}`}
                 data-name="Layer 1"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 1440 320"

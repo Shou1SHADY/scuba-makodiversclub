@@ -59,7 +59,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+    <header className="fixed top-0 left-0 w-full z-50 transition-all duration-300 overflow-x-hidden">
       {/* Promo Banner */}
       <AnimatePresence>
         {!isScrolled && banner?.active && (
@@ -67,19 +67,21 @@ const Header = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="bg-brand-navy border-b border-white/5 py-2 overflow-hidden"
+            className="bg-brand-navy border-b border-white/5 py-2 overflow-hidden w-full relative z-[60]"
           >
             <a
               href={banner.link || GOOGLE_FORM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-center px-4 md:px-6 group"
+              className="block w-full px-4 group"
             >
-              <p className="font-body text-[9px] md:text-xs font-bold text-white/50 tracking-[0.1em] md:tracking-[0.2em] uppercase group-hover:text-primary transition-colors flex items-center justify-center gap-2 flex-wrap">
+              <div className="flex items-center justify-center gap-2 max-w-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse flex-shrink-0"></span>
-                <span className="text-center">{banner.text}</span>
-                <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform flex-shrink-0" />
-              </p>
+                <p className="font-body text-[9px] md:text-xs font-bold text-white/50 tracking-[0.1em] md:tracking-[0.2em] uppercase group-hover:text-primary transition-colors text-center line-clamp-1 md:line-clamp-none flex-grow min-w-0">
+                  {banner.text}
+                </p>
+                <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform flex-shrink-0 text-white/50 group-hover:text-primary" />
+              </div>
             </a>
           </motion.div>
         )}
@@ -94,10 +96,10 @@ const Header = () => {
       >
         <div className="container-width flex items-center justify-between">
           {/* Logo */}
-          <div className="flex-shrink-0 z-50">
-            <a href="/" className="flex flex-col group relative">
-              <span className="font-display text-2xl md:text-3xl font-black text-white leading-none tracking-tighter group-hover:text-primary transition-colors">MAKO</span>
-              <span className="font-body text-[8px] tracking-[0.5em] text-primary font-black ml-0.5">DIVERS CLUB</span>
+          <div className="flex-shrink-1 z-50 min-w-0">
+            <a href="/" className="flex flex-col group relative max-w-full overflow-hidden">
+              <span className="font-display text-2xl md:text-3xl font-black text-white leading-none tracking-tighter group-hover:text-primary transition-colors truncate">MAKO</span>
+              <span className="font-body text-[8px] tracking-[0.1em] sm:tracking-[0.5em] text-primary font-black ml-0.5 whitespace-nowrap overflow-hidden text-ellipsis">DIVERS CLUB</span>
             </a>
           </div>
 

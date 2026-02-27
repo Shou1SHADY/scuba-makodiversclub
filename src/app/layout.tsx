@@ -38,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} ${inter.variable} antialiased selection:bg-primary/30`} suppressHydrationWarning>
+      <body className={`${outfit.variable} ${inter.variable} antialiased selection:bg-primary/30 overflow-x-hidden max-w-full w-full`} suppressHydrationWarning>
         <CustomCursor />
         <ScrollProgress />
         <Header />
