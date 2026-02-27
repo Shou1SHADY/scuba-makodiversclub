@@ -6,8 +6,14 @@ import { Facebook, Instagram, Send, ArrowRight, MapPin, Phone, Mail } from 'luci
 import { siteConfig } from '@/lib/config';
 import { motion } from 'framer-motion';
 
+import { usePathname } from 'next/navigation';
+
 const Footer = () => {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+
+  // Hide footer on admin pages
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <footer className="relative bg-[#020408] border-t border-white/5 pt-24 pb-12 text-white font-body overflow-hidden">

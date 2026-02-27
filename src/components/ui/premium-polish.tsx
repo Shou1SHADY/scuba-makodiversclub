@@ -3,6 +3,7 @@
 import { motion, useScroll, useSpring, useMotionValue } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export const PageTransition = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -18,12 +19,15 @@ export const PageTransition = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const ScrollProgress = () => {
+    const pathname = usePathname();
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, {
         stiffness: 100,
         damping: 30,
         restDelta: 0.001
     });
+
+    if (pathname?.startsWith('/admin')) return null;
 
     return (
         <motion.div
@@ -34,6 +38,7 @@ export const ScrollProgress = () => {
 };
 
 export const CustomCursor = () => {
+    const pathname = usePathname();
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
     const cursorSize = useMotionValue(20);
@@ -47,6 +52,8 @@ export const CustomCursor = () => {
         window.addEventListener("mousemove", handleMouseMove);
         return () => window.removeEventListener("mousemove", handleMouseMove);
     }, [mouseX, mouseY]);
+
+    if (pathname?.startsWith('/admin')) return null;
 
     return (
         <motion.div
@@ -64,6 +71,7 @@ export const CustomCursor = () => {
 };
 
 export const BackToTop = () => {
+    const pathname = usePathname();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -84,6 +92,8 @@ export const BackToTop = () => {
             behavior: "smooth"
         });
     };
+
+    if (pathname?.startsWith('/admin')) return null;
 
     return (
         <motion.button

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google"; // Updated fonts
 import "./globals.css";
-import { VisualEditsMessenger } from "orchids-visual-edits";
 import Header from "@/components/sections/header";
 import Footer from "@/components/sections/footer";
 import { ScrollProgress, CustomCursor, BackToTop, PageTransition } from "@/components/ui/premium-polish";
 import CookieConsent from "@/components/ui/cookie-consent";
 import WhatsAppFloat from "@/components/ui/whatsapp-float";
+import { VisualEditsWrapper } from "@/components/ui/visual-edits-wrapper";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -51,7 +51,7 @@ export default function RootLayout({
         <BackToTop />
         <WhatsAppFloat />
         <CookieConsent />
-        <VisualEditsMessenger />
+        <VisualEditsWrapper />
       </body>
     </html>
   );

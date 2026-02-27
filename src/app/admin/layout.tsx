@@ -14,7 +14,9 @@ import {
     Settings,
     Waves,
     Anchor,
-    Ship
+    Ship,
+    Loader2,
+    Wrench
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -25,6 +27,7 @@ const navigation = [
     { name: "Offers", href: "/admin/offers", icon: Tag },
     { name: "Updates", href: "/admin/updates", icon: Newspaper },
     { name: "Settings", href: "/admin/settings", icon: Settings },
+    { name: "Setup / DB", href: "/admin/setup", icon: Wrench },
 ];
 
 export default function AdminLayout({
@@ -33,18 +36,74 @@ export default function AdminLayout({
     children: React.ReactNode;
 }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState<any>(null);
     const router = useRouter();
     const pathname = usePathname();
     const supabase = createClient();
 
+    useEffect(() => {
+        const checkUser = async () => {
+            if (pathname === "/admin/login") {
+                setIsLoading(false);
+                return;
+            }
+
+            // Safety timeout — never hang in loading state more than 5s
+            const timeout = setTimeout(() => {
+                console.warn("⏱️ Session check timed out — redirecting to login.");
+                router.push("/admin/login");
+            }, 5000);
+
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                clearTimeout(timeout);
+                if (error || !session) {
+                    console.log("🚫 No session detected. Redirecting to login...");
+                    router.push("/admin/login");
+                } else {
+                    setUser(session.user);
+                    setIsLoading(false);
+                }
+            } catch (error) {
+                clearTimeout(timeout);
+                console.error("Auth check error:", error);
+                router.push("/admin/login");
+            }
+        };
+
+        checkUser();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            console.log("🔑 Auth state changed:", event);
+            if (event === 'SIGNED_OUT') {
+                setUser(null);
+                router.push("/admin/login");
+            } else if (event === 'SIGNED_IN' && session) {
+                setUser(session.user);
+                setIsLoading(false);
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, [pathname]);
+
     const handleSignOut = async () => {
         await supabase.auth.signOut();
-        router.refresh();
         router.push("/admin/login");
     };
 
     if (pathname === "/admin/login") {
         return <>{children}</>;
+    }
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-brand-navy flex flex-col items-center justify-center space-y-4">
+                <Loader2 className="w-12 h-12 animate-spin text-primary opacity-50" />
+                <p className="text-gray-500 font-display text-[10px] font-black uppercase tracking-[0.3em]">Checking clearance...</p>
+            </div>
+        );
     }
 
     return (
@@ -142,7 +201,7 @@ export default function AdminLayout({
                         </div>
                         <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-primary-dark p-[1px] shadow-lg shadow-primary/10">
                             <div className="h-full w-full rounded-2xl bg-brand-navy flex items-center justify-center text-sm font-black text-primary">
-                                AD
+                                {user?.email?.substring(0, 2).toUpperCase() || "AD"}
                             </div>
                         </div>
                     </div>

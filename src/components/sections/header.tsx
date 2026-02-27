@@ -6,12 +6,18 @@ import { ChevronDown, Menu, X, ArrowRight } from "lucide-react";
 import { GOOGLE_FORM_URL } from "@/lib/config";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { usePathname } from "next/navigation";
+
 const Header = () => {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [activeMobileDropdown, setActiveMobileDropdown] = useState<string | null>(null);
   const [banner, setBanner] = useState<{ text: string; link: string; active: boolean } | null>(null);
+
+  // Hide header on admin pages
+  if (pathname?.startsWith('/admin')) return null;
 
   useEffect(() => {
     if (mobileMenuOpen) {

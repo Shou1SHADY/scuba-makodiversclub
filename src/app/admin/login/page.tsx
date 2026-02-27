@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -17,37 +17,52 @@ export default function AdminLogin() {
     const router = useRouter();
     const supabase = createClient();
 
+    useEffect(() => {
+        console.log("🛠️ Security Portal Initialized");
+        console.log("🌐 Target Gateway:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+    }, []);
+
     const handleLogin = async (e: React.FormEvent) => {
+        if (loading) return;
         e.preventDefault();
         setLoading(true);
 
         try {
-            // Clear any stale local sessions first
-            await supabase.auth.signOut();
+            const cleanEmail = email.trim().toLowerCase();
+            const rawPassword = password;
 
-            const trimmedEmail = email.trim();
-            const trimmedPassword = password.trim();
+            console.log("🔒 Initiating authentication for:", cleanEmail);
 
-            console.log("Attempting login with:", trimmedEmail);
-
-            const { error, data } = await supabase.auth.signInWithPassword({
-                email: trimmedEmail,
-                password: trimmedPassword,
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: cleanEmail,
+                password: rawPassword,
             });
 
             if (error) {
-                console.error("Supabase Auth Error:", error.message);
-                throw error;
+                console.error("❌ Auth Error:", error.message);
+                if (error.message.toLowerCase().includes("credentials")) {
+                    toast.error("Invalid credentials. Please verify your email and password.");
+                } else {
+                    toast.error(error.message);
+                }
+                return;
             }
 
-            if (!data.user) throw new Error("Authentication failed - no user found.");
+            if (data?.session) {
+                console.log("✅ Identity Verified. Token acquired.");
+                toast.success("Identity Verified. Access Granted.");
 
-            toast.success("Logged in successfully");
-            router.refresh();
-            router.push("/admin/dashboard");
+                // Allow session cookie to propagate
+                router.refresh();
+                setTimeout(() => {
+                    router.push("/admin/dashboard");
+                }, 200);
+            } else {
+                throw new Error("No session returned from security gateway.");
+            }
         } catch (error: any) {
-            console.error("Login catch block:", error);
-            toast.error(error.message || "Failed to log in");
+            console.error("⚠️ Critical Auth Failure:", error);
+            toast.error(error.message || "An unexpected error occurred during authentication.");
         } finally {
             setLoading(false);
         }

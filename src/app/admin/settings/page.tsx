@@ -27,20 +27,20 @@ export default function SettingsPage() {
             setLoading(true);
             const { data, error } = await supabase
                 .from('site_settings')
-                .select('*')
+                .select('key, value, updated_at')
                 .eq('key', 'homepage_banner')
                 .single();
 
             if (error && error.code !== 'PGRST116') throw error;
 
             if (data) {
-                setBannerText(data.value.text || "");
-                setBannerLink(data.value.link || "");
-                setBannerActive(data.value.active ?? true);
+                setBannerText(data.value?.text || "");
+                setBannerLink(data.value?.link || "");
+                setBannerActive(data.value?.active ?? true);
             }
         } catch (error: any) {
             console.error("Error fetching settings:", error);
-            toast.error("Failed to load settings");
+            toast.error("Failed to load settings: " + error.message);
         } finally {
             setLoading(false);
         }
@@ -49,6 +49,7 @@ export default function SettingsPage() {
     const handleSave = async () => {
         try {
             setSaving(true);
+            // site_settings uses 'key' as the primary key (not 'id')
             const { error } = await supabase
                 .from('site_settings')
                 .upsert({

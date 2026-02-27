@@ -3,10 +3,15 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const WHATSAPP_NUMBER = "201012345678"; // Replace with real number or pull from config
 
 const WhatsAppFloat = () => {
+    const pathname = usePathname();
+
+    if (pathname?.startsWith('/admin')) return null;
+
     return (
         <motion.div
             initial={{ scale: 0, opacity: 0 }}

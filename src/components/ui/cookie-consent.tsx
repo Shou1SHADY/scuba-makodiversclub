@@ -4,11 +4,14 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Cookie, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
 
 const CookieConsent = () => {
+    const pathname = usePathname();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
+        if (pathname?.startsWith('/admin')) return;
         const consent = localStorage.getItem("cookie-consent");
         if (!consent) {
             const timer = setTimeout(() => setIsVisible(true), 2000);
