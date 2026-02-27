@@ -16,11 +16,20 @@ const Header = () => {
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     };
   }, [mobileMenuOpen]);
 
@@ -195,24 +204,24 @@ const Header = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-brand-navy z-40 lg:hidden flex flex-col"
+            className="fixed inset-0 h-[100dvh] bg-brand-navy z-[105] lg:hidden flex flex-col overflow-hidden"
           >
             {/* Background Texture */}
             <div className="absolute inset-0 opacity-5 pointer-events-none">
               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent blur-3xl opacity-20" />
             </div>
 
-            <div className="flex flex-col h-full pt-32 pb-20 px-8 relative z-10">
-              <div className="flex flex-col space-y-2 overflow-y-auto grow">
+            <div className="flex flex-col h-full pt-32 pb-10 px-8 relative z-10 overflow-hidden">
+              <div className="flex flex-col space-y-2 overflow-y-auto grow overscroll-contain pr-2 custom-scrollbar">
                 {navLinks.map((link, idx) => (
                   <motion.div
                     key={link.name}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.1 }}
-                    className="py-2"
+                    transition={{ delay: idx * 0.05 }}
+                    className="py-1"
                   >
-                    <div className="flex items-center justify-between py-2">
+                    <div className="flex items-center justify-between py-2 border-b border-white/5">
                       {link.dropdown ? (
                         <button
                           onClick={(e) => {
