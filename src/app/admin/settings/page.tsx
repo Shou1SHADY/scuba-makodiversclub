@@ -73,90 +73,107 @@ export default function SettingsPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-[400px]">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+            <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+                <Loader2 className="w-12 h-12 animate-spin text-primary opacity-50" />
+                <p className="text-gray-500 font-display text-[10px] font-black uppercase tracking-[0.3em]">Accessing System Config...</p>
             </div>
         );
     }
 
     return (
-        <div className="space-y-8 max-w-4xl mx-auto">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight text-white font-display">Global Settings</h1>
-                <p className="text-zinc-400 mt-1">Manage site-wide configurations and announcement banners.</p>
+        <div className="space-y-12 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="space-y-2">
+                <h1 className="text-4xl font-display font-black text-white tracking-tight leading-none uppercase">
+                    SYSTEM <span className="text-primary italic">CONFIG</span>
+                </h1>
+                <p className="text-gray-400 font-body text-base">
+                    Calibrate site-wide variables and broadcast high-priority announcements.
+                </p>
             </div>
 
-            <Card className="bg-zinc-900 border-zinc-800 shadow-2xl">
-                <CardHeader className="border-b border-zinc-800 pb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-blue-500/10">
-                            <Megaphone className="w-5 h-5 text-blue-500" />
+            <Card className="bg-[#020408]/40 border-white/5 backdrop-blur-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/10">
+                <CardHeader className="p-10 border-b border-white/5 bg-black/20">
+                    <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center">
+                            <Megaphone className="w-7 h-7 text-primary" />
                         </div>
                         <div>
-                            <CardTitle className="text-lg font-bold text-white">Homepage Announcement Banner</CardTitle>
-                            <CardDescription className="text-zinc-500">
-                                This banner appears at the very top of the homepage for all visitors.
+                            <CardTitle className="text-2xl font-display font-black text-white uppercase tracking-tighter">ANNOUNCEMENT BEACON</CardTitle>
+                            <CardDescription className="text-gray-400 text-base font-light font-body mt-1">
+                                High-visibility broadcast at the apex of the homepage.
                             </CardDescription>
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent className="space-y-6 pt-6">
-                    <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                            <Label className="text-sm font-medium text-zinc-300">Banner Visibility</Label>
-                            <p className="text-xs text-zinc-500 italic">Toggle the display of the announcement banner.</p>
+                <CardContent className="p-10 space-y-10">
+                    <div className="flex items-center justify-between p-6 bg-white/5 rounded-2xl border border-white/5">
+                        <div className="space-y-1">
+                            <Label className="text-sm font-display font-black uppercase tracking-widest text-white">Broadcast Status</Label>
+                            <p className="text-xs text-gray-500 font-body">Toggle the visibility of the global announcement.</p>
                         </div>
                         <Switch
                             checked={bannerActive}
                             onCheckedChange={setBannerActive}
-                            className="data-[state=checked]:bg-blue-600"
+                            className="data-[state=checked]:bg-primary"
                         />
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="banner-text" className="text-sm font-medium text-zinc-300">Banner Message</Label>
+                    <div className="space-y-4">
+                        <Label htmlFor="banner-text" className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Payload Message</Label>
                         <Input
                             id="banner-text"
                             placeholder="e.g., North Expedition Mini Safari • 24 Dec '25 • Limited Spots"
                             value={bannerText}
                             onChange={(e) => setBannerText(e.target.value)}
-                            className="bg-zinc-800 border-zinc-700 text-zinc-100 focus:border-blue-500 h-12"
+                            className="h-16 bg-white/5 border-white/10 rounded-2xl px-6 focus:border-primary/50 text-white placeholder:text-white/20 font-body text-base"
                         />
-                        <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Recommended length: under 80 characters</p>
+                        <div className="flex justify-between items-center px-1">
+                            <p className="text-[9px] text-gray-500 uppercase tracking-widest font-black">Optimum: &lt; 80 Characters</p>
+                            <p className="text-[9px] text-gray-500 uppercase tracking-widest font-black">{bannerText.length}/80</p>
+                        </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="banner-link" className="text-sm font-medium text-zinc-300">Redirect Link (Optional)</Label>
+                    <div className="space-y-4">
+                        <Label htmlFor="banner-link" className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Navigation Vector (Optional Link)</Label>
                         <Input
                             id="banner-link"
-                            placeholder="e.g., /mini-safaris or external URL"
+                            placeholder="e.g., /mini-safaris"
                             value={bannerLink}
                             onChange={(e) => setBannerLink(e.target.value)}
-                            className="bg-zinc-800 border-zinc-700 text-zinc-100 focus:border-blue-500 h-12"
+                            className="h-16 bg-white/5 border-white/10 rounded-2xl px-6 focus:border-primary/50 text-white placeholder:text-white/20 font-body text-base"
                         />
-                        <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold italic">Leave empty to use default booking form link</p>
+                        <p className="text-[9px] text-gray-500 uppercase tracking-widest font-black italic ml-1">Defaults to Global Reservation System if omitted.</p>
                     </div>
                 </CardContent>
-                <CardFooter className="border-t border-zinc-800 bg-zinc-900/50 justify-end py-4">
+                <CardFooter className="p-10 border-t border-white/5 bg-black/40 justify-end">
                     <Button
                         onClick={handleSave}
                         disabled={saving}
-                        className="bg-blue-600 hover:bg-blue-500 text-white gap-2 font-bold uppercase tracking-widest text-[11px] px-8 h-11"
+                        className="h-16 px-12 rounded-2xl bg-primary hover:bg-white text-brand-navy font-display font-black uppercase text-[10px] tracking-[0.3em] shadow-xl shadow-primary/20 transition-all gap-3"
                     >
-                        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                        Save Changes
+                        {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                        Commit Configuration
                     </Button>
                 </CardFooter>
             </Card>
 
             {/* Preview Section */}
-            <div className="space-y-3">
-                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-zinc-500 ml-1">Live Preview</h3>
-                <div className={`p-3 rounded-xl border border-white/5 text-center transition-all ${bannerActive ? 'bg-zinc-800 opacity-100' : 'bg-zinc-950 opacity-40 grayscale'}`}>
-                    <p className="font-body text-[10px] md:text-xs font-bold text-white/50 tracking-[0.2em] uppercase flex items-center justify-center gap-3">
-                        <span className={`w-1.5 h-1.5 rounded-full ${bannerActive ? 'bg-primary animate-pulse' : 'bg-zinc-600'}`}></span>
-                        {bannerText || "Sample Announcement Message"}
-                    </p>
+            <div className="space-y-4">
+                <h3 className="text-xs font-black uppercase tracking-[0.4em] text-gray-600 ml-1 flex items-center gap-3">
+                    <span className="w-12 h-px bg-gray-800"></span>
+                    Live Deployment Preview
+                    <span className="w-12 h-px bg-gray-800"></span>
+                </h3>
+                <div className={`p-6 rounded-[2rem] border transition-all duration-700 relative overflow-hidden ${bannerActive ? 'bg-primary border-primary/20 shadow-2xl shadow-primary/10' : 'bg-[#020408] border-white/5 opacity-40 grayscale'}`}>
+                    <div className="flex items-center justify-center gap-4 relative z-10">
+                        <div className={`w-2 h-2 rounded-full ${bannerActive ? 'bg-brand-navy animate-pulse' : 'bg-gray-800'}`}></div>
+                        <p className={`font-display font-black text-[11px] md:text-xs tracking-[0.25em] uppercase text-center ${bannerActive ? 'text-brand-navy' : 'text-gray-500'}`}>
+                            {bannerText || "SIGNAL DEPLETED - STANDBY FOR INPUT"}
+                        </p>
+                    </div>
+                    {bannerActive && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_3s_infinite]"></div>
+                    )}
                 </div>
             </div>
         </div>

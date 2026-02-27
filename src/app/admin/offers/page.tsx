@@ -167,112 +167,113 @@ export default function OffersPage() {
     );
 
     return (
-        <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-white font-display">Special Offers</h1>
-                    <p className="text-zinc-400 mt-1">Manage promotions and discounts for your divers.</p>
+        <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="space-y-2">
+                    <h1 className="text-4xl font-display font-black text-white tracking-tight leading-none uppercase">
+                        SPECIAL <span className="text-primary italic">OFFERS</span>
+                    </h1>
+                    <p className="text-gray-400 font-body text-base max-w-lg">
+                        Manage promotions and discounts for your divers. Active offers appear on the homepage.
+                    </p>
                 </div>
                 <Button
                     onClick={() => handleOpenDialog()}
-                    className="bg-blue-600 hover:bg-blue-500 gap-2 w-full md:w-auto font-bold uppercase tracking-widest text-[11px] h-11"
+                    className="bg-primary hover:bg-white text-brand-navy gap-3 h-14 px-8 rounded-2xl shadow-xl shadow-primary/10 transition-all font-display font-black uppercase text-[10px] tracking-[0.2em] w-full md:w-auto"
                 >
-                    <Plus className="w-4 h-4" />
-                    Add New Offer
+                    <Plus className="w-5 h-5" />
+                    Create New Offer
                 </Button>
             </div>
 
-            <Card className="bg-zinc-900 border-zinc-800 shadow-2xl">
-                <CardHeader className="border-b border-zinc-800 pb-6">
-                    <div className="flex items-center gap-4">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-                            <Input
-                                placeholder="Search offers..."
-                                className="pl-10 bg-zinc-800 border-zinc-700 text-zinc-100"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                        </div>
+            <Card className="bg-[#020408]/40 border-white/5 backdrop-blur-xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/5">
+                <CardHeader className="p-8 border-b border-white/5 flex flex-col md:flex-row md:items-center gap-6 bg-black/20">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                        <Input
+                            placeholder="Filter offers by title or description..."
+                            className="h-14 pl-12 bg-white/5 border-white/10 text-white rounded-2xl focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-gray-600"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader>
-                            <TableRow className="border-zinc-800 hover:bg-transparent">
-                                <TableHead className="text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Offer Details</TableHead>
-                                <TableHead className="text-zinc-500 font-bold uppercase tracking-widest text-[10px] text-center">Discount</TableHead>
-                                <TableHead className="text-zinc-500 font-bold uppercase tracking-widest text-[10px] text-center">Status</TableHead>
-                                <TableHead className="text-zinc-500 font-bold uppercase tracking-widest text-[10px] text-right">Actions</TableHead>
+                            <TableRow className="border-white/5 hover:bg-transparent h-16">
+                                <TableHead className="text-gray-500 font-black uppercase tracking-[0.2em] text-[10px] pl-8">Offer Details</TableHead>
+                                <TableHead className="text-gray-500 font-black uppercase tracking-[0.2em] text-[10px] text-center">Discount Factor</TableHead>
+                                <TableHead className="text-gray-500 font-black uppercase tracking-[0.2em] text-[10px] text-center">Current Status</TableHead>
+                                <TableHead className="text-gray-500 font-black uppercase tracking-[0.2em] text-[10px] text-right pr-8">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={4} className="text-center py-20">
-                                        <Loader2 className="w-8 h-8 animate-spin text-blue-500 mx-auto mb-4" />
-                                        <p className="text-zinc-500 text-sm">Loading offers from Supabase...</p>
+                                    <TableCell colSpan={4} className="text-center py-32">
+                                        <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-6 opacity-50" />
+                                        <p className="text-gray-500 font-display text-xs uppercase tracking-[0.3em]">Synching with Database...</p>
                                     </TableCell>
                                 </TableRow>
                             ) : filteredOffers.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={4} className="text-center py-20">
-                                        <div className="flex flex-col items-center gap-2">
-                                            <Tag className="w-10 h-10 text-zinc-700 mb-2" />
-                                            <p className="text-zinc-100 font-semibold">No offers found</p>
-                                            <p className="text-zinc-500 text-xs text-center max-w-[200px]">Try adjusting your search or add a new offer to get started.</p>
+                                    <TableCell colSpan={4} className="text-center py-32">
+                                        <div className="flex flex-col items-center gap-4">
+                                            <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mb-2">
+                                                <Tag className="w-10 h-10 text-gray-700" />
+                                            </div>
+                                            <p className="text-white font-display font-black text-xl uppercase tracking-widest">No Targets Identified</p>
+                                            <p className="text-gray-500 text-xs uppercase tracking-widest max-w-[240px] leading-relaxed">Adjust your search parameters or initiate a new offer creation.</p>
                                         </div>
                                     </TableCell>
                                 </TableRow>
                             ) : (
                                 filteredOffers.map((offer) => (
-                                    <TableRow key={offer.id} className="border-zinc-800 hover:bg-white/5 transition-colors">
-                                        <TableCell className="py-5">
-                                            <div className="flex items-start gap-4">
-                                                <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 mt-1">
-                                                    <Tag className="w-5 h-5 text-blue-500" />
+                                    <TableRow key={offer.id} className="border-white/5 hover:bg-white/[0.02] transition-colors group">
+                                        <TableCell className="py-8 pl-8">
+                                            <div className="flex items-start gap-6">
+                                                <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 group-hover:bg-primary/10 transition-all">
+                                                    <Tag className="w-6 h-6 text-primary" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <div className="font-bold text-white text-base">{offer.title}</div>
-                                                    <div className="text-sm text-zinc-400 max-w-sm line-clamp-1">{offer.description}</div>
+                                                    <div className="font-display font-black text-white text-lg tracking-wide uppercase">{offer.title}</div>
+                                                    <div className="text-sm font-body text-gray-500 max-w-md line-clamp-1">{offer.description}</div>
                                                 </div>
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-center">
-                                            <span className="font-black text-emerald-400 text-lg">{offer.discount}</span>
+                                            <span className="font-display font-black text-primary text-2xl italic tracking-tighter">{offer.discount}</span>
                                         </TableCell>
                                         <TableCell className="text-center">
                                             <Badge className={cn(
-                                                "font-bold uppercase tracking-widest text-[9px] px-3 py-1 border",
+                                                "font-black uppercase tracking-[0.2em] text-[9px] px-4 py-1.5 border-2 rounded-full",
                                                 offer.status === 'active' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-                                                    offer.status === 'scheduled' ? "bg-blue-500/10 text-blue-500 border-blue-500/20" :
-                                                        "bg-zinc-800 text-zinc-500 border-zinc-700"
+                                                    offer.status === 'scheduled' ? "bg-primary/10 text-primary border-primary/20" :
+                                                        "bg-white/5 text-gray-500 border-white/10"
                                             )}>
                                                 {offer.status}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell className="text-right">
+                                        <TableCell className="text-right pr-8">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="text-zinc-500 hover:text-white hover:bg-zinc-800">
-                                                        <MoreVertical className="w-5 h-5" />
+                                                    <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-gray-500 hover:text-white hover:bg-white/5">
+                                                        <MoreVertical className="w-6 h-6" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800 text-zinc-100 min-w-[160px] p-2">
+                                                <DropdownMenuContent align="end" className="bg-[#0D2451] border-white/5 text-white min-w-[200px] p-3 rounded-2xl shadow-2xl backdrop-blur-3xl">
                                                     <DropdownMenuItem
                                                         onClick={() => handleOpenDialog(offer)}
-                                                        className="gap-3 py-3 font-medium cursor-pointer rounded-lg hover:bg-zinc-800 focus:bg-zinc-800"
+                                                        className="gap-4 py-4 px-4 font-display text-[10px] font-black uppercase tracking-[0.2em] cursor-pointer rounded-xl hover:bg-white/5 focus:bg-white/5 transition-all"
                                                     >
-                                                        <Edit2 className="w-4 h-4 text-zinc-400" /> Edit Details
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem className="gap-3 py-3 font-medium cursor-pointer rounded-lg hover:bg-zinc-800 focus:bg-zinc-800">
-                                                        <ExternalLink className="w-4 h-4 text-zinc-400" /> View on Site
+                                                        <Edit2 className="w-4 h-4 text-primary" /> Edit Offer
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         onClick={() => { setSelectedOffer(offer); setIsDeleteDialogOpen(true); }}
-                                                        className="gap-3 py-3 font-medium cursor-pointer rounded-lg hover:bg-red-500/10 text-red-400 focus:text-red-400 focus:bg-red-500/10"
+                                                        className="gap-4 py-4 px-4 font-display text-[10px] font-black uppercase tracking-[0.2em] cursor-pointer rounded-xl hover:bg-red-500/10 text-red-400 focus:text-red-400 focus:bg-red-500/10 transition-all"
                                                     >
-                                                        <Trash2 className="w-4 h-4" /> Delete Offer
+                                                        <Trash2 className="w-4 h-4" /> Decommission
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
@@ -287,75 +288,80 @@ export default function OffersPage() {
 
             {/* Add/Edit Dialog */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-2xl">
-                    <DialogHeader className="space-y-3">
-                        <DialogTitle className="text-2xl font-bold flex items-center gap-3">
-                            {selectedOffer ? <Edit2 className="w-6 h-6 text-blue-500" /> : <Plus className="w-6 h-6 text-blue-500" />}
-                            {selectedOffer ? "Edit Offer" : "Create New Offer"}
-                        </DialogTitle>
-                        <DialogDescription className="text-zinc-400 text-base">
-                            Fill in the details below to publish this promotion on the website.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleSubmit} className="space-y-6 py-4">
-                        <div className="grid grid-cols-2 gap-6">
-                            <div className="space-y-2 col-span-2 md:col-span-1">
-                                <Label htmlFor="title" className="text-sm font-bold uppercase tracking-widest text-zinc-400">Offer Title</Label>
+                <DialogContent className="bg-brand-navy border-white/5 text-white max-w-2xl rounded-[3rem] p-0 overflow-hidden shadow-[0_32px_128px_-16px_rgba(0,0,0,0.8)] border border-white/10">
+                    <div className="bg-black/40 p-10 border-b border-white/5">
+                        <DialogHeader className="space-y-4">
+                            <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-2">
+                                {selectedOffer ? <Edit2 className="w-7 h-7 text-primary" /> : <Plus className="w-7 h-7 text-primary" />}
+                            </div>
+                            <DialogTitle className="text-3xl font-display font-black uppercase tracking-tighter">
+                                {selectedOffer ? "EDIT" : "CREATE NEW"} <span className="text-primary italic">OFFER</span>
+                            </DialogTitle>
+                            <DialogDescription className="text-gray-400 text-base font-light font-body">
+                                Configure the promotion parameters below. Changes take effect across all distribution channels immediately.
+                            </DialogDescription>
+                        </DialogHeader>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="p-10 space-y-8">
+                        <div className="grid grid-cols-2 gap-8">
+                            <div className="space-y-3 col-span-2 md:col-span-1">
+                                <Label htmlFor="title" className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Mission Title</Label>
                                 <Input
                                     id="title"
                                     required
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    className="bg-zinc-800 border-zinc-700 h-12 focus:border-blue-500"
-                                    placeholder="e.g. Summer Diving Special"
+                                    className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 focus:border-primary/50 text-white placeholder:text-white/20"
+                                    placeholder="e.g. SUMMER EXPEDITION"
                                 />
                             </div>
-                            <div className="space-y-2 col-span-2 md:col-span-1">
-                                <Label htmlFor="discount" className="text-sm font-bold uppercase tracking-widest text-zinc-400">Discount Value</Label>
+                            <div className="space-y-3 col-span-2 md:col-span-1">
+                                <Label htmlFor="discount" className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Discount Magnitude</Label>
                                 <Input
                                     id="discount"
                                     required
                                     value={formData.discount}
                                     onChange={(e) => setFormData({ ...formData, discount: e.target.value })}
-                                    className="bg-zinc-800 border-zinc-700 h-12 focus:border-blue-500"
-                                    placeholder="e.g. 20% OFF or $50 Credit"
+                                    className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 focus:border-primary/50 text-white placeholder:text-white/20"
+                                    placeholder="e.g. 25% OFF"
                                 />
                             </div>
-                            <div className="space-y-2 col-span-2">
-                                <Label htmlFor="description" className="text-sm font-bold uppercase tracking-widest text-zinc-400">Short Description</Label>
+                            <div className="space-y-3 col-span-2">
+                                <Label htmlFor="description" className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Intelligence Summary</Label>
                                 <Textarea
                                     id="description"
                                     required
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    className="bg-zinc-800 border-zinc-700 min-h-[100px] focus:border-blue-500"
-                                    placeholder="Briefly describe the offer..."
+                                    className="min-h-[120px] bg-white/5 border-white/10 rounded-2xl p-6 focus:border-primary/50 text-white placeholder:text-white/20 resize-none"
+                                    placeholder="Provide a compelling description of the offer..."
                                 />
                             </div>
-                            <div className="space-y-2 col-span-2">
-                                <Label className="text-sm font-bold uppercase tracking-widest text-zinc-400">Offer Status</Label>
+                            <div className="space-y-3 col-span-2">
+                                <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Current State</Label>
                                 <Select
                                     value={formData.status}
                                     onValueChange={(val: any) => setFormData({ ...formData, status: val })}
                                 >
-                                    <SelectTrigger className="bg-zinc-800 border-zinc-700 h-12">
-                                        <SelectValue placeholder="Select status" />
+                                    <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 focus:ring-0 focus:border-primary/50">
+                                        <SelectValue placeholder="Select Deployment Status" />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                                        <SelectItem value="active" className="py-2 cursor-pointer">Active</SelectItem>
-                                        <SelectItem value="scheduled" className="py-2 cursor-pointer">Scheduled</SelectItem>
-                                        <SelectItem value="expired" className="py-2 cursor-pointer text-zinc-500">Expired</SelectItem>
+                                    <SelectContent className="bg-brand-navy border-white/10 text-white rounded-2xl">
+                                        <SelectItem value="active" className="py-4 cursor-pointer focus:bg-white/5 rounded-xl">ACTIVE DEPLOYMENT</SelectItem>
+                                        <SelectItem value="scheduled" className="py-4 cursor-pointer focus:bg-white/5 rounded-xl">STAGING / SCHEDULED</SelectItem>
+                                        <SelectItem value="expired" className="py-4 cursor-pointer focus:bg-white/5 rounded-xl text-gray-500 italic">ARCHIVED / EXPIRED</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                         </div>
-                        <DialogFooter className="pt-4 gap-3">
-                            <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-zinc-400 hover:text-white">
-                                Cancel
+                        <DialogFooter className="pt-6 gap-4">
+                            <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="h-14 px-8 rounded-2xl text-gray-500 hover:text-white font-display text-[10px] font-black uppercase tracking-widest">
+                                Abort
                             </Button>
-                            <Button type="submit" disabled={submitting} className="bg-blue-600 hover:bg-blue-500 px-10 h-12 font-bold uppercase tracking-[0.2em] text-[11px]">
-                                {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                                {selectedOffer ? "Update Offer" : "Publish Offer"}
+                            <Button type="submit" disabled={submitting} className="h-14 px-12 rounded-2xl bg-primary hover:bg-white text-brand-navy font-display font-black uppercase text-[10px] tracking-[0.3em] shadow-xl shadow-primary/20 transition-all">
+                                {submitting ? <Loader2 className="w-5 h-5 animate-spin mr-3" /> : null}
+                                {selectedOffer ? "Confirm Modification" : "Publish to Grid"}
                             </Button>
                         </DialogFooter>
                     </form>
@@ -364,23 +370,25 @@ export default function OffersPage() {
 
             {/* Delete Confirmation */}
             <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                <DialogContent className="bg-zinc-900 border-zinc-800 text-white sm:max-w-md">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-3 text-red-500">
-                            <AlertCircle className="w-6 h-6" />
-                            Delete Offer?
+                <DialogContent className="bg-brand-navy border-white/5 text-white max-w-md rounded-[2.5rem] p-10 shadow-[0_32px_128px_-16px_rgba(0,0,0,0.8)] border border-white/10">
+                    <DialogHeader className="space-y-6">
+                        <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center">
+                            <AlertCircle className="w-8 h-8 text-red-500" />
+                        </div>
+                        <DialogTitle className="text-2xl font-display font-black uppercase tracking-tighter">
+                            CONFIRM <span className="text-red-500 italic">PURGE</span>
                         </DialogTitle>
-                        <DialogDescription className="text-zinc-400 py-4">
-                            Are you sure you want to delete <span className="text-white font-bold">{selectedOffer?.title}</span>? This action cannot be undone and will remove it from the website immediately.
+                        <DialogDescription className="text-gray-400 text-base leading-relaxed">
+                            Are you certain you want to decommission <span className="text-white font-bold uppercase">{selectedOffer?.title}</span>? This operation is irreversible and will purge all related data.
                         </DialogDescription>
                     </DialogHeader>
-                    <DialogFooter className="gap-2">
-                        <Button variant="ghost" onClick={() => setIsDeleteDialogOpen(false)} className="text-zinc-400 hover:text-white">
-                            Keep it
+                    <DialogFooter className="mt-10 gap-4 flex-col sm:flex-row">
+                        <Button variant="ghost" onClick={() => setIsDeleteDialogOpen(false)} className="h-14 flex-1 rounded-2xl text-gray-500 hover:text-white font-display text-[10px] font-black uppercase tracking-widest">
+                            Cancel
                         </Button>
-                        <Button onClick={handleDelete} disabled={submitting} className="bg-red-600 hover:bg-red-500 font-bold uppercase tracking-widest text-[11px]">
+                        <Button onClick={handleDelete} disabled={submitting} className="h-14 flex-1 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-display font-black uppercase text-[10px] tracking-[0.2em] shadow-xl shadow-red-500/20">
                             {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                            Confirm Delete
+                            Confirm Purge
                         </Button>
                     </DialogFooter>
                 </DialogContent>
