@@ -81,7 +81,7 @@ const HeroSection: React.FC = () => {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-28 left-1/2 transform -translate-x-1/2 z-40 animate-bounce cursor-pointer opacity-70 hover:opacity-100 transition-opacity">
+        <div className="absolute bottom-12 md:bottom-24 left-1/2 transform -translate-x-1/2 z-40 animate-bounce cursor-pointer opacity-70 hover:opacity-100 transition-opacity">
           <a href="#services" aria-label="Scroll down">
             <ChevronDown size={40} className="text-white" strokeWidth={1} />
           </a>
