@@ -10,21 +10,24 @@ const ServicesGrid = () => {
       image: "/images/assets/courses.jpg",
       description: "Discover the magic of scuba diving in Egypt with Mako Divers Club. Whether you're a beginner or aspiring to become a Divemaster, we offer a course for every level.",
       alt: "Diving instructor with student underwater",
-      cta: "View Courses"
+      cta: "View Courses",
+      href: "/courses"
     },
     {
       title: "Liveaboards",
       image: "/images/assets/liveaboards.jpg",
       description: "Join us for unforgettable journeys through the stunning Red Sea. Explore fascinating wrecks in the north and dive with majestic sharks in the south.",
       alt: "Lighthouse and reef in the Red Sea",
-      cta: "View Schedule"
+      cta: "View Schedule",
+      href: "/schedule-25/26"
     },
     {
       title: "Diving Packages",
       image: "/images/assets/packages.jpg",
       description: "Hassle-free diving packages in Hurghada, Dahab, and Sharm El-Sheikh. All-inclusive packages ensure you have everything you need for a seamless experience.",
       alt: "Group of happy divers on a boat",
-      cta: "View Packages"
+      cta: "View Packages",
+      href: "/packages"
     }
   ];
 
@@ -87,9 +90,12 @@ const ServicesGrid = () => {
                   >
                     Book Now
                   </a>
-                  <button className="flex items-center gap-2 text-primary font-bold uppercase text-[12px] tracking-wider hover:text-white transition-colors">
+                  <a
+                    href={service.href}
+                    className="flex items-center gap-2 text-primary font-bold uppercase text-[12px] tracking-wider hover:text-white transition-colors"
+                  >
                     {service.cta} <ArrowUpRight size={14} />
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>

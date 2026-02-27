@@ -10,6 +10,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [activeMobileDropdown, setActiveMobileDropdown] = useState<string | null>(null);
   const [banner, setBanner] = useState<{ text: string; link: string; active: boolean } | null>(null);
 
   useEffect(() => {
@@ -59,7 +60,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 transition-all duration-300 overflow-x-hidden">
+    <header className="fixed top-0 left-0 w-full z-[100] transition-all duration-300">
       {/* Promo Banner */}
       <AnimatePresence>
         {!isScrolled && banner?.active && (
@@ -131,9 +132,9 @@ const Header = () => {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute top-full left-0 pt-4 w-60"
+                      className="absolute top-full left-0 pt-4 w-60 z-[110]"
                     >
-                      <div className="glass-card rounded-2xl overflow-hidden p-3 shadow-2xl border border-white/10">
+                      <div className="glass-card rounded-2xl overflow-hidden p-3 shadow-2xl border border-white/10 relative z-10">
                         {link.dropdown.map((sub) => (
                           <a
                             key={sub.name}
@@ -200,26 +201,59 @@ const Header = () => {
                     transition={{ delay: idx * 0.1 }}
                     className="py-2"
                   >
-                    <a
-                      href={link.href}
-                      className="font-display text-4xl font-black text-white hover:text-primary transition-colors block leading-tight tracking-tighter"
-                      onClick={() => !link.dropdown && setMobileMenuOpen(false)}
-                    >
-                      {link.name}
-                    </a>
+                    <div className="flex items-center justify-between py-2">
+                      {link.dropdown ? (
+                        <button
+                          onClick={() => setActiveMobileDropdown(activeMobileDropdown === link.name ? null : link.name)}
+                          className="font-display text-4xl font-black text-white hover:text-primary transition-colors block leading-tight tracking-tighter text-left"
+                        >
+                          {link.name}
+                        </button>
+                      ) : (
+                        <a
+                          href={link.href}
+                          className="font-display text-4xl font-black text-white hover:text-primary transition-colors block leading-tight tracking-tighter"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          {link.name}
+                        </a>
+                      )}
+                      {link.dropdown && (
+                        <button
+                          onClick={() => setActiveMobileDropdown(activeMobileDropdown === link.name ? null : link.name)}
+                          className="w-12 h-12 flex items-center justify-center text-white/40 hover:text-primary transition-colors"
+                        >
+                          <ChevronDown
+                            size={24}
+                            className={`transition-transform duration-300 ${activeMobileDropdown === link.name ? 'rotate-180' : ''}`}
+                          />
+                        </button>
+                      )}
+                    </div>
                     {link.dropdown && (
-                      <div className="mt-4 space-y-4 pl-6 border-l-2 border-primary/20">
-                        {link.dropdown.map((sub) => (
-                          <a
-                            key={sub.name}
-                            href={sub.href}
-                            className="font-display text-lg font-bold text-white/40 hover:text-primary transition-colors block uppercase tracking-widest"
-                            onClick={() => setMobileMenuOpen(false)}
+                      <AnimatePresence>
+                        {activeMobileDropdown === link.name && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="overflow-hidden"
                           >
-                            {sub.name}
-                          </a>
-                        ))}
-                      </div>
+                            <div className="mt-4 space-y-4 pl-6 border-l-2 border-primary/20 mb-4">
+                              {link.dropdown.map((sub) => (
+                                <a
+                                  key={sub.name}
+                                  href={sub.href}
+                                  className="font-display text-lg font-bold text-white/40 hover:text-primary transition-colors block uppercase tracking-widest"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  {sub.name}
+                                </a>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     )}
                   </motion.div>
                 ))}

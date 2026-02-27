@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { siteConfig } from "@/lib/config";
 
 /**
  * InstagramCave Component
@@ -75,7 +76,7 @@ const InstagramCave = () => {
           </h3>
 
           <a
-            href="https://www.instagram.com/"
+            href={siteConfig.social.instagram}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block px-10 py-4 bg-[#CFB27F] text-[#0D2451] font-bold uppercase text-[14px] tracking-widest rounded-[4px] hover:bg-white transition-all duration-300 transform hover:-translate-y-1 shadow-xl"

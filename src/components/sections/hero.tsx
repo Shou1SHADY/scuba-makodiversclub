@@ -58,7 +58,7 @@ const HeroSection: React.FC = () => {
               </a>
 
               <a
-                href="#services"
+                href="/courses"
                 className="px-8 py-4 border border-white/30 text-white font-bold uppercase tracking-wider hover:bg-white hover:text-brand-navy transition-all duration-300 rounded-sm"
               >
                 View Courses
