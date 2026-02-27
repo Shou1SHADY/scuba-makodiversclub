@@ -1,3 +1,5 @@
+"use client";
+
 import { MapPin, Phone, Mail, Clock, Send, Facebook, Instagram, MessageCircle, ArrowRight, ExternalLink, Loader2, CheckCircle } from 'lucide-react';
 import { siteConfig } from '@/lib/config';
 import React, { useState } from 'react';
@@ -43,10 +45,10 @@ const ContactSection = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-stretch">
         {/* Contact Info Sidebar */}
         <div className="lg:col-span-5 space-y-8 flex flex-col">
-          <div className="glass-card p-8 md:p-10 rounded-[2.5rem] border border-white/5 space-y-10 flex-grow">
+          <div className="glass-card p-6 md:p-8 lg:p-10 rounded-[2rem] border border-white/5 space-y-8 md:space-y-10 flex-grow">
             <div className="space-y-4">
               <span className="text-primary text-[10px] uppercase tracking-[0.3em] font-bold block">Connect With Us</span>
-              <h2 className="text-4xl font-display font-medium text-white leading-tight">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-medium text-white leading-tight">
                 Ready to dive into the <span className="text-primary italic">Deep</span>?
               </h2>
               <p className="text-gray-400 text-base leading-relaxed">

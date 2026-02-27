@@ -5,6 +5,7 @@ import { Star, MessageCircle, Facebook, Heart, CheckCircle2, ShieldCheck, Quote,
 import { getFacebookReviews, Review } from '@/lib/api/reviews';
 import { siteConfig } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
+import InstagramGrid from '@/components/sections/instagram-grid';
 
 export default function ReviewsPage() {
     const [reviews, setReviews] = useState<Review[]>([]);
@@ -84,7 +85,7 @@ export default function ReviewsPage() {
 
             {/* Stats Bar */}
             <div className="container-width px-6 -mt-12 relative z-20">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-[2rem] p-8 md:p-10 shadow-2xl">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 md:p-10 shadow-2xl">
                     <div className="text-center space-y-2 border-r border-white/5">
                         <div className="flex items-center justify-center gap-1.5 text-primary mb-1">
                             {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
@@ -111,8 +112,8 @@ export default function ReviewsPage() {
             </div>
 
             {/* Reviews Grid */}
-            <div className="container-width px-6 py-24 relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="container-width px-4 md:px-6 py-16 md:py-24 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {loading ? (
                         [...Array(6)].map((_, i) => (
                             <div key={i} className="glass-card h-[300px] rounded-[2rem] animate-pulse border border-white/5" />
@@ -121,7 +122,7 @@ export default function ReviewsPage() {
                         reviews.map((review, i) => (
                             <div
                                 key={review.id}
-                                className="group relative glass-card p-10 rounded-[2.5rem] border border-white/5 hover:border-primary/20 transition-all duration-500 flex flex-col shadow-xl hover:-translate-y-2"
+                                className="group relative glass-card p-6 md:p-10 rounded-[2rem] border border-white/5 hover:border-primary/20 transition-all duration-500 flex flex-col shadow-xl hover:-translate-y-2"
                                 style={{ transitionDelay: `${i * 50}ms` }}
                             >
                                 <Quote className="absolute top-8 right-8 text-primary/10 group-hover:text-primary/20 transition-colors" size={40} />
@@ -166,7 +167,7 @@ export default function ReviewsPage() {
                             <div className="relative inline-block group">
                                 <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                                 <a
-                                    href={`${siteConfig.social.facebook}reviews/`}
+                                    href={siteConfig.social.facebook}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="relative z-10 inline-flex items-center gap-4 bg-primary text-brand-navy py-6 px-14 rounded-2xl font-display font-black uppercase text-sm tracking-[0.2em] hover:scale-105 active:scale-95 transition-all duration-300 shadow-2xl"
@@ -249,6 +250,11 @@ export default function ReviewsPage() {
                         Already dived with us? Share your experience and help our community grow. We read every single review!
                     </p>
                 </div>
+            </div>
+
+            {/* Instagram Feed Section */}
+            <div className="pb-20">
+                <InstagramGrid />
             </div>
 
             {/* Wave Separator before Footer */}

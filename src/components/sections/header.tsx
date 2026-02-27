@@ -73,12 +73,12 @@ const Header = () => {
               href={banner.link || GOOGLE_FORM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-center px-6 group"
+              className="block text-center px-4 md:px-6 group"
             >
-              <p className="font-body text-[10px] md:text-xs font-bold text-white/50 tracking-[0.2em] uppercase group-hover:text-primary transition-colors flex items-center justify-center gap-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                {banner.text}
-                <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
+              <p className="font-body text-[9px] md:text-xs font-bold text-white/50 tracking-[0.1em] md:tracking-[0.2em] uppercase group-hover:text-primary transition-colors flex items-center justify-center gap-2 flex-wrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse flex-shrink-0"></span>
+                <span className="text-center">{banner.text}</span>
+                <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform flex-shrink-0" />
               </p>
             </a>
           </motion.div>

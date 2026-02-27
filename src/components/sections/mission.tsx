@@ -11,7 +11,7 @@ const MissionSection: React.FC = () => {
 
   return (
     <section
-      className="relative py-48 md:py-64 flex items-center bg-fixed bg-center bg-cover overflow-hidden pb-64 md:pb-80"
+      className="relative py-24 md:py-48 lg:py-64 flex items-center bg-fixed bg-center bg-cover overflow-hidden pb-32 md:pb-64 lg:pb-80"
       style={{ backgroundImage: `url("${missionBg}")` }}
       aria-labelledby="mission-title"
     >
@@ -29,7 +29,7 @@ const MissionSection: React.FC = () => {
             </span>
             <h2
               id="mission-title"
-              className="relative font-display text-4xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl"
+              className="relative font-display text-3xl md:text-5xl lg:text-7xl font-bold text-white leading-tight drop-shadow-2xl"
             >
               Our <span className="text-primary italic">Mission</span>
             </h2>
@@ -37,7 +37,7 @@ const MissionSection: React.FC = () => {
 
           {/* Mission Content */}
           <div className="space-y-8 max-w-2xl mx-auto">
-            <p className="text-white text-xl md:text-3xl font-light leading-relaxed font-body drop-shadow-lg">
+            <p className="text-white text-lg md:text-2xl lg:text-3xl font-light leading-relaxed font-body drop-shadow-lg">
               Empowering divers to explore the uncharted beauty of the Red Sea.
             </p>
 

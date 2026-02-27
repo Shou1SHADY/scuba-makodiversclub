@@ -20,7 +20,7 @@ const PreFooter = ({
     const adventureBg = "/images/assets/mission.png";
 
     return (
-        <section className="relative py-24 md:py-40 flex items-center justify-center overflow-hidden bg-brand-navy">
+        <section className="relative py-16 md:py-32 lg:py-40 flex items-center justify-center overflow-hidden bg-brand-navy">
             {/* Background Image with Fixed/Parallax feel */}
             <div className="absolute inset-0 z-0">
                 <Image
@@ -44,7 +44,7 @@ const PreFooter = ({
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                 >
-                    <h2 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold text-white mb-6 uppercase tracking-widest drop-shadow-2xl">
+                    <h2 className="text-3xl md:text-5xl lg:text-7xl font-display font-bold text-white mb-6 uppercase tracking-widest drop-shadow-2xl leading-tight">
                         {title}
                     </h2>
                     <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed font-body">
@@ -52,7 +52,7 @@ const PreFooter = ({
                     </p>
                     <Link
                         href="/contact"
-                        className="group relative inline-block bg-primary text-brand-navy hover:text-white px-12 py-5 font-bold uppercase tracking-widest transition-all rounded-sm shadow-2xl hover:shadow-primary/20 transform hover:-translate-y-1 overflow-hidden"
+                        className="group relative inline-block bg-primary text-brand-navy hover:text-white px-8 md:px-12 py-4 md:py-5 font-bold uppercase tracking-widest transition-all rounded-sm shadow-2xl hover:shadow-primary/20 transform hover:-translate-y-1 overflow-hidden text-sm md:text-base"
                     >
                         <div className="absolute inset-0 bg-brand-navy translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                         <span className="relative z-10">{cta}</span>

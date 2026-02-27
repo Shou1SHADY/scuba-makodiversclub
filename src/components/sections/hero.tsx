@@ -7,7 +7,7 @@ import { ChevronDown } from 'lucide-react';
 import WaveSeparator from '../ui/wave-separator';
 
 const HeroSection: React.FC = () => {
-  const sharkBg = "/images/assets/mako-hero-clean.png";
+  const sharkBg = "/images/assets/mako-hero-premium.png";
   const makoLogo = "/images/assets/logo.png";
 
   return (
@@ -37,12 +37,12 @@ const HeroSection: React.FC = () => {
             <span className="font-body text-primary uppercase tracking-[0.3em] text-sm md:text-base mb-4 animate-fade-in-up">
               Welcome to the Red Sea
             </span>
-            <h1 className="font-display text-white font-extrabold text-5xl sm:text-[5rem] md:text-[6.5rem] lg:text-[7.5rem] leading-[0.9] uppercase tracking-tight mb-8 drop-shadow-2xl animate-fade-in-up delay-100">
+            <h1 className="font-display text-white font-extrabold text-4xl sm:text-[4.5rem] md:text-[6rem] lg:text-[7.5rem] leading-[0.9] uppercase tracking-tight mb-8 drop-shadow-2xl animate-fade-in-up delay-100">
               Discover <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-white">The World</span>
             </h1>
 
-            <p className="font-body text-gray-300 text-lg md:text-xl max-w-[600px] mb-10 leading-relaxed font-light animate-fade-in-up delay-200">
+            <p className="font-body text-gray-300 text-base md:text-xl max-w-[600px] mb-10 leading-relaxed font-light animate-fade-in-up delay-200 px-2 md:px-0">
               Experience the magic of scuba diving in Egypt with Mako Divers Club. From beginner courses to expert liveaboard safaris, your Red Sea adventure starts here.
             </p>
 

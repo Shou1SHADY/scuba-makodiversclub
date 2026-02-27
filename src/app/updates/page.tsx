@@ -55,7 +55,7 @@ export default function UpdatesPage() {
 
                 <div className="container-width px-6 relative z-10 text-center max-w-3xl mx-auto">
                     <span className="text-primary uppercase tracking-[0.3em] text-[10px] font-bold mb-4 block animate-fade-in">Mako Community News</span>
-                    <h1 className="text-white mb-6 text-5xl md:text-6xl font-display font-medium">
+                    <h1 className="text-white mb-6 text-3xl md:text-5xl lg:text-6xl font-display font-medium">
                         Latest <span className="text-primary italic">Updates</span>
                     </h1>
                     <p className="text-gray-400 text-lg leading-relaxed">
@@ -64,7 +64,7 @@ export default function UpdatesPage() {
                 </div>
             </div>
 
-            <div className="container-width px-6 pb-24 relative z-10">
+            <div className="container-width px-4 md:px-6 pb-16 md:pb-24 relative z-10">
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-20 gap-4">
                         <Loader2 className="w-10 h-10 animate-spin text-primary" />
@@ -83,7 +83,7 @@ export default function UpdatesPage() {
                                 key={post.id}
                                 className="group glass-card rounded-[2.5rem] border border-white/5 overflow-hidden hover:border-primary/30 transition-all duration-500 flex flex-col h-full"
                             >
-                                <div className="p-8 md:p-10 flex flex-col h-full">
+                                <div className="p-6 md:p-8 lg:p-10 flex flex-col h-full">
                                     <div className="flex items-center gap-4 mb-6">
                                         <div className="flex items-center gap-2 text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
                                             <Calendar size={12} />

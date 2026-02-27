@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { MapPin, Hotel, Car, Waves, CheckCircle2, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
@@ -10,32 +11,32 @@ const PackagesPage = () => {
         {
             city: "Hurghada",
             details: "Coastal Diving Escape",
-            duration: "2 Days | 2 Nights",
+            duration: "Two Diving Days with Accommodation & Transport.",
             description: "Explore the legendary house reefs and iconic boat sites of Hurghada. A perfect blend of comfort and world-class diving with early 6:00 am check-in available.",
             highlights: ["4 Professional Dives", "New Ivory Suites Hotel", "Resident Rate Available"],
-            price: "10K EGP",
             featured: false,
-            accent: "from-blue-600/20"
+            accent: "from-blue-600/20",
+            image: "https://img1.wsimg.com/isteam/ip/85d1d1ee-4c9b-406c-a490-18375363bbb1/7-b80e618.jpg/:/rs=w:1000,h:1000,cg:true"
         },
         {
             city: "Dahab",
             details: "Adventure & Blue Hole",
-            duration: "3 Days | 3 Nights",
+            duration: "Three Diving Days with Accommodation & Transport.",
             description: "Dive the world-famous Blue Hole and Canyon. Experience the unique, laid-back nomadic vibe of Dahab's shore diving.",
             highlights: ["6 Guided Shore Dives", "Boutique Hotel Stay", "Scenic Desert Transfers"],
-            price: "385",
             featured: true,
-            accent: "from-primary/20"
+            accent: "from-primary/20",
+            image: "https://img1.wsimg.com/isteam/ip/85d1d1ee-4c9b-406c-a490-18375363bbb1/9-ca9a65e.jpg/:/rs=w:1000,h:1000,cg:true"
         },
         {
             city: "Sharm El-Sheikh",
             details: "Ras Mohammed Expedition",
-            duration: "3 Days | 3 Nights",
+            duration: "Three Diving Days with Accommodation & Transport.",
             description: "The crown jewel of Red Sea diving. Explore Ras Mohammed National Park and the historic Straits of Tiran.",
             highlights: ["6 Boat Dives", "Premium Resort Stay", "Full Equipment Rental"],
-            price: "450",
             featured: false,
-            accent: "from-emerald-600/20"
+            accent: "from-emerald-600/20",
+            image: "https://img1.wsimg.com/isteam/ip/85d1d1ee-4c9b-406c-a490-18375363bbb1/8-232ccd8.jpg/:/rs=w:1000,h:1000,cg:true"
         }
     ];
 
@@ -62,54 +63,59 @@ const PackagesPage = () => {
                 </div>
             </div>
 
-            <div className="container-width px-6 pb-32 relative z-10">
-                <div className="grid gap-16">
+            <div className="container-width px-4 md:px-6 pb-20 md:pb-32 relative z-10">
+                <div className="grid gap-10 md:gap-16">
                     {packages.map((pkg, i) => (
                         <div
                             key={i}
                             className={`group relative glass-card rounded-[2rem] overflow-hidden border border-white/5 hover:border-primary/20 transition-all duration-500 shadow-2xl flex flex-col lg:flex-row items-stretch ${pkg.featured ? 'ring-2 ring-primary/30 ring-offset-4 ring-offset-brand-navy' : ''}`}
                         >
                             {/* Visual Side */}
-                            <div className={`lg:w-[35%] relative min-h-[300px] bg-gradient-to-br ${pkg.accent} to-transparent p-12 flex flex-col justify-between overflow-hidden`}>
-                                {/* Decorative Background Elements */}
-                                <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
-                                    <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/20 blur-3xl rounded-full" />
-                                    <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-brand-navy to-transparent" />
+                            <div className={`lg:w-[35%] relative min-h-[280px] lg:min-h-[500px] flex flex-col justify-between overflow-hidden`}>
+                                {/* Background Image */}
+                                <div className="absolute inset-0 z-0">
+                                    <Image
+                                        src={pkg.image}
+                                        alt={pkg.city}
+                                        fill
+                                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                        sizes="(max-width: 1024px) 100vw, 35vw"
+                                    />
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${pkg.accent} to-brand-navy/60 mix-blend-multiply opacity-80`} />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-transparent to-transparent opacity-90" />
                                 </div>
 
-                                <div className="relative z-10">
-                                    {pkg.featured && (
-                                        <span className="inline-block bg-primary text-brand-navy text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
-                                            Most Popular
-                                        </span>
-                                    )}
-                                    <div className="flex items-start gap-4 mb-2">
-                                        <MapPin className="text-primary mt-1" size={20} />
-                                        <div>
-                                            <h2 className="text-white text-4xl font-display font-bold leading-none mb-2">{pkg.city}</h2>
-                                            <p className="text-primary/80 font-medium tracking-wide uppercase text-xs">{pkg.details}</p>
+                                <div className="relative z-10 p-6 md:p-12 h-full flex flex-col justify-between">
+                                    <div>
+                                        {pkg.featured && (
+                                            <span className="inline-block bg-primary text-brand-navy text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4 shadow-lg">
+                                                Most Popular
+                                            </span>
+                                        )}
+                                        <div className="flex items-start gap-4 mb-2">
+                                            <MapPin className="text-primary mt-1 drop-shadow-lg" size={20} />
+                                            <div>
+                                                <h2 className="text-white text-4xl font-display font-bold leading-none mb-2 drop-shadow-xl">{pkg.city}</h2>
+                                                <p className="text-primary font-bold tracking-wide uppercase text-xs drop-shadow-lg">{pkg.details}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center gap-2 text-white/90 mb-1 drop-shadow-lg">
+                                            <Zap size={14} className="text-primary" />
+                                            <span className="text-sm font-bold">{pkg.duration}</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="relative z-10">
-                                    <div className="flex items-center gap-2 text-white/60 mb-1">
-                                        <Zap size={14} className="text-primary" />
-                                        <span className="text-sm font-medium">{pkg.duration}</span>
-                                    </div>
-                                    <div className="flex items-baseline gap-1">
-                                        <span className="text-xs text-gray-400 uppercase tracking-widest">From</span>
-                                        <span className="text-4xl font-display font-bold text-white">{pkg.price.startsWith('$') || pkg.price.endsWith('EGP') ? pkg.price : `$${pkg.price}`}</span>
-                                    </div>
-                                </div>
-
-                                <div className="absolute -right-4 bottom-4 opacity-5 group-hover:opacity-10 transition-opacity rotate-12 group-hover:rotate-0 duration-700">
+                                <div className="absolute -right-4 bottom-4 opacity-10 group-hover:opacity-20 transition-opacity rotate-12 group-hover:rotate-0 duration-700 z-10">
                                     <Waves size={200} className="text-white" />
                                 </div>
                             </div>
 
                             {/* Content Side */}
-                            <div className="lg:w-[65%] p-10 md:p-14 flex flex-col justify-center bg-white/[0.02]">
+                            <div className="lg:w-[65%] p-6 md:p-10 lg:p-14 flex flex-col justify-center bg-white/[0.02]">
                                 <p className="text-gray-300 text-lg mb-10 leading-relaxed font-light italic border-l-2 border-primary/20 pl-6">
                                     "{pkg.description}"
                                 </p>

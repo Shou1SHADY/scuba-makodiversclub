@@ -16,10 +16,10 @@ const Footer = () => {
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="container-width relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-16 mb-20">
 
           {/* Column 1: Brand Power - spans 4 columns */}
-          <div className="lg:col-span-4 space-y-8">
+          <div className="sm:col-span-2 lg:col-span-4 space-y-8">
             <div className="flex flex-col group cursor-pointer">
               <span className="font-display text-4xl font-black text-white leading-none tracking-tighter group-hover:text-primary transition-colors duration-500">MAKO</span>
               <span className="font-body text-[10px] tracking-[0.5em] text-primary font-black ml-0.5">DIVERS CLUB</span>
@@ -86,8 +86,8 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Big Background Graphic */}
-        <div className="absolute left-0 bottom-0 opacity-[0.02] select-none pointer-events-none translate-y-1/4">
+        {/* Big Background Graphic - hidden on mobile to prevent overflow */}
+        <div className="hidden lg:block absolute left-0 bottom-0 opacity-[0.02] select-none pointer-events-none translate-y-1/4">
           <h1 className="text-[25rem] font-display font-black leading-none tracking-tighter">MAKO</h1>
         </div>
 

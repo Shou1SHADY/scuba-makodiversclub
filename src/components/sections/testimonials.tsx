@@ -116,7 +116,7 @@ const Testimonials: React.FC = () => {
         </div>
 
         <div className="relative group overflow-visible">
-          <div className="overflow-hidden cursor-grab active:cursor-grabbing py-8" ref={emblaRef}>
+          <div className="overflow-hidden cursor-grab active:cursor-grabbing py-4 px-2" ref={emblaRef}>
             <div className="flex items-stretch -ml-4">
               {loading ? (
                 [...Array(3)].map((_, i) => (
@@ -128,7 +128,7 @@ const Testimonials: React.FC = () => {
                 reviews.map((testimonial) => (
                   <div
                     key={testimonial.id}
-                    className="flex-[0_0_85%] md:flex-[0_0_40%] lg:flex-[0_0_28%] pl-6 md:pl-8 relative group/card"
+                    className="flex-[0_0_86%] md:flex-[0_0_42%] lg:flex-[0_0_30%] pl-6 md:pl-8 pr-2 relative group/card"
                   >
                     <div className="h-full bg-gradient-to-b from-white/[0.08] to-white/[0.02] border border-white/15 p-6 md:p-8 rounded-[2rem] flex flex-col backdrop-blur-md transition-all duration-500 group-hover/card:border-primary/50 group-hover/card:bg-white/[0.1] group-hover/card:translate-y-[-4px] shadow-xl group-hover/card:shadow-primary/10">
                       {/* Quote Icon Background - Smaller */}
@@ -191,34 +191,22 @@ const Testimonials: React.FC = () => {
           </div>
 
           {/* Navigation Controls - Absolute Sides */}
+
+          {/* Bottom Bar: Arrows + Dots */}
           {!loading && reviews.length > 0 && (
-            <>
-              {/* Left Button */}
+            <div className="flex items-center justify-center gap-6 mt-10">
+
+              {/* Left Arrow */}
               <button
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 md:-translate-x-full z-20 w-12 h-12 md:w-16 md:h-16 rounded-full bg-brand-navy/80 border border-white/10 text-white hover:bg-primary hover:text-brand-navy hover:border-primary transition-all duration-300 shadow-2xl backdrop-blur-sm flex items-center justify-center group/nav"
+                className="w-12 h-12 rounded-full bg-white/5 border border-white/10 text-white hover:bg-primary hover:text-brand-navy hover:border-primary transition-all duration-300 shadow-xl backdrop-blur-sm flex items-center justify-center group/nav flex-shrink-0"
                 onClick={scrollPrev}
                 aria-label="Previous review"
               >
-                <ChevronLeft size={28} className="group-hover/nav:scale-110 transition-transform" />
+                <ChevronLeft size={22} className="group-hover/nav:scale-110 transition-transform" />
               </button>
-
-              {/* Right Button */}
-              <button
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 md:translate-x-full z-20 w-12 h-12 md:w-16 md:h-16 rounded-full bg-brand-navy/80 border border-white/10 text-white hover:bg-primary hover:text-brand-navy hover:border-primary transition-all duration-300 shadow-2xl backdrop-blur-sm flex items-center justify-center group/nav"
-                onClick={scrollNext}
-                aria-label="Next review"
-              >
-                <ChevronRight size={28} className="group-hover/nav:scale-110 transition-transform" />
-              </button>
-            </>
-          )}
-
-          {/* Navigation Controls - Container for dots */}
-          {!loading && reviews.length > 0 && (
-            <div className="flex flex-col md:flex-row items-center justify-center gap-8 mt-12 md:mt-16">
 
               {/* Pagination Dots */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
                 {scrollSnaps.map((_, index) => (
                   <button
                     key={index}
@@ -231,6 +219,15 @@ const Testimonials: React.FC = () => {
                   />
                 ))}
               </div>
+
+              {/* Right Arrow */}
+              <button
+                className="w-12 h-12 rounded-full bg-white/5 border border-white/10 text-white hover:bg-primary hover:text-brand-navy hover:border-primary transition-all duration-300 shadow-xl backdrop-blur-sm flex items-center justify-center group/nav flex-shrink-0"
+                onClick={scrollNext}
+                aria-label="Next review"
+              >
+                <ChevronRight size={22} className="group-hover/nav:scale-110 transition-transform" />
+              </button>
             </div>
           )}
         </div>
@@ -239,7 +236,7 @@ const Testimonials: React.FC = () => {
         <div className="mt-20 text-center border-t border-white/5 pt-16">
           <div className="inline-block p-1 bg-white/5 rounded-2xl border border-white/10">
             <a
-              href={`${siteConfig.social.facebook}reviews/`}
+              href={siteConfig.social.facebook}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-4 bg-primary text-brand-navy py-5 px-12 rounded-xl font-display font-black uppercase text-sm tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-[0_10px_40px_-10px_rgba(229,197,158,0.4)]"

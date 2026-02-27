@@ -42,26 +42,66 @@ function getMockReviews(): Review[] {
     return [
         {
             id: "fb_1",
-            name: "Mahmoud Shebl",
-            content: "Thank you Mako for making Diving a hassle free sport. Your team's professionalism and knowledge of the Red Sea locations made my experience truly unforgettable. Highly recommended for anyone looking for safety and fun.",
+            name: "Shimaa Shebl",
+            content: "The most authentic, safe and fun diving experience out there! I don't think i'll ever be able to dive with anyone but mako divers club.",
             rating: 5,
-            date: "2024-05-12",
+            date: "2024-12-12",
             verified: true
         },
         {
             id: "fb_2",
-            name: "Abdullah Abo Ghanima",
-            content: "I've been diving with Mako Divers for quite a while now. The community they have built is exceptional. Whether it's a day trip or a full liveaboard, they maintain the same high standard. The best in Egypt!",
+            name: "Omar Raafat",
+            content: "Highly recommended, professional and friendly team.",
             rating: 5,
-            date: "2024-08-22",
+            date: "2024-11-22",
             verified: true
         },
         {
             id: "fb_3",
-            name: "Ahmed Tawfik",
-            content: "Amazing experience with an amazing team. Very professional and helpful. From the equipment to the boat crew, everything was top-notch. Can't wait for my next trip with you guys.",
+            name: "Ahmed Elhamy",
+            content: "Friendly and you gonna love the dive with them ❤️🤿.",
             rating: 5,
-            date: "2024-11-05",
+            date: "2024-10-05",
+            verified: true
+        },
+        {
+            id: "fb_4",
+            name: "Hazem Mahmoud",
+            content: "Highly recommend booking this amazing experience... the instructor was very helpful, professional & had a great level of knowledge...",
+            rating: 5,
+            date: "2024-09-15",
+            verified: true
+        },
+        {
+            id: "fb_5",
+            name: "Mahmoud Shebl",
+            content: "Thank you Mako for making Diving a hassle free sport.",
+            rating: 5,
+            date: "2024-08-12",
+            verified: true
+        },
+        {
+            id: "fb_6",
+            name: "Omar Sameh",
+            content: "It's been an experience of a lifetime going to the south...",
+            rating: 5,
+            date: "2024-07-22",
+            verified: true
+        },
+        {
+            id: "fb_7",
+            name: "Abdullah Abo Ghanima",
+            content: "I've been diving with Mako Divers for quite a while now...",
+            rating: 5,
+            date: "2024-06-05",
+            verified: true
+        },
+        {
+            id: "fb_8",
+            name: "Youssef Ibrahim Samir",
+            content: "The organisation was great and the people were super friendly, definitely will dive with them again!",
+            rating: 5,
+            date: "2024-05-15",
             verified: true
         }
     ];

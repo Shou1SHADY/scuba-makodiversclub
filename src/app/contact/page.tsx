@@ -19,7 +19,7 @@ export default function ContactPage() {
                         <span className="text-primary uppercase tracking-[0.2em] text-[10px] font-bold">Get in Touch</span>
                     </div>
 
-                    <h1 className="text-white mb-6 text-5xl md:text-7xl font-display font-medium tracking-tight animate-fade-in-up">
+                    <h1 className="text-white mb-6 text-3xl md:text-5xl lg:text-7xl font-display font-medium tracking-tight animate-fade-in-up">
                         We're Here to <span className="text-primary italic">Guide</span> You
                     </h1>
                     <p className="text-gray-400 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto animate-fade-in-up delay-100">
@@ -28,13 +28,13 @@ export default function ContactPage() {
                 </div>
             </div>
 
-            <div className="container-width px-6 pb-24 relative z-10">
+            <div className="container-width px-4 md:px-6 pb-16 md:pb-24 relative z-10">
                 <ContactSection />
             </div>
 
             {/* Support Highlight Section */}
-            <div className="container-width px-6 pb-32">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-16 border-t border-white/5">
+            <div className="container-width px-4 md:px-6 pb-20 md:pb-32">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 py-12 md:py-16 border-t border-white/5">
                     <FeatureBox
                         icon={<Heart className="text-primary" size={24} />}
                         title="Diver-to-Diver"

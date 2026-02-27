@@ -17,7 +17,7 @@ const CoursesPage = () => {
             desc: "Start your underwater journey with us! Begin with our Open Water Course to learn the basics of scuba diving. Explore a whole new world and get certified to dive up to 18 meters.",
             icon: <BookOpen className="w-7 h-7" />,
             color: "from-blue-500 to-cyan-400",
-            image: "https://img1.wsimg.com/isteam/getty/1461642666/:/rs=w:800,h:600,cg:true",
+            image: "https://img1.wsimg.com/isteam/getty/1461642666/:/cr=t:37.1%25,l:0%25,w:100%25,h:33.33%25/rs=w:800,h:400,cg:true",
             duration: "3-4 Days",
             highlights: ["Pool training sessions", "4 ocean certification dives", "PADI certification card"]
         },
@@ -27,7 +27,7 @@ const CoursesPage = () => {
             desc: "Take your diving skills to the next level with our Advanced Open Water training. Train with experts and gain confidence in deeper waters through our specialty adventure dives.",
             icon: <Award className="w-7 h-7" />,
             color: "from-primary to-amber-400",
-            image: "https://img1.wsimg.com/isteam/getty/1131773097/:/rs=w:800,h:600,cg:true",
+            image: "https://img1.wsimg.com/isteam/getty/1131773097/:/cr=t:2.87%25,l:0%25,w:100%25,h:74.99%25/rs=w:800,h:400,cg:true",
             duration: "2-3 Days",
             highlights: ["5 adventure dives", "Deep diving experience", "Navigation mastery"]
         },
@@ -37,7 +37,7 @@ const CoursesPage = () => {
             desc: "Nitrox training is essential for those looking to enhance their diving experience. It helps you maximize every dive, allows for more bottom time, and is perfect for advanced divers.",
             icon: <Zap className="w-7 h-7" />,
             color: "from-yellow-400 to-orange-500",
-            image: "https://img1.wsimg.com/isteam/getty/538368359/:/rs=w:800,h:600,cg:true",
+            image: "https://img1.wsimg.com/isteam/getty/538368359/:/cr=t:13.82%25,l:0%25,w:100%25,h:77.77%25/rs=w:800,h:400,cg:true",
             duration: "1 Day",
             highlights: ["Extended bottom time", "Gas analysis training", "Theory & certification"]
         },
@@ -47,7 +47,7 @@ const CoursesPage = () => {
             desc: "Master advanced techniques for safe and exciting deep dives through our Deep Diving Specialty courses. Discover the thrill of depth up to 40 meters while enhancing your safety skills.",
             icon: <Target className="w-7 h-7" />,
             color: "from-red-500 to-pink-500",
-            image: "https://img1.wsimg.com/isteam/getty/531989748/:/rs=w:800,h:600,cg:true",
+            image: "https://img1.wsimg.com/isteam/getty/531989748/:/cr=t:12.54%25,l:0%25,w:100%25,h:74.93%25/rs=w:800,h:400,cg:true",
             duration: "2 Days",
             highlights: ["40m depth certification", "Decompression theory", "Advanced dive planning"]
         },
@@ -57,7 +57,7 @@ const CoursesPage = () => {
             desc: "Transform your passion into a profession! Lead dives, guide others, and embrace the diving lifestyle. Begin your professional journey with the Divemaster Course.",
             icon: <Users className="w-7 h-7" />,
             color: "from-indigo-500 to-purple-500",
-            image: "https://img1.wsimg.com/isteam/getty/155444888/:/rs=w:800,h:600,cg:true",
+            image: "https://img1.wsimg.com/isteam/getty/1342268373/:/rs=w:800,h:400,cg:true,m/cr=w:800,h:400/qt=q:28",
             duration: "2-4 Weeks",
             highlights: ["Leadership training", "Assist certified instructors", "Professional certification"]
         },
@@ -67,7 +67,7 @@ const CoursesPage = () => {
             desc: "Step into the world of technical diving by advancing your skills. Learn about advanced gear, techniques, and safety practices essential for extended range diving.",
             icon: <ShieldCheck className="w-7 h-7" />,
             color: "from-emerald-500 to-teal-400",
-            image: "https://images.unsplash.com/photo-1605973029521-8154da591bd7?q=80&w=800",
+            image: "https://img1.wsimg.com/isteam/getty/155444888/:/cr=t:7.17%25,l:0%25,w:100%25,h:75%25/rs=w:800,h:400,cg:true",
             duration: "3 Days",
             highlights: ["Tech configuration", "Gas management", "Team diving protocols"]
         }
@@ -102,15 +102,14 @@ const CoursesPage = () => {
                 </div>
             </div>
 
-            <div className="container-width px-6 pb-20 relative z-10">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="container-width px-4 md:px-6 pb-16 md:pb-20 relative z-10">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {courses.map((course, i) => (
                         <div
                             key={i}
                             className="group glass-card rounded-[2rem] border border-white/5 hover:border-primary/40 transition-all duration-500 flex flex-col overflow-hidden hover:-translate-y-2 shadow-xl"
                         >
-                            {/* Course Image */}
-                            <div className="relative h-48 overflow-hidden">
+                            <div className="relative h-44 md:h-48 overflow-hidden">
                                 <Image
                                     src={course.image}
                                     alt={course.title}

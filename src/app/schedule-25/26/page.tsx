@@ -176,6 +176,9 @@ const TripCard = ({ trip }: { trip: Trip }) => {
     );
 };
 
+import Image from 'next/image';
+import LiveaboardGallery from '@/components/sections/liveaboard-gallery';
+
 const SchedulePage = () => {
     const [trips, setTrips] = useState<Trip[]>([]);
     const [loading, setLoading] = useState(true);
@@ -218,10 +221,19 @@ const SchedulePage = () => {
     return (
         <div className="bg-brand-navy min-h-screen">
             <div className="relative pt-32 md:pt-40 pb-20 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-brand-navy/50 to-brand-navy z-0" />
+                <div className="absolute inset-0 z-0">
+                    <Image
+                        src="/images/assets/liveaboard-hero.jpg"
+                        alt="Scuba Dive Safari Liveaboard"
+                        fill
+                        className="object-cover opacity-60"
+                        priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-brand-navy/60 via-brand-navy/40 to-brand-navy z-0" />
+                </div>
                 <div className="container-width px-6 relative z-10 text-center max-w-3xl mx-auto">
                     <span className="text-primary uppercase tracking-[0.3em] text-[10px] font-bold mb-4 block">2026 Red Sea Expeditions</span>
-                    <h1 className="text-white mb-6 text-5xl md:text-6xl font-display font-medium">
+                    <h1 className="text-white mb-6 text-3xl md:text-5xl lg:text-6xl font-display font-medium">
                         Safari <span className="text-primary italic">Schedule</span>
                     </h1>
                     <p className="text-gray-400 text-lg leading-relaxed italic">
@@ -230,7 +242,7 @@ const SchedulePage = () => {
                 </div>
             </div>
 
-            <div className="container-width px-6 pb-20 relative z-10">
+            <div className="container-width px-4 md:px-6 pb-16 md:pb-20 relative z-10">
                 <div className="grid gap-8">
                     {trips.map((trip) => (
                         <TripCard key={trip.id} trip={trip} />
@@ -238,7 +250,7 @@ const SchedulePage = () => {
                 </div>
 
                 <section className="mt-24">
-                    <div className="relative glass-card p-10 md:p-16 rounded-[2.5rem] overflow-hidden border border-white/5">
+                    <div className="relative glass-card p-6 md:p-10 lg:p-16 rounded-[2rem] overflow-hidden border border-white/5">
                         <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/5 blur-[100px] pointer-events-none" />
                         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
                             <div className="max-w-2xl text-center md:text-left">
@@ -259,6 +271,8 @@ const SchedulePage = () => {
                     </div>
                 </section>
             </div>
+
+            <LiveaboardGallery />
 
             <div className="relative">
                 <WaveSeparator position="bottom" color="text-[#020408]" />

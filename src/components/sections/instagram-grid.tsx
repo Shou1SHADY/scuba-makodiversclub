@@ -47,7 +47,7 @@ const InstagramGrid = () => {
         </div>
 
         {/* Dynamic Bento Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[200px] md:auto-rows-[250px] gap-3 md:gap-4 overflow-hidden">
+        <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[150px] sm:auto-rows-[180px] md:auto-rows-[220px] lg:auto-rows-[250px] gap-2 md:gap-4 overflow-hidden">
           {assets.map((item, index) => (
             <div
               key={index}
