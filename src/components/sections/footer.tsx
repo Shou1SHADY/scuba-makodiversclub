@@ -97,15 +97,14 @@ const Footer = () => {
           <h1 className="text-[25rem] font-display font-black leading-none tracking-tighter">MAKO</h1>
         </div>
 
-        {/* Bottom Bar */}
         <div className="relative z-10 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
             &copy; {currentYear} Mako Divers Club &bull; High-Performance Diving
           </p>
           <div className="flex gap-8">
-            <Link href="#" className="text-[10px] text-gray-600 hover:text-white transition-colors font-bold uppercase tracking-widest">Privacy</Link>
-            <Link href="#" className="text-[10px] text-gray-600 hover:text-white transition-colors font-bold uppercase tracking-widest">Terms</Link>
-            <Link href="#" className="text-[10px] text-gray-600 hover:text-white transition-colors font-bold uppercase tracking-widest">Cookies</Link>
+            <Link href="/contact" className="text-[10px] text-gray-600 hover:text-white transition-colors font-bold uppercase tracking-widest">Contact</Link>
+            <Link href="/courses" className="text-[10px] text-gray-600 hover:text-white transition-colors font-bold uppercase tracking-widest">Courses</Link>
+            <Link href="/reviews" className="text-[10px] text-gray-600 hover:text-white transition-colors font-bold uppercase tracking-widest">Reviews</Link>
           </div>
         </div>
       </div>

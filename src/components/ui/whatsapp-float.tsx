@@ -4,8 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
 import { usePathname } from "next/navigation";
-
-const WHATSAPP_NUMBER = "201012345678"; // Replace with real number or pull from config
+import { siteConfig } from "@/lib/config";
 
 const WhatsAppFloat = () => {
     const pathname = usePathname();
@@ -21,7 +20,7 @@ const WhatsAppFloat = () => {
             className="fixed bottom-6 left-6 z-[100]"
         >
             <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                href={`https://wa.me/${siteConfig.contact.whatsapp.replace(/[^0-9]/g, '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative block group"
