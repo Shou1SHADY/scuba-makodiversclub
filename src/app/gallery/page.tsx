@@ -3,21 +3,30 @@
 import React from 'react';
 import InstagramGrid from '@/components/sections/instagram-grid';
 import WaveSeparator from '@/components/ui/wave-separator';
+import LiveaboardGallery from '@/components/sections/liveaboard-gallery';
+import { HHI_IMAGES, HHII_IMAGES } from '@/lib/constants/galleries';
 
 export default function GalleryPage() {
     return (
-        <div className="bg-brand-navy min-h-screen">
-            {/* Page Header Section */}
-            <div className="relative pt-40 pb-12 overflow-hidden">
-                {/* Background Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-brand-navy/50 to-brand-navy z-0" />
+        <div className="bg-brand-navy min-h-screen pt-32 lg:pt-40">
+            <div className="relative z-10">
+                <LiveaboardGallery
+                    id="hhi"
+                    title="Hammerhead I Gallery"
+                    subtitle="Explore the spacious decks and comfortable interiors of Hammerhead I, our flagship safari yacht."
+                    images={HHI_IMAGES}
+                    hideText={true}
+                />
 
-                <div className="container-width px-6 relative z-10 text-center">
-                    <h1 className="text-white text-3xl md:text-5xl lg:text-6xl font-display font-medium mb-6">Diving <span className="text-primary">Gallery</span></h1>
-                    <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
-                        Explore the beauty of the Red Sea through the eyes of our divers. Capturing moments of underwater magic across Egypt.
-                    </p>
-                </div>
+                <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent container-width" />
+
+                <LiveaboardGallery
+                    id="hhii"
+                    title="Hammerhead II Gallery"
+                    subtitle="Experience the modern design and premium amenities of Hammerhead II, built for the ultimate diving expedition."
+                    images={HHII_IMAGES}
+                    hideText={true}
+                />
             </div>
 
             <div className="pb-24 relative z-10">

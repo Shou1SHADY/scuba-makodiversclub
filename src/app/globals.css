@@ -182,4 +182,22 @@
   .animate-slow-zoom {
     animation: slow-zoom 20s infinite alternate;
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Hide UI elements when gallery is open to prevent overlap */
+  body.gallery-open header,
+  body.gallery-open .fixed.top-0.left-0.right-0.h-\[3px\],
+  body.gallery-open .fixed.top-0.left-0.w-8.h-8,
+  body.gallery-open .fixed.bottom-6.left-6,
+  body.gallery-open .fixed.bottom-8.right-8 {
+    display: none !important;
+  }
 }

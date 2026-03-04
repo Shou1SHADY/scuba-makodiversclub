@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Calendar, Anchor, CheckCircle2, Clock, MapPin, ArrowRight, ChevronDown, ChevronUp, Check, X, Shield, Info, DollarSign, Loader2 } from 'lucide-react';
+import { Calendar, Anchor, CheckCircle2, Clock, MapPin, ArrowRight, ChevronDown, ChevronUp, Check, X, Shield, Info, DollarSign, Loader2, Camera } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
+import Image from 'next/image';
+import LiveaboardGallery from '@/components/sections/liveaboard-gallery';
+import { HHI_IMAGES, HHII_IMAGES } from '@/lib/constants/galleries';
 
 interface ItineraryItem {
     day?: string;
@@ -176,9 +179,6 @@ const TripCard = ({ trip }: { trip: Trip }) => {
     );
 };
 
-import Image from 'next/image';
-import LiveaboardGallery from '@/components/sections/liveaboard-gallery';
-
 const SchedulePage = () => {
     const [trips, setTrips] = useState<Trip[]>([]);
     const [loading, setLoading] = useState(true);
@@ -272,12 +272,59 @@ const SchedulePage = () => {
                 </section>
             </div>
 
-            <LiveaboardGallery />
+            {/* Liveaboard Gallery Sections */}
+            <div className="bg-brand-navy pt-20">
+                <div className="container-width px-6">
+                    <div className="flex flex-col items-center justify-center text-center mb-16">
+                        <div className="flex items-center gap-3 mb-4">
+                            <Camera className="text-primary" size={20} />
+                            <span className="text-primary text-[10px] md:text-xs uppercase font-bold tracking-[0.4em]">The Fleet Portfolio</span>
+                        </div>
+                        <h2 className="text-white text-4xl md:text-6xl font-display font-medium">
+                            Liveaboard <span className="text-primary italic">Gallery</span>
+                        </h2>
+                    </div>
+
+                    {/* Hammerhead I Section */}
+                    <div className="mb-24">
+                        <div className="flex items-center gap-4 mb-8 justify-center md:justify-start border-b border-white/5 pb-4">
+                            <Anchor className="text-primary" size={24} />
+                            <h3 className="text-white text-xl md:text-2xl font-display font-bold uppercase tracking-widest">
+                                Hammerhead <span className="text-primary">I</span>
+                            </h3>
+                        </div>
+                        <LiveaboardGallery
+                            images={HHI_IMAGES}
+                            hideText={true}
+                            layout="slider"
+                            disableLightbox={true}
+                            showHeader={false}
+                        />
+                    </div>
+
+                    {/* Hammerhead II Section */}
+                    <div className="pb-20">
+                        <div className="flex items-center gap-4 mb-8 justify-center md:justify-start border-b border-white/5 pb-4">
+                            <Anchor className="text-primary" size={24} />
+                            <h3 className="text-white text-xl md:text-2xl font-display font-bold uppercase tracking-widest">
+                                Hammerhead <span className="text-primary">II</span>
+                            </h3>
+                        </div>
+                        <LiveaboardGallery
+                            images={HHII_IMAGES}
+                            hideText={true}
+                            layout="slider"
+                            disableLightbox={true}
+                            showHeader={false}
+                        />
+                    </div>
+                </div>
+            </div>
 
             <div className="relative">
                 <WaveSeparator position="bottom" color="text-[#020408]" />
             </div>
-        </div>
+        </div >
     );
 };
 

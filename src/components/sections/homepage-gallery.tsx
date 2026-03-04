@@ -48,8 +48,10 @@ const HomepageGallery = () => {
                                 src={img.src}
                                 alt={img.alt}
                                 fill
-                                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 20vw"
                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                quality={90}
+                                loading="lazy"
                             />
                             <div className="absolute inset-0 bg-brand-navy/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
                                 <div className="p-4 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 text-center">
@@ -89,8 +91,9 @@ const HomepageGallery = () => {
                                 src={images[selectedImage].src}
                                 alt={images[selectedImage].alt}
                                 fill
+                                sizes="(max-width: 1280px) 100vw, 1280px"
                                 className="object-cover"
-                                quality={100}
+                                quality={90}
                             />
                         </motion.div>
                         <div className="absolute bottom-8 left-0 w-full text-center">

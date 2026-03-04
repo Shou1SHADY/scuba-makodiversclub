@@ -7,6 +7,7 @@ import { GOOGLE_FORM_URL } from "@/lib/config";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { usePathname } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 const Header = () => {
   const pathname = usePathname();
@@ -40,15 +41,21 @@ const Header = () => {
   }, [mobileMenuOpen]);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     // Fetch live banner settings
     const fetchBanner = async () => {
       try {
-        const { createClient } = await import("@/lib/supabase/client");
         const supabase = createClient();
         const { data, error } = await supabase
           .from('site_settings')
