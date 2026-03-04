@@ -180,7 +180,7 @@ const Testimonials: React.FC = () => {
                           {new Date(testimonial.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                         </span>
                         <div className="text-primary font-bold text-[9px] uppercase tracking-widest opacity-0 group-hover/card:opacity-100 transition-opacity">
-                          View Original
+                          Review
                         </div>
                       </div>
                     </div>
