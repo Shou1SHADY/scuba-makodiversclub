@@ -107,7 +107,7 @@ const CoursesPage = () => {
                             >
                             <div className="relative h-44 md:h-48 overflow-hidden">
                                 <Image
-                                    src={course.image}
+                                    src={course.image ? course.image.replace(/%(?![0-9a-fA-F]{2})/g, '%25') : '/placeholder.jpg'}
                                     alt={course.title}
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-110"
