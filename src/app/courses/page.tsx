@@ -1,77 +1,64 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { BookOpen, Award, Target, Users, Zap, ShieldCheck, ArrowRight, HelpCircle, Clock, CheckCircle } from 'lucide-react';
+import { BookOpen, Award, Target, Users, Zap, ShieldCheck, ArrowRight, HelpCircle, Clock, CheckCircle, Loader2 } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
+import { createClient } from '@/lib/supabase/client';
+
+const iconMap: Record<string, any> = {
+    'BookOpen': <BookOpen className="w-7 h-7" />,
+    'Award': <Award className="w-7 h-7" />,
+    'Zap': <Zap className="w-7 h-7" />,
+    'Target': <Target className="w-7 h-7" />,
+    'Users': <Users className="w-7 h-7" />,
+    'ShieldCheck': <ShieldCheck className="w-7 h-7" />
+};
+
+interface Course {
+    id: string;
+    title: string;
+    level: string;
+    description: string;
+    icon: string;
+    color: string;
+    image: string;
+    duration: string;
+    highlights: string[];
+}
 
 const CoursesPage = () => {
     // Using images from the live makodivers.club site
     const heroBgImage = "https://img1.wsimg.com/isteam/getty/156323241/:/rs=w:2400,h:1200,cg:true";
 
-    const courses = [
-        {
-            title: "Open Water Diver",
-            level: "Beginner",
-            desc: "Start your underwater journey with us! Begin with our Open Water Course to learn the basics of scuba diving. Explore a whole new world and get certified to dive up to 18 meters.",
-            icon: <BookOpen className="w-7 h-7" />,
-            color: "from-blue-500 to-cyan-400",
-            image: "https://img1.wsimg.com/isteam/getty/1461642666/:/cr=t:37.1%25,l:0%25,w:100%25,h:33.33%25/rs=w:800,h:400,cg:true",
-            duration: "3-4 Days",
-            highlights: ["Pool training sessions", "4 ocean certification dives", "PADI certification card"]
-        },
-        {
-            title: "Advanced Adventure Diver",
-            level: "Intermediate",
-            desc: "Take your diving skills to the next level with our Advanced Open Water training. Train with experts and gain confidence in deeper waters through our specialty adventure dives.",
-            icon: <Award className="w-7 h-7" />,
-            color: "from-primary to-amber-400",
-            image: "https://img1.wsimg.com/isteam/getty/1131773097/:/cr=t:2.87%25,l:0%25,w:100%25,h:74.99%25/rs=w:800,h:400,cg:true",
-            duration: "2-3 Days",
-            highlights: ["5 adventure dives", "Deep diving experience", "Navigation mastery"]
-        },
-        {
-            title: "Enriched Air Nitrox",
-            level: "Specialty",
-            desc: "Nitrox training is essential for those looking to enhance their diving experience. It helps you maximize every dive, allows for more bottom time, and is perfect for advanced divers.",
-            icon: <Zap className="w-7 h-7" />,
-            color: "from-yellow-400 to-orange-500",
-            image: "https://img1.wsimg.com/isteam/getty/538368359/:/cr=t:13.82%25,l:0%25,w:100%25,h:77.77%25/rs=w:800,h:400,cg:true",
-            duration: "1 Day",
-            highlights: ["Extended bottom time", "Gas analysis training", "Theory & certification"]
-        },
-        {
-            title: "Deep Diving Speciality",
-            level: "Specialty",
-            desc: "Master advanced techniques for safe and exciting deep dives through our Deep Diving Specialty courses. Discover the thrill of depth up to 40 meters while enhancing your safety skills.",
-            icon: <Target className="w-7 h-7" />,
-            color: "from-red-500 to-pink-500",
-            image: "https://img1.wsimg.com/isteam/getty/531989748/:/cr=t:12.54%25,l:0%25,w:100%25,h:74.93%25/rs=w:800,h:400,cg:true",
-            duration: "2 Days",
-            highlights: ["40m depth certification", "Decompression theory", "Advanced dive planning"]
-        },
-        {
-            title: "Divemaster Course",
-            level: "Professional",
-            desc: "Transform your passion into a profession! Lead dives, guide others, and embrace the diving lifestyle. Begin your professional journey with the Divemaster Course.",
-            icon: <Users className="w-7 h-7" />,
-            color: "from-indigo-500 to-purple-500",
-            image: "https://img1.wsimg.com/isteam/getty/1342268373/:/rs=w:800,h:400,cg:true,m/cr=w:800,h:400/qt=q:28",
-            duration: "2-4 Weeks",
-            highlights: ["Leadership training", "Assist certified instructors", "Professional certification"]
-        },
-        {
-            title: "Intro to Tech",
-            level: "Advanced",
-            desc: "Step into the world of technical diving by advancing your skills. Learn about advanced gear, techniques, and safety practices essential for extended range diving.",
-            icon: <ShieldCheck className="w-7 h-7" />,
-            color: "from-emerald-500 to-teal-400",
-            image: "https://img1.wsimg.com/isteam/getty/155444888/:/cr=t:7.17%25,l:0%25,w:100%25,h:75%25/rs=w:800,h:400,cg:true",
-            duration: "3 Days",
-            highlights: ["Tech configuration", "Gas management", "Team diving protocols"]
-        }
-    ];
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [loading, setLoading] = useState(true);
+    const supabase = createClient();
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                setLoading(true);
+                const { data, error } = await supabase
+                    .from('courses')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+
+                if (data && data.length > 0) {
+                    setCourses(data as Course[]);
+                } else {
+                    setCourses([]);
+                }
+            } catch (e) {
+                setCourses([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCourses();
+    }, []);
 
     return (
         <div className="bg-brand-navy min-h-screen">
@@ -103,12 +90,21 @@ const CoursesPage = () => {
             </div>
 
             <div className="container-width px-4 md:px-6 pb-16 md:pb-20 relative z-10">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    {courses.map((course, i) => (
-                        <div
-                            key={i}
-                            className="group glass-card rounded-[2rem] border border-white/5 hover:border-primary/40 transition-all duration-500 flex flex-col overflow-hidden hover:-translate-y-2 shadow-xl"
-                        >
+                {loading ? (
+                    <div className="flex justify-center p-20 bg-brand-navy rounded-[2rem] border border-white/5 shadow-xl">
+                        <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                    </div>
+                ) : courses.length === 0 ? (
+                    <div className="flex justify-center p-20 bg-brand-navy rounded-[2rem] border border-white/5 shadow-xl text-white/50 text-center text-lg italic">
+                        No courses currently available. Please check back later.
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                        {courses.map((course, i) => (
+                            <div
+                                key={course.id || i}
+                                className="group glass-card rounded-[2rem] border border-white/5 hover:border-primary/40 transition-all duration-500 flex flex-col overflow-hidden hover:-translate-y-2 shadow-xl"
+                            >
                             <div className="relative h-44 md:h-48 overflow-hidden">
                                 <Image
                                     src={course.image}
@@ -136,12 +132,12 @@ const CoursesPage = () => {
                             {/* Content */}
                             <div className="p-8 flex flex-col flex-grow">
                                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${course.color} flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform duration-500 shadow-lg`}>
-                                    {course.icon}
+                                    {iconMap[course.icon] || <BookOpen className="w-7 h-7" />}
                                 </div>
 
                                 <h3 className="text-white text-2xl font-display font-bold mb-4 group-hover:text-primary transition-colors">{course.title}</h3>
                                 <p className="text-gray-400 text-sm leading-relaxed mb-6 grow">
-                                    {course.desc}
+                                    {course.description}
                                 </p>
 
                                 {/* Highlights */}
@@ -164,9 +160,10 @@ const CoursesPage = () => {
                                     <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                                 </a>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
 
                 {/* FAQ / Info Section */}
                 <div className="mt-24 p-12 rounded-[2.5rem] bg-white/[0.02] border border-white/5 flex flex-col lg:flex-row items-center gap-12">
