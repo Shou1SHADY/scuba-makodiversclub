@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Calendar, Anchor, CheckCircle2, Clock, MapPin, ArrowRight, ChevronDown, ChevronUp, Check, X, Shield, Info, DollarSign, Loader2, Camera } from 'lucide-react';
+import { Calendar, Anchor, CheckCircle2, Clock, MapPin, ArrowRight, ChevronDown, ChevronUp, Check, X, Info, DollarSign, Loader2, Camera } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -182,6 +182,7 @@ const TripCard = ({ trip }: { trip: Trip }) => {
 const SchedulePage = () => {
     const [trips, setTrips] = useState<Trip[]>([]);
     const [loading, setLoading] = useState(true);
+    const [filter, setFilter] = useState<'All' | 'Mini Safari' | 'Full Liveaboard'>('All');
     const supabase = createClient();
 
     useEffect(() => {
@@ -196,7 +197,13 @@ const SchedulePage = () => {
                 if (error) {
                     setTrips(fallbackTrips);
                 } else if (data && data.length > 0) {
-                    setTrips(data as Trip[]);
+                    // Map DB snake_case columns to frontend camelCase expectations
+                    const mappedData = data.map((item: any) => ({
+                        ...item,
+                        earlyBird: item.early_bird || item.earlyBird,
+                        notIncluded: item.not_included || item.notIncluded || []
+                    }));
+                    setTrips(mappedData as Trip[]);
                 } else {
                     setTrips(fallbackTrips);
                 }
@@ -209,6 +216,8 @@ const SchedulePage = () => {
 
         fetchSafaris();
     }, []);
+
+    const filteredTrips = filter === 'All' ? trips : trips.filter(t => t.type === filter);
 
     if (loading) {
         return (
@@ -243,8 +252,28 @@ const SchedulePage = () => {
             </div>
 
             <div className="container-width px-4 md:px-6 pb-16 md:pb-20 relative z-10">
+                {/* Filter Bar */}
+                <div className="flex flex-wrap justify-center gap-3 mb-12">
+                    {(['All', 'Mini Safari', 'Full Liveaboard'] as const).map((f) => (
+                        <button
+                            key={f}
+                            onClick={() => setFilter(f)}
+                            className={`px-6 py-2.5 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border ${
+                                filter === f
+                                    ? 'bg-primary text-brand-navy border-primary shadow-lg shadow-primary/20'
+                                    : 'bg-white/5 text-gray-400 border-white/10 hover:border-primary/30 hover:text-white'
+                            }`}
+                        >
+                            {f}
+                            <span className={`ml-2 px-1.5 py-0.5 rounded text-[9px] ${filter === f ? 'bg-brand-navy/20' : 'bg-white/10'}`}>
+                                {f === 'All' ? trips.length : trips.filter(t => t.type === f).length}
+                            </span>
+                        </button>
+                    ))}
+                </div>
+
                 <div className="grid gap-8">
-                    {trips.map((trip) => (
+                    {filteredTrips.map((trip) => (
                         <TripCard key={trip.id} trip={trip} />
                     ))}
                 </div>
@@ -329,149 +358,214 @@ const SchedulePage = () => {
 };
 
 const fallbackTrips: Trip[] = [
+    // ─── MINI SAFARIS ──────────────────────────────────────────────
     {
-        id: "eid-fitr-2026",
-        title: "North Expedition (Eid El-Fitr)",
-        route: "North Wrecks (Thistlegorm & Ras Muhammad)",
+        id: "north-expedition-eid-fitr-2026",
+        title: "North Expedition",
+        route: "Thistlegorm & Ras Muhammad",
         yacht: "HH II",
-        dates: "19 to 21 March 2026",
+        dates: "18 – 21 March 2026 (Eid El-Fitr)",
         port: "Hurghada",
         type: "Mini Safari",
         status: "Limited Spots",
         color: "bg-blue-500/20",
         itinerary: [
-            { day: "Thursday 19 March", activities: ["Yacht check-in 6 pm", "Dinner & gear setup"] },
-            { day: "Friday 20 March", activities: ["Check dive (Dolphin house)", "Giannis D wreck", "Thistlegorm night dive"] },
-            { day: "Saturday 21 March", activities: ["Thistlegorm day dive", "Carnatic wreck dive", "Check-out 3 pm"] }
+            { day: "Day 1 – 18 March", activities: ["Yacht check-in 6 pm", "Dinner & gear setup"] },
+            { day: "Day 2 – 19 March", activities: ["Check dive", "Giannis D wreck", "Thistlegorm night dive"] },
+            { day: "Day 3 – 20 March", activities: ["Thistlegorm day dive", "Ras Muhammad dives"] },
+            { day: "Day 4 – 21 March", activities: ["Morning dive", "Check-out & transfer"] }
         ],
-        included: ["Full-board accommodation", "Three meals daily", "Guided dives", "Tanks/weights", "Mako giveaways"],
+        included: ["Full-board accommodation", "Three meals daily", "Guided dives", "Tanks & weights", "Mako giveaways"],
         notIncluded: ["Equipment rental", "15 L tank or Nitrox", "Crew gratuity"]
     },
     {
-        id: "eid-adha-2026",
-        title: "Sharks Obsession (Eid El-Adha)",
-        route: "South (Daedalus & Elphinstone)",
+        id: "sharks-wrecks-eid-adha-2026",
+        title: "Sharks & Wrecks",
+        route: "Brothers' Islands & Salem Express",
         yacht: "HH I",
-        dates: "26 to 30 May 2026",
+        dates: "26 – 30 May 2026 (Eid El-Adha)",
         port: "Hurghada",
-        type: "Full Liveaboard",
+        type: "Mini Safari",
         status: "Early Bird Open",
         color: "bg-primary/20",
-        earlyBird: "25K EGP instead of 28K per diver (Ends 30 March)",
-        itinerary: [{ activities: ["Elphinstone Reef", "Daedalus Reef (Two Days)", "Marsa Shona & Abu Dabab", "Min 10 Dives"] }],
-        included: ["Full-board accommodation", "Three meals daily", "Guided dives", "Tanks/weights"],
-        notIncluded: ["Equipment rental", "Nitrox", "Gratuity"]
-    },
-    {
-        id: "south-parks-2026",
-        title: "South Parks Expedition",
-        route: "Deep South (St. John's & Zabargad)",
-        yacht: "HH II",
-        dates: "30 May to 06 June 2026",
-        port: "Port Ghalib",
-        type: "Full Liveaboard",
-        status: "Early Bird Open",
-        color: "bg-emerald-500/20",
-        earlyBird: "46K EGP (Lower) / 52K EGP (Upper) - Ends 30 March",
         itinerary: [
-            { day: "Day 1", activities: ["Check-in and General Briefing"] },
-            { day: "Day 2", activities: ["Shaab Marsa Alam", "Shaab Sharm"] },
-            { day: "Day 3", activities: ["3 * Zabargad & Rocky", "Night dive"] },
-            { day: "Day 4", activities: ["3 * Saint John's"] },
-            { day: "Day 5", activities: ["3 * Saint John's", "Night Dive"] },
-            { day: "Day 6", activities: ["3 * Sataya", "Night dive"] },
-            { day: "Day 7", activities: ["Wadi El Gemal", "Marsa Alam"] },
-            { day: "Day 8", activities: ["Breakfast & Check out"] }
+            { day: "Route", activities: ["Big Brother Island", "Little Brother Island", "Salem Express wreck", "Elphinstone Reef"] }
         ],
-        included: ["Full-board accommodation", "Guided dives"],
-        notIncluded: ["Equipment rental"]
+        included: ["Full-board accommodation", "Three meals daily", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
     },
     {
-        id: "bde-series-2026",
-        title: "BDE Classic Expedition",
-        route: "Brothers, Daedalus & Elphinstone",
-        yacht: "HH II",
-        dates: "Multiple Sailings (June - Nov 2026)",
-        port: "Varies",
-        type: "Full Liveaboard",
-        status: "Waitlist Active",
-        color: "bg-purple-500/20",
-        itinerary: [
-            { day: "Dates", activities: ["20-27 June", "11-18 July", "18-25 July", "08-15 Aug", "18-26 Sep", "03-10 Oct", "10-17 Oct", "24-31 Oct", "14-21 Nov"] },
-            { day: "Route", activities: ["Big Brother", "Little Brother", "Daedalus", "Elphinstone"] }
-        ],
-        included: ["Full board", "Guided dives"],
-        notIncluded: ["Equipment"]
-    },
-    {
-        id: "daedalus-mini-2026",
-        title: "Daedalus Mini Safari",
+        id: "daedalus-mini-july-2026",
+        title: "Daedalus Mini",
         route: "Daedalus & Elphinstone",
         yacht: "HH II",
-        dates: "26 to 29 August 2026",
+        dates: "18 – 22 July 2026 (Long Weekend)",
         port: "Marsa Alam",
         type: "Mini Safari",
         status: "Limited Spots",
         color: "bg-amber-500/20",
-        itinerary: [{ activities: ["Daedalus Reef (Sharks)", "Elphinstone Reef"] }],
-        included: ["Full board", "Guided dives"],
-        notIncluded: ["Equipment"]
+        itinerary: [{ activities: ["Daedalus Reef (Sharks & Pelagics)", "Elphinstone Reef", "Min 8 Dives"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
     },
     {
-        id: "southern-charm-2026",
-        title: "Southern Charm Liveaboard",
-        route: "Deep South & Daedalus",
-        yacht: "HH II",
-        dates: "26 Sep to 03 Oct 2026",
-        port: "Port Ghalib",
-        type: "Full Liveaboard",
-        status: "Early Bird Open",
-        color: "bg-pink-500/20",
-        itinerary: [{ activities: ["Shaab Sharm", "Daedalus", "Rocky Island", "Sataya"] }],
-        included: ["Full board", "Guided dives"],
-        notIncluded: ["Equipment"]
-    },
-    {
-        id: "brothers-mini-2026",
-        title: "Brothers' Mini Safari",
+        id: "brothers-mini-aug-2026",
+        title: "Brothers' Mini",
         route: "Brothers' Islands & Elphinstone",
         yacht: "HH II",
-        dates: "04 to 07 November 2026",
+        dates: "26 – 29 Aug 2026 (Long Weekend)",
+        port: "Marsa Alam",
+        type: "Mini Safari",
+        status: "Limited Spots",
+        color: "bg-red-500/20",
+        itinerary: [{ activities: ["Big Brother Island", "Little Brother Island", "Elphinstone Reef"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
+    },
+    {
+        id: "daedalus-mini-nov-2026",
+        title: "Daedalus Mini",
+        route: "Daedalus & Elphinstone",
+        yacht: "HH II",
+        dates: "04 – 07 November 2026",
         port: "Marsa Alam",
         type: "Mini Safari",
         status: "Booking Now",
-        color: "bg-red-500/20",
-        itinerary: [{ activities: ["Big Brother", "Little Brother", "Elphinstone"] }],
-        included: ["Full board", "Guided dives"],
-        notIncluded: ["Equipment"]
+        color: "bg-amber-500/20",
+        itinerary: [{ activities: ["Daedalus Reef (Sharks & Pelagics)", "Elphinstone Reef", "Min 8 Dives"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
     },
     {
         id: "mini-wrecks-2026",
-        title: "Mini Wrecks Expedition",
+        title: "Mini Wrecks",
         route: "Thistlegorm, Ras Muhammad & Abu Nahas",
         yacht: "HH II",
-        dates: "16 to 19 December 2026",
-        port: "Marsa Alam",
+        dates: "16 – 19 December 2026",
+        port: "Hurghada",
         type: "Mini Safari",
         status: "Booking Now",
         color: "bg-cyan-500/20",
-        itinerary: [{ activities: ["SS Thistlegorm", "Ras Muhammad", "Abu Nahas"] }],
-        included: ["Full board", "Guided dives"],
-        notIncluded: ["Equipment"]
+        itinerary: [{ activities: ["SS Thistlegorm", "Ras Muhammad National Park", "Abu Nahas Wrecks"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
+    },
+
+    // ─── FULL LIVEABOARDS ──────────────────────────────────────────
+    {
+        id: "deep-south-2026",
+        title: "Deep South Expedition",
+        route: "Deep South (St. John's & Zabargad)",
+        yacht: "HH II",
+        dates: "30 May – 06 June 2026",
+        port: "Port Ghalib",
+        type: "Full Liveaboard",
+        status: "Early Bird Open",
+        color: "bg-emerald-500/20",
+        itinerary: [
+            { day: "Day 1", activities: ["Check-in & General Briefing"] },
+            { day: "Day 2", activities: ["Shaab Marsa Alam", "Shaab Sharm"] },
+            { day: "Day 3", activities: ["Zabargad Island (x3)", "Night dive"] },
+            { day: "Day 4", activities: ["Saint John's Reef (x3)"] },
+            { day: "Day 5", activities: ["Saint John's Reef (x3)", "Night Dive"] },
+            { day: "Day 6", activities: ["Sataya (Dolphin Reef x3)", "Night dive"] },
+            { day: "Day 7", activities: ["Wadi El Gemal", "Marsa Alam"] },
+            { day: "Day 8", activities: ["Breakfast & Check out"] }
+        ],
+        included: ["Full-board accommodation", "All meals & beverages", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
     },
     {
-        id: "new-years-2026",
-        title: "New Year's Eve Expedition",
-        route: "Thistlegorm, Ras Muhammad & Tiran",
+        id: "bde-july-2026",
+        title: "BDE Expedition",
+        route: "Brothers, Daedalus & Elphinstone",
         yacht: "HH II",
-        dates: "26 Dec 2026 - 02 Jan 2027",
+        dates: "11 – 18 July 2026",
+        port: "Hurghada",
+        type: "Full Liveaboard",
+        status: "Booking Now",
+        color: "bg-purple-500/20",
+        itinerary: [
+            { day: "Route", activities: ["Big Brother Island", "Little Brother Island", "Daedalus Reef", "Elphinstone Reef"] }
+        ],
+        included: ["Full-board accommodation", "All meals", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
+    },
+    {
+        id: "bde-sep-2026",
+        title: "BDE Expedition",
+        route: "Brothers, Daedalus & Elphinstone",
+        yacht: "HH II",
+        dates: "18 – 26 September 2026",
+        port: "Hurghada",
+        type: "Full Liveaboard",
+        status: "Booking Now",
+        color: "bg-purple-500/20",
+        itinerary: [
+            { day: "Route", activities: ["Big Brother Island", "Little Brother Island", "Daedalus Reef", "Elphinstone Reef"] }
+        ],
+        included: ["Full-board accommodation", "All meals", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
+    },
+    {
+        id: "deep-south-daedalus-2026",
+        title: "Deep South & Daedalus",
+        route: "Deep South & Daedalus",
+        yacht: "HH II",
+        dates: "26 Sep – 03 Oct 2026",
+        port: "Port Ghalib",
+        type: "Full Liveaboard",
+        status: "Booking Now",
+        color: "bg-pink-500/20",
+        itinerary: [{ activities: ["Shaab Sharm", "Daedalus Reef", "Rocky Island", "Sataya (Dolphin Reef)"] }],
+        included: ["Full-board accommodation", "All meals", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
+    },
+    {
+        id: "bde-oct-2026",
+        title: "BDE Expedition",
+        route: "Brothers, Daedalus & Elphinstone",
+        yacht: "HH II",
+        dates: "24 – 31 October 2026",
+        port: "Hurghada",
+        type: "Full Liveaboard",
+        status: "Booking Now",
+        color: "bg-purple-500/20",
+        itinerary: [
+            { day: "Route", activities: ["Big Brother Island", "Little Brother Island", "Daedalus Reef", "Elphinstone Reef"] }
+        ],
+        included: ["Full-board accommodation", "All meals", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
+    },
+    {
+        id: "bde-nov-2026",
+        title: "BDE Expedition",
+        route: "Brothers, Daedalus & Elphinstone",
+        yacht: "HH II",
+        dates: "14 – 21 November 2026",
+        port: "Hurghada",
+        type: "Full Liveaboard",
+        status: "Booking Now",
+        color: "bg-purple-500/20",
+        itinerary: [
+            { day: "Route", activities: ["Big Brother Island", "Little Brother Island", "Daedalus Reef", "Elphinstone Reef"] }
+        ],
+        included: ["Full-board accommodation", "All meals", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
+    },
+    {
+        id: "new-years-eve-2026",
+        title: "New Year's Eve Expedition",
+        route: "North Wrecks & Tiran",
+        yacht: "HH II",
+        dates: "26 Dec 2026 – 02 Jan 2027",
         port: "Hurghada",
         type: "Full Liveaboard",
         status: "Holiday Special",
         color: "bg-yellow-500/20",
-        itinerary: [{ activities: ["New Year's Eve at sea", "North Wrecks", "Tiran"] }],
-        included: ["Holiday Gala", "Full board"],
-        notIncluded: ["Equipment"]
+        itinerary: [{ activities: ["New Year's Eve celebration at sea", "SS Thistlegorm", "Ras Muhammad", "Straits of Tiran"] }],
+        included: ["New Year's Gala Dinner", "Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
     }
 ];
 

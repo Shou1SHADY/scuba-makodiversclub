@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Calendar, Anchor, CheckCircle2, Clock, MapPin, ArrowRight, ChevronDown, ChevronUp, Check, X, Shield, Info, DollarSign, Loader2 } from 'lucide-react';
+import { Calendar, Anchor, CheckCircle2, Clock, MapPin, ArrowRight, ChevronDown, ChevronUp, Check, X, Info, DollarSign, Loader2 } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -130,7 +130,12 @@ const MiniSafarisPage = () => {
                     .order('created_at', { ascending: false });
 
                 if (data && data.length > 0) {
-                    setTrips(data as Trip[]);
+                    const mappedData = data.map((item: any) => ({
+                        ...item,
+                        earlyBird: item.early_bird || item.earlyBird,
+                        notIncluded: item.not_included || item.notIncluded || []
+                    }));
+                    setTrips(mappedData as Trip[]);
                 } else {
                     setTrips(fallbackMiniSafaris);
                 }
@@ -187,60 +192,88 @@ const MiniSafarisPage = () => {
 
 const fallbackMiniSafaris: Trip[] = [
     {
-        id: "eid-fitr-mini",
-        title: "North Expedition (Eid El-Fitr)",
-        route: "North Wrecks (Thistlegorm & Ras Muhammad)",
+        id: "north-expedition-eid-fitr-mini",
+        title: "North Expedition",
+        route: "Thistlegorm & Ras Muhammad",
         yacht: "HH II",
-        dates: "19 to 21 March 2026",
+        dates: "18 – 21 March 2026 (Eid El-Fitr)",
         port: "Hurghada",
         type: "Mini Safari",
         status: "Limited Spots",
         color: "bg-blue-500/20",
-        itinerary: [{ activities: ["Check dive (Dolphin house)", "SS Thistlegorm", "Giannis D wreck"] }],
-        included: ["Full board", "Guided dives"],
-        notIncluded: ["Equipment"]
+        itinerary: [{ activities: ["SS Thistlegorm (day & night)", "Ras Muhammad National Park", "Giannis D wreck"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights", "Mako giveaways"],
+        notIncluded: ["Equipment rental", "15 L tank or Nitrox", "Crew gratuity"]
     },
     {
-        id: "daedalus-mini",
-        title: "Daedalus Mini Safari",
+        id: "sharks-wrecks-eid-adha-mini",
+        title: "Sharks & Wrecks",
+        route: "Brothers' Islands & Salem Express",
+        yacht: "HH I",
+        dates: "26 – 30 May 2026 (Eid El-Adha)",
+        port: "Hurghada",
+        type: "Mini Safari",
+        status: "Early Bird Open",
+        color: "bg-primary/20",
+        itinerary: [{ activities: ["Big Brother Island", "Little Brother Island", "Salem Express wreck", "Elphinstone Reef"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
+    },
+    {
+        id: "daedalus-mini-july",
+        title: "Daedalus Mini",
         route: "Daedalus & Elphinstone",
         yacht: "HH II",
-        dates: "26 to 29 August 2026",
+        dates: "18 – 22 July 2026 (Long Weekend)",
         port: "Marsa Alam",
         type: "Mini Safari",
         status: "Limited Spots",
         color: "bg-amber-500/20",
-        itinerary: [{ activities: ["Daedalus Reef (Sharks)", "Elphinstone Reef", "Early morning hammerhead dives"] }],
-        included: ["Full board", "Guided dives"],
-        notIncluded: ["Equipment"]
+        itinerary: [{ activities: ["Daedalus Reef (Sharks & Pelagics)", "Elphinstone Reef", "Early morning hammerhead dives"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
     },
     {
-        id: "brothers-mini",
-        title: "Brothers' Mini Safari",
+        id: "brothers-mini-aug",
+        title: "Brothers' Mini",
         route: "Brothers' Islands & Elphinstone",
         yacht: "HH II",
-        dates: "04 to 07 November 2026",
+        dates: "26 – 29 Aug 2026 (Long Weekend)",
+        port: "Marsa Alam",
+        type: "Mini Safari",
+        status: "Limited Spots",
+        color: "bg-red-500/20",
+        itinerary: [{ activities: ["Big Brother Island", "Little Brother Island", "Elphinstone Reef", "Oceanic whitetip sightings"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
+    },
+    {
+        id: "daedalus-mini-nov",
+        title: "Daedalus Mini",
+        route: "Daedalus & Elphinstone",
+        yacht: "HH II",
+        dates: "04 – 07 November 2026",
         port: "Marsa Alam",
         type: "Mini Safari",
         status: "Booking Now",
-        color: "bg-red-500/20",
-        itinerary: [{ activities: ["Big Brother", "Little Brother", "Deep reef walls", "Oceanic whitetip sightings"] }],
-        included: ["Full board", "Guided dives"],
-        notIncluded: ["Equipment"]
+        color: "bg-amber-500/20",
+        itinerary: [{ activities: ["Daedalus Reef (Sharks & Pelagics)", "Elphinstone Reef", "Early morning hammerhead dives"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
     },
     {
-        id: "mini-wrecks-2026",
-        title: "Mini Wrecks Expedition",
+        id: "mini-wrecks-dec-2026",
+        title: "Mini Wrecks",
         route: "Thistlegorm, Ras Muhammad & Abu Nahas",
         yacht: "HH II",
-        dates: "16 to 19 December 2026",
-        port: "Marsa Alam",
+        dates: "16 – 19 December 2026",
+        port: "Hurghada",
         type: "Mini Safari",
         status: "Booking Now",
         color: "bg-cyan-500/20",
-        itinerary: [{ activities: ["SS Thistlegorm", "Ras Muhammad", "Abu Nahas"] }],
-        included: ["Full board", "Guided dives"],
-        notIncluded: ["Equipment"]
+        itinerary: [{ activities: ["SS Thistlegorm", "Ras Muhammad National Park", "Abu Nahas Wrecks"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
     }
 ];
 
