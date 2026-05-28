@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Calendar, Anchor, CheckCircle2, Clock, MapPin, ArrowRight, ChevronDown, ChevronUp, Check, X, Info, DollarSign, Loader2, Camera } from 'lucide-react';
+import Link from 'next/link';
+import { Calendar, Anchor, CheckCircle2, Clock, MapPin, ArrowRight, ChevronDown, ChevronUp, Check, X, Info, DollarSign, Loader2, Camera, ExternalLink } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -69,13 +70,21 @@ const TripCard = ({ trip }: { trip: Trip }) => {
                         <span>{trip.status}</span>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <button
-                            onClick={() => setIsExpanded(!isExpanded)}
-                            className="inline-flex items-center justify-center gap-2 border border-white/10 text-white font-bold uppercase text-[10px] tracking-widest py-4 px-6 rounded-xl hover:bg-white/5 transition-all"
-                        >
-                            {isExpanded ? "Hide Details" : "View Details"}
-                            {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                        </button>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <button
+                                onClick={() => setIsExpanded(!isExpanded)}
+                                className="inline-flex items-center justify-center gap-2 border border-white/10 text-white font-bold uppercase text-[10px] tracking-widest py-4 px-6 rounded-xl hover:bg-white/5 transition-all"
+                            >
+                                {isExpanded ? "Hide Details" : "View Details"}
+                                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                            </button>
+                            <Link
+                                href={`/safaris/${trip.id}`}
+                                className="inline-flex items-center justify-center gap-2 border border-primary/30 text-primary font-bold uppercase text-[10px] tracking-widest py-4 px-6 rounded-xl hover:bg-primary/10 transition-all"
+                            >
+                                Details <ExternalLink size={14} />
+                            </Link>
+                        </div>
                         <a
                             href={trip.bookingLink || GOOGLE_FORM_URL}
                             target="_blank"
