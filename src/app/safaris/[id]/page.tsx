@@ -336,13 +336,13 @@ const TripDetailPage = () => {
 
                 {/* CTA at bottom */}
                 <div className="mt-16 text-center">
-                    <a
+                    {/* <a
                         href={trip.bookingLink || GOOGLE_FORM_URL}
                         target="_blank"
                         className="inline-flex items-center justify-center gap-3 bg-primary text-brand-navy font-bold uppercase text-sm tracking-widest py-6 px-12 rounded-xl hover:bg-white hover:scale-105 transition-all shadow-xl shadow-primary/20"
                     >
                         Reserve Your Spot <ArrowRight size={20} />
-                    </a>
+                    </a> */}
                     {(!trip.price && !trip.earlyBird) && (
                         <a
                             href={trip.bookingLink || GOOGLE_FORM_URL}
