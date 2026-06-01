@@ -67,25 +67,25 @@ ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Public can read safaris" ON public.safaris;
 CREATE POLICY "Public can read safaris" ON public.safaris FOR SELECT USING (true);
 DROP POLICY IF EXISTS "Authenticated users can manage safaris" ON public.safaris;
-CREATE POLICY "Authenticated users can manage safaris" ON public.safaris FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can manage safaris" ON public.safaris FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 -- RLS POLICIES FOR OFFERS
 DROP POLICY IF EXISTS "Public can read active offers" ON public.offers;
 CREATE POLICY "Public can read active offers" ON public.offers FOR SELECT USING (status = 'active' OR auth.role() = 'authenticated');
 DROP POLICY IF EXISTS "Authenticated users can manage offers" ON public.offers;
-CREATE POLICY "Authenticated users can manage offers" ON public.offers FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can manage offers" ON public.offers FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 -- RLS POLICIES FOR UPDATES
 DROP POLICY IF EXISTS "Public can read published updates" ON public.updates;
 CREATE POLICY "Public can read published updates" ON public.updates FOR SELECT USING (status = 'published' OR auth.role() = 'authenticated');
 DROP POLICY IF EXISTS "Authenticated users can manage updates" ON public.updates;
-CREATE POLICY "Authenticated users can manage updates" ON public.updates FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can manage updates" ON public.updates FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 -- RLS POLICIES FOR SITE SETTINGS
 DROP POLICY IF EXISTS "Public can read site settings" ON public.site_settings;
 CREATE POLICY "Public can read site settings" ON public.site_settings FOR SELECT USING (true);
 DROP POLICY IF EXISTS "Authenticated users can manage site settings" ON public.site_settings;
-CREATE POLICY "Authenticated users can manage site settings" ON public.site_settings FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can manage site settings" ON public.site_settings FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 -- SEED DEFAULT BANNER
 INSERT INTO public.site_settings (key, value)

@@ -7,6 +7,7 @@ import { ScrollProgress, CustomCursor, BackToTop, PageTransition } from "@/compo
 import CookieConsent from "@/components/ui/cookie-consent";
 import WhatsAppFloat from "@/components/ui/whatsapp-float";
 import { VisualEditsWrapper } from "@/components/ui/visual-edits-wrapper";
+import { Toaster } from "sonner";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -57,6 +58,7 @@ export default function RootLayout({
         <WhatsAppFloat />
         <CookieConsent />
         <VisualEditsWrapper />
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );

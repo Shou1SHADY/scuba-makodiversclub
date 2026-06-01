@@ -75,7 +75,11 @@ export default function SafarisAdminPage() {
     const handleOpenDialog = (safari?: any) => {
         if (safari) {
             setSelectedSafari(safari);
-            const s = { ...safari };
+            const s = {
+                ...safari,
+                earlyBird: safari.early_bird || safari.earlyBird || "",
+                notIncluded: safari.not_included || safari.notIncluded || [],
+            };
             if (!s.itinerary || s.itinerary.length === 0) s.itinerary = [{ day: "Day 1", activities: [""] }];
             if (!s.included || s.included.length === 0) s.included = [""];
             if (!s.notIncluded || s.notIncluded.length === 0) s.notIncluded = [""];
@@ -91,37 +95,79 @@ export default function SafarisAdminPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!formData.title?.trim()) {
+            toast.error("Please enter a title for the expedition.");
+            return;
+        }
+        if (!formData.dates?.trim()) {
+            toast.error("Please enter the deployment window / dates.");
+            return;
+        }
+
         setSubmitting(true);
         try {
-            const cleaned = {
-                ...formData,
-                included: formData.included.filter((x: string) => x.trim() !== ""),
-                notIncluded: formData.notIncluded.filter((x: string) => x.trim() !== ""),
-                itinerary: formData.itinerary.map((d: ItineraryDay) => ({
-                    ...d,
-                    activities: d.activities.filter((a: string) => a.trim() !== "")
-                })).filter((d: ItineraryDay) => d.activities.length > 0),
-                customDetails: formData.customDetails.filter((s: CustomDetailSection) =>
-                    s.header.trim() !== "" && s.items.filter((i: string) => i.trim() !== "").length > 0
-                ).map((s: CustomDetailSection) => ({
-                    ...s,
-                    items: s.items.filter((i: string) => i.trim() !== "")
-                }))
+            const cleaned: any = {
+                title: formData.title?.trim() || "",
+                type: formData.type || "Full Liveaboard",
+                route: formData.route?.trim() || "",
+                dates: formData.dates?.trim() || "",
+                port: formData.port?.trim() || "",
+                yacht: formData.yacht?.trim() || "HH II",
+                price: formData.price?.trim() || "",
+                status: formData.status || "Booking Now",
+                itinerary: (formData.itinerary || []).map((d: ItineraryDay) => ({
+                    day: d.day?.trim() || "",
+                    activities: (d.activities || []).filter((a: string) => a?.trim() !== "")
+                })).filter((d: { activities: string[] }) => d.activities.length > 0),
+                included: (formData.included || []).filter((x: string) => x?.trim() !== ""),
             };
 
-            if (selectedSafari) {
-                const { error } = await supabase.from('safaris').update(cleaned).eq('id', selectedSafari.id);
-                if (error) throw error;
-                toast.success("Safari updated!");
-            } else {
-                const { error } = await supabase.from('safaris').insert([cleaned]);
-                if (error) throw error;
-                toast.success("Safari created!");
+            if (formData.earlyBird?.trim()) cleaned.early_bird = formData.earlyBird.trim();
+            if ((formData.notIncluded || []).filter((x: string) => x?.trim() !== "").length > 0) {
+                cleaned.not_included = (formData.notIncluded || []).filter((x: string) => x?.trim() !== "");
             }
+            if ((formData.images || []).length > 0) cleaned.images = formData.images;
+            if ((formData.customDetails || []).length > 0) {
+                cleaned.customDetails = formData.customDetails
+                    .filter((s: CustomDetailSection) => s.header?.trim() !== "" && (s.items || []).filter((i: string) => i?.trim() !== "").length > 0)
+                    .map((s: CustomDetailSection) => ({ header: s.header?.trim() || "", items: (s.items || []).filter((i: string) => i?.trim() !== "") }));
+            }
+
+            let result;
+            if (selectedSafari) {
+                result = await supabase.from('safaris').update(cleaned).eq('id', selectedSafari.id);
+            } else {
+                result = await supabase.from('safaris').insert([cleaned]);
+            }
+
+            if (result.error) {
+                const err = result.error as any;
+                const errorMsg = err.message || err.details || err.hint
+                    || `Database error (code: ${err.code || result.status || 'unknown'})`;
+                console.error("Supabase error:", JSON.stringify({ message: err.message, code: err.code, details: err.details, hint: err.hint, status: result.status, statusText: result.statusText }));
+                throw new Error(errorMsg);
+            }
+
+            if (result.status >= 400) {
+                throw new Error(`Server returned status ${result.status}. Please try again.`);
+            }
+
+            toast.success(selectedSafari ? "Expedition updated successfully!" : "Expedition launched successfully!");
             setIsDialogOpen(false);
             fetchSafaris();
         } catch (e: any) {
-            toast.error(e.message);
+            const msg = e?.message || e?.details || "An unexpected error occurred.";
+            console.error("Submit error:", e);
+            if (msg.toLowerCase().includes("not-null") || msg.toLowerCase().includes("violates")) {
+                toast.error("Missing required fields. Please fill in all required information.");
+            } else if (msg.toLowerCase().includes("policy") || msg.toLowerCase().includes("permission")) {
+                toast.error("Permission denied. Please ensure you are logged in as an admin.");
+            } else if (msg.toLowerCase().includes("column")) {
+                toast.error("Database schema may be out of date. Please run the latest migration.");
+            } else {
+                toast.error(msg);
+            }
         } finally {
             setSubmitting(false);
         }
@@ -344,7 +390,7 @@ export default function SafarisAdminPage() {
                                         <TableCell className="text-gray-400 font-body text-sm font-medium">{s.dates}</TableCell>
                                         <TableCell>
                                             <div className="font-display font-black text-primary text-lg tracking-tighter">
-                                                {s.earlyBird || s.price || 'P.O.A'}
+                                                {s.early_bird || s.price || 'P.O.A'}
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-right pr-8">
@@ -392,7 +438,8 @@ export default function SafarisAdminPage() {
                         </DialogHeader>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="p-10 space-y-10 max-h-[55vh] overflow-y-auto custom-scrollbar">
+                    <form onSubmit={handleSubmit} className="flex flex-col">
+                        <div className="p-10 space-y-10 max-h-[55vh] overflow-y-auto custom-scrollbar">
                         {/* ── Basic Info ── */}
                         <div className="space-y-6">
                             <h3 className="text-sm font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
@@ -402,7 +449,7 @@ export default function SafarisAdminPage() {
                             </h3>
                             <div className="grid grid-cols-2 gap-8">
                                 <div className="space-y-3 col-span-2">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Banner Designation</Label>
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Banner Designation <span className="text-red-400">*</span></Label>
                                     <Input
                                         value={formData.title}
                                         onChange={e => setFormData({ ...formData, title: e.target.value })}
@@ -451,7 +498,7 @@ export default function SafarisAdminPage() {
                                     />
                                 </div>
                                 <div className="space-y-3 col-span-2">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Deployment Window (Dates)</Label>
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Deployment Window (Dates) <span className="text-red-400">*</span></Label>
                                     <Input
                                         value={formData.dates}
                                         onChange={e => setFormData({ ...formData, dates: e.target.value })}
@@ -793,21 +840,21 @@ export default function SafarisAdminPage() {
                                 )}
                             </div>
                         </div>
-                    </form>
+                        </div>
 
-                    <div className="p-10 bg-black/40 border-t border-white/5">
-                        <DialogFooter>
-                            <Button
-                                type="submit"
-                                onClick={handleSubmit}
-                                disabled={submitting}
-                                className="w-full h-16 rounded-2xl bg-primary hover:bg-white text-brand-navy font-display font-black uppercase text-[10px] tracking-[0.3em] shadow-xl shadow-primary/20 transition-all"
-                            >
-                                {submitting ? <Loader2 className="animate-spin mr-3 w-5 h-5" /> : null}
-                                {selectedSafari ? "Sync Expedition" : "Launch Mission"}
-                            </Button>
-                        </DialogFooter>
-                    </div>
+                        <div className="p-10 bg-black/40 border-t border-white/5">
+                            <DialogFooter>
+                                <Button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className="w-full h-16 rounded-2xl bg-primary hover:bg-white text-brand-navy font-display font-black uppercase text-[10px] tracking-[0.3em] shadow-xl shadow-primary/20 transition-all"
+                                >
+                                    {submitting ? <Loader2 className="animate-spin mr-3 w-5 h-5" /> : null}
+                                    {selectedSafari ? "Sync Expedition" : "Launch Mission"}
+                                </Button>
+                            </DialogFooter>
+                        </div>
+                    </form>
                 </DialogContent>
             </Dialog>
         </div>

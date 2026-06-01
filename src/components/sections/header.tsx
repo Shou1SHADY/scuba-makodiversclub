@@ -17,9 +17,6 @@ const Header = () => {
   const [activeMobileDropdown, setActiveMobileDropdown] = useState<string | null>(null);
   const [banner, setBanner] = useState<{ text: string; link: string; active: boolean } | null>(null);
 
-  // Hide header on admin pages
-  if (pathname?.startsWith('/admin')) return null;
-
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -91,6 +88,9 @@ const Header = () => {
     { name: "Packages", href: "/packages" },
     { name: "Contact", href: "/contact" },
   ];
+
+  // Hide header on admin pages
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <header className="fixed top-0 left-0 w-full z-[100] transition-all duration-300">

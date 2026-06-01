@@ -77,7 +77,7 @@ CREATE POLICY "Public can read safaris" ON public.safaris
 
 DROP POLICY IF EXISTS "Authenticated users can manage safaris" ON public.safaris;
 CREATE POLICY "Authenticated users can manage safaris" ON public.safaris
-    FOR ALL USING (auth.role() = 'authenticated');
+    FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 -- OFFERS: Public can read active offers, authenticated users can do full CRUD
 DROP POLICY IF EXISTS "Public can read active offers" ON public.offers;
