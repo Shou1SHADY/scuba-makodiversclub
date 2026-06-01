@@ -33,6 +33,9 @@ export default function SafarisAdminPage() {
     const [submitting, setSubmitting] = useState(false);
     const [selectedSafari, setSelectedSafari] = useState<any>(null);
     const [uploadingImage, setUploadingImage] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [deletingSafari, setDeletingSafari] = useState<any>(null);
+    const [deleting, setDeleting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const supabase = createClient();
 
@@ -171,6 +174,29 @@ export default function SafarisAdminPage() {
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const handleDelete = async () => {
+        if (!deletingSafari) return;
+        setDeleting(true);
+        try {
+            const { error } = await supabase.from('safaris').delete().eq('id', deletingSafari.id);
+            if (error) throw error;
+            toast.success(`"${deletingSafari.title}" deleted successfully.`);
+            setIsDeleteDialogOpen(false);
+            setDeletingSafari(null);
+            fetchSafaris();
+        } catch (e: any) {
+            const msg = e?.message || "Failed to delete expedition.";
+            toast.error(msg);
+        } finally {
+            setDeleting(false);
+        }
+    };
+
+    const openDeleteDialog = (safari: any) => {
+        setDeletingSafari(safari);
+        setIsDeleteDialogOpen(true);
     };
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -411,6 +437,14 @@ export default function SafarisAdminPage() {
                                                     className="h-12 w-12 rounded-xl text-gray-500 hover:text-white hover:bg-white/5"
                                                 >
                                                     <Edit2 className="w-5 h-5" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => openDeleteDialog(s)}
+                                                    className="h-12 w-12 rounded-xl text-gray-500 hover:text-red-400 hover:bg-red-400/10"
+                                                >
+                                                    <Trash2 className="w-5 h-5" />
                                                 </Button>
                                             </div>
                                         </TableCell>
@@ -855,6 +889,45 @@ export default function SafarisAdminPage() {
                             </DialogFooter>
                         </div>
                     </form>
+                </DialogContent>
+            </Dialog>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent className="bg-brand-navy border-white/5 text-white max-w-md rounded-[3rem] p-0 overflow-hidden shadow-[0_32px_128px_-16px_rgba(0,0,0,0.8)] border border-white/10">
+                    <div className="bg-black/40 p-8 border-b border-white/5 text-center">
+                        <div className="w-14 h-14 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <Trash2 className="w-7 h-7 text-red-400" />
+                        </div>
+                        <DialogHeader className="space-y-2">
+                            <DialogTitle className="text-xl font-display font-black uppercase tracking-tighter">
+                                DESTROY <span className="text-red-400 italic">EXPEDITION</span>
+                            </DialogTitle>
+                            <DialogDescription className="text-gray-400 text-sm font-light font-body">
+                                Are you sure you want to permanently delete <span className="text-white font-bold">"{deletingSafari?.title}"</span>? This action cannot be undone.
+                            </DialogDescription>
+                        </DialogHeader>
+                    </div>
+                    <div className="p-8 bg-black/40 border-t border-white/5">
+                        <DialogFooter className="flex gap-3">
+                            <Button
+                                variant="ghost"
+                                onClick={() => { setIsDeleteDialogOpen(false); setDeletingSafari(null); }}
+                                disabled={deleting}
+                                className="h-14 px-8 rounded-2xl text-gray-400 hover:text-white hover:bg-white/5 font-display font-black uppercase text-[10px] tracking-[0.2em] flex-1"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleDelete}
+                                disabled={deleting}
+                                className="h-14 px-8 rounded-2xl bg-red-500 hover:bg-red-400 text-white font-display font-black uppercase text-[10px] tracking-[0.2em] shadow-xl shadow-red-500/10 transition-all flex-1 gap-2"
+                            >
+                                {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                                {deleting ? "Deleting..." : "Delete"}
+                            </Button>
+                        </DialogFooter>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>
