@@ -49,25 +49,17 @@ export default function AdminLayout({
                 return;
             }
 
-            // Safety timeout — never hang in loading state more than 5s
-            const timeout = setTimeout(() => {
-                console.warn("⏱️ Session check timed out — redirecting to login.");
-                router.push("/admin/login");
-            }, 5000);
-
             try {
                 const { data: { session }, error } = await supabase.auth.getSession();
-                clearTimeout(timeout);
                 if (error || !session) {
-                    console.log("🚫 No session detected. Redirecting to login...");
+                    console.log("No session detected. Redirecting to login...");
                     router.push("/admin/login");
-                } else {
-                    setUser(session.user);
-                    setIsLoading(false);
+                    return;
                 }
-            } catch (error) {
-                clearTimeout(timeout);
-                console.error("Auth check error:", error);
+                setUser(session.user);
+                setIsLoading(false);
+            } catch {
+                console.log("Session check failed. Redirecting to login...");
                 router.push("/admin/login");
             }
         };
