@@ -194,6 +194,12 @@ const SchedulePage = () => {
     const [filter, setFilter] = useState<'All' | 'Mini Safari' | 'Full Liveaboard'>('All');
     const supabase = createClient();
 
+    const parseStartDate = (datesStr: string): number => {
+        const match = datesStr.match(/(\d{1,2})\s*[-–]\s*\d{1,2}\s+(\w+(?:\s+\w+)?)\s+(\d{4})/);
+        if (match) return new Date(`${match[1]} ${match[2]} ${match[3]}`).getTime();
+        return 0;
+    };
+
     useEffect(() => {
         const fetchSafaris = async () => {
             try {
@@ -206,12 +212,12 @@ const SchedulePage = () => {
                 if (error) {
                     setTrips(fallbackTrips);
                 } else if (data && data.length > 0) {
-                    // Map DB snake_case columns to frontend camelCase expectations
                     const mappedData = data.map((item: any) => ({
                         ...item,
                         earlyBird: item.early_bird || item.earlyBird,
                         notIncluded: item.not_included || item.notIncluded || []
                     }));
+                    mappedData.sort((a: any, b: any) => parseStartDate(a.dates) - parseStartDate(b.dates));
                     setTrips(mappedData as Trip[]);
                 } else {
                     setTrips(fallbackTrips);
