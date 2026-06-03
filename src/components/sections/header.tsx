@@ -137,7 +137,7 @@ const Header = () => {
                 alt="Mako Divers Club"
                 width={160}
                 height={48}
-                className="h-8 md:h-10 w-auto object-contain group-hover:opacity-80 transition-opacity"
+                className="h-10 md:h-14 w-auto object-contain group-hover:opacity-80 transition-opacity"
                 priority
               />
             </a>

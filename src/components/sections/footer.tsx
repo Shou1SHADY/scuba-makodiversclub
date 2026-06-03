@@ -33,7 +33,7 @@ const Footer = () => {
                 alt="Mako Divers Club"
                 width={180}
                 height={54}
-                className="h-12 w-auto object-contain group-hover:opacity-80 transition-opacity duration-500"
+                className="h-14 md:h-16 w-auto object-contain group-hover:opacity-80 transition-opacity duration-500"
               />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
