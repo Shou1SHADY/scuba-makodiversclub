@@ -48,16 +48,6 @@ const HeroSection: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto animate-fade-in-up delay-300">
               <a
-                href={GOOGLE_FORM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative px-8 py-4 bg-primary text-brand-navy font-bold uppercase tracking-wider overflow-hidden rounded-sm hover:text-white transition-colors duration-300"
-              >
-                <div className="absolute inset-0 bg-brand-navy translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                <span className="relative z-10">Start Your Adventure</span>
-              </a>
-
-              <a
                 href="/courses"
                 className="px-8 py-4 border border-white/30 text-white font-bold uppercase tracking-wider hover:bg-white hover:text-brand-navy transition-all duration-300 rounded-sm"
               >
