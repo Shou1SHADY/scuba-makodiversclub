@@ -130,14 +130,14 @@ const Header = () => {
       >
         <div className="container-width flex items-center justify-between">
           {/* Logo */}
-          <div className="flex-shrink-1 z-[120] min-w-0">
-            <a href="/" className="flex flex-col group relative max-w-full overflow-hidden">
+          <div className="flex-shrink-0 z-[120]">
+            <a href="/" className="flex items-center group relative">
               <Image
                 src="/images/logo.webp"
                 alt="Mako Divers Club"
-                width={160}
-                height={48}
-                className="h-10 md:h-14 w-auto object-contain group-hover:opacity-80 transition-opacity"
+                width={200}
+                height={60}
+                className="h-12 md:h-16 w-auto object-contain group-hover:opacity-80 transition-opacity"
                 priority
               />
             </a>

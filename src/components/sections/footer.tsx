@@ -27,13 +27,13 @@ const Footer = () => {
 
           {/* Column 1: Brand Power - spans 4 columns */}
           <div className="sm:col-span-2 lg:col-span-4 space-y-8">
-            <div className="flex flex-col group cursor-pointer">
+            <div className="flex flex-col group cursor-pointer mb-2">
               <Image
                 src="/images/logo.webp"
                 alt="Mako Divers Club"
-                width={180}
-                height={54}
-                className="h-14 md:h-16 w-auto object-contain group-hover:opacity-80 transition-opacity duration-500"
+                width={240}
+                height={72}
+                className="h-16 md:h-20 w-auto object-contain group-hover:opacity-80 transition-opacity duration-500"
               />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
