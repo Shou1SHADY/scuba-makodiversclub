@@ -29,7 +29,7 @@ const Footer = () => {
           <div className="sm:col-span-2 lg:col-span-4 space-y-8">
             <div className="flex flex-col group cursor-pointer mb-2">
               <Image
-                src="/images/logo.webp"
+                src="/images/logo.jpeg"
                 alt="Mako Divers Club"
                 width={240}
                 height={72}

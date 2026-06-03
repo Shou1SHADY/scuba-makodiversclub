@@ -133,7 +133,7 @@ const Header = () => {
           <div className="flex-shrink-0 z-[120]">
             <a href="/" className="flex items-center group relative">
               <Image
-                src="/images/logo.webp"
+                src="/images/logo.jpeg"
                 alt="Mako Divers Club"
                 width={200}
                 height={60}

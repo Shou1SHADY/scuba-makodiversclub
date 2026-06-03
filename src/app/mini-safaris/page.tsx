@@ -150,7 +150,7 @@ const MiniSafarisPage = () => {
                         earlyBird: item.early_bird || item.earlyBird,
                         notIncluded: item.not_included || item.notIncluded || []
                     }));
-                    mappedData.sort((a: any, b: any) => parseStartDate(a.dates) - parseStartDate(b.dates));
+                    mappedData.sort((a: any, b: any) => parseStartDate(b.dates) - parseStartDate(a.dates));
                     setTrips(mappedData as Trip[]);
                 } else {
                     setTrips(fallbackMiniSafaris);
@@ -207,16 +207,30 @@ const MiniSafarisPage = () => {
 };
 
 const fallbackMiniSafaris: Trip[] = [
-    // Sorted by start date — closest upcoming first, past trips at the end
+    // Sorted by start date — furthest future first, past trips at the end
     {
-        id: "daedalus-mini-july",
+        id: "mini-wrecks-dec-2026",
+        title: "Mini Wrecks",
+        route: "Thistlegorm, Ras Muhammad & Abu Nahas",
+        yacht: "HH II",
+        dates: "16 – 19 December 2026",
+        port: "Hurghada",
+        type: "Mini Safari",
+        status: "Booking Now",
+        color: "bg-cyan-500/20",
+        itinerary: [{ activities: ["SS Thistlegorm", "Ras Muhammad National Park", "Abu Nahas Wrecks"] }],
+        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
+        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
+    },
+    {
+        id: "daedalus-mini-nov",
         title: "Daedalus Mini",
         route: "Daedalus & Elphinstone",
         yacht: "HH II",
-        dates: "18 – 22 July 2026 (Long Weekend)",
+        dates: "04 – 07 November 2026",
         port: "Marsa Alam",
         type: "Mini Safari",
-        status: "Limited Spots",
+        status: "Booking Now",
         color: "bg-amber-500/20",
         itinerary: [{ activities: ["Daedalus Reef (Sharks & Pelagics)", "Elphinstone Reef", "Early morning hammerhead dives"] }],
         included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
@@ -237,30 +251,16 @@ const fallbackMiniSafaris: Trip[] = [
         notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
     },
     {
-        id: "daedalus-mini-nov",
+        id: "daedalus-mini-july",
         title: "Daedalus Mini",
         route: "Daedalus & Elphinstone",
         yacht: "HH II",
-        dates: "04 – 07 November 2026",
+        dates: "18 – 22 July 2026 (Long Weekend)",
         port: "Marsa Alam",
         type: "Mini Safari",
-        status: "Booking Now",
+        status: "Limited Spots",
         color: "bg-amber-500/20",
         itinerary: [{ activities: ["Daedalus Reef (Sharks & Pelagics)", "Elphinstone Reef", "Early morning hammerhead dives"] }],
-        included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
-        notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
-    },
-    {
-        id: "mini-wrecks-dec-2026",
-        title: "Mini Wrecks",
-        route: "Thistlegorm, Ras Muhammad & Abu Nahas",
-        yacht: "HH II",
-        dates: "16 – 19 December 2026",
-        port: "Hurghada",
-        type: "Mini Safari",
-        status: "Booking Now",
-        color: "bg-cyan-500/20",
-        itinerary: [{ activities: ["SS Thistlegorm", "Ras Muhammad National Park", "Abu Nahas Wrecks"] }],
         included: ["Full-board accommodation", "Guided dives", "Tanks & weights"],
         notIncluded: ["Equipment rental", "Nitrox", "Crew gratuity"]
     },
