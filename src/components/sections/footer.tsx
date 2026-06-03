@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Facebook, Instagram, Send, ArrowRight, MapPin, Phone, Mail } from 'lucide-react';
 import { siteConfig } from '@/lib/config';
 import { motion } from 'framer-motion';
@@ -27,8 +28,13 @@ const Footer = () => {
           {/* Column 1: Brand Power - spans 4 columns */}
           <div className="sm:col-span-2 lg:col-span-4 space-y-8">
             <div className="flex flex-col group cursor-pointer">
-              <span className="font-display text-4xl font-black text-white leading-none tracking-tighter group-hover:text-primary transition-colors duration-500">MAKO</span>
-              <span className="font-body text-[10px] tracking-[0.5em] text-primary font-black ml-0.5">DIVERS CLUB</span>
+              <Image
+                src="/images/logo.webp"
+                alt="Mako Divers Club"
+                width={180}
+                height={54}
+                className="h-12 w-auto object-contain group-hover:opacity-80 transition-opacity duration-500"
+              />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
               Crafting premium Red Sea expeditions since inception. We combine local expertise with world-class safety to deliver the ultimate diving lifestyle.

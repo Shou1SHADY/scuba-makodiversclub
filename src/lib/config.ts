@@ -12,9 +12,9 @@ export const siteConfig = {
 
   // Contact information
   contact: {
-    phone: "+20 123 456 7890",
+    phone: "+20 11 30511705",
     email: "info@makodivers.club",
-    whatsapp: "+201234567890",
+    whatsapp: "+201130511705",
   },
 
   // Social media links

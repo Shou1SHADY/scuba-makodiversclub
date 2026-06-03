@@ -132,8 +132,14 @@ const Header = () => {
           {/* Logo */}
           <div className="flex-shrink-1 z-[120] min-w-0">
             <a href="/" className="flex flex-col group relative max-w-full overflow-hidden">
-              <span className="font-display text-2xl md:text-3xl font-black text-white leading-none tracking-tighter group-hover:text-primary transition-colors truncate">MAKO</span>
-              <span className="font-body text-[8px] tracking-[0.1em] sm:tracking-[0.5em] text-primary font-black ml-0.5 whitespace-nowrap overflow-hidden text-ellipsis uppercase">DIVERS CLUB</span>
+              <Image
+                src="/images/logo.webp"
+                alt="Mako Divers Club"
+                width={160}
+                height={48}
+                className="h-8 md:h-10 w-auto object-contain group-hover:opacity-80 transition-opacity"
+                priority
+              />
             </a>
           </div>
 
