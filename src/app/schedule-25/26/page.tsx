@@ -213,6 +213,20 @@ const SchedulePage = () => {
         return 0;
     };
 
+    const sortTrips = (tripsList: Trip[]): Trip[] => {
+        const now = Date.now();
+        return [...tripsList].sort((a, b) => {
+            const aTime = parseStartDate(a.dates);
+            const bTime = parseStartDate(b.dates);
+            const aFuture = aTime > now;
+            const bFuture = bTime > now;
+            if (aFuture && !bFuture) return -1;
+            if (!aFuture && bFuture) return 1;
+            if (aFuture && bFuture) return aTime - bTime;
+            return bTime - aTime;
+        });
+    };
+
     const findNearestFutureTrip = (tripsList: Trip[]): Trip | null => {
         const now = Date.now();
         let nearest: Trip | null = null;
@@ -237,8 +251,9 @@ const SchedulePage = () => {
                     .order('created_at', { ascending: false });
 
                 if (error) {
-                    setTrips(fallbackTrips);
-                    const nearest = findNearestFutureTrip(fallbackTrips);
+                    const sorted = sortTrips(fallbackTrips);
+                    setTrips(sorted);
+                    const nearest = findNearestFutureTrip(sorted);
                     if (nearest) setNearestFutureId(nearest.id);
                 } else if (data && data.length > 0) {
                     const mappedData = data.map((item: any) => ({
@@ -246,19 +261,21 @@ const SchedulePage = () => {
                         earlyBird: item.early_bird || item.earlyBird,
                         notIncluded: item.not_included || item.notIncluded || []
                     }));
-                    mappedData.sort((a: any, b: any) => parseStartDate(b.dates) - parseStartDate(a.dates));
-                    const mapped = mappedData as Trip[];
+                    const unsorted = mappedData as Trip[];
+                    const mapped = sortTrips(unsorted);
                     setTrips(mapped);
                     const nearest = findNearestFutureTrip(mapped);
                     if (nearest) setNearestFutureId(nearest.id);
                 } else {
-                    setTrips(fallbackTrips);
-                    const nearest = findNearestFutureTrip(fallbackTrips);
+                    const sorted = sortTrips(fallbackTrips);
+                    setTrips(sorted);
+                    const nearest = findNearestFutureTrip(sorted);
                     if (nearest) setNearestFutureId(nearest.id);
                 }
             } catch (e) {
-                setTrips(fallbackTrips);
-                const nearest = findNearestFutureTrip(fallbackTrips);
+                const sorted = sortTrips(fallbackTrips);
+                setTrips(sorted);
+                const nearest = findNearestFutureTrip(sorted);
                 if (nearest) setNearestFutureId(nearest.id);
             } finally {
                 setLoading(false);
@@ -422,7 +439,7 @@ const SchedulePage = () => {
 };
 
 const fallbackTrips: Trip[] = [
-    // Sorted by start date — furthest future first, past trips at the end
+    // Sorted at runtime: upcoming first (nearest → furthest), then past (most recent → oldest)
     {
         id: "new-years-eve-2026",
         title: "New Year's Eve Expedition",
