@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Calendar, Anchor, CheckCircle2, Clock, MapPin, ArrowRight, ChevronDown, ChevronUp, Check, X, Info, DollarSign, Loader2, Camera, ExternalLink } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '@/lib/config';
@@ -34,11 +34,11 @@ interface Trip {
     bookingLink?: string;
 }
 
-const TripCard = ({ trip }: { trip: Trip }) => {
+const TripCard = ({ trip, isCurrent = false }: { trip: Trip; isCurrent?: boolean }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
-        <div className={`group glass-card rounded-3xl border border-white/5 hover:border-primary/40 transition-all duration-500 overflow-hidden ${isExpanded ? 'ring-1 ring-primary/20' : ''}`}>
+        <div id={`trip-${trip.id}`} className={`group glass-card rounded-3xl border transition-all duration-500 overflow-hidden ${isCurrent ? 'border-primary/60 shadow-lg shadow-primary/10 ring-1 ring-primary/30' : 'border-white/5 hover:border-primary/40'} ${isExpanded ? 'ring-1 ring-primary/20' : ''}`}>
             {/* Top Bar / Summary */}
             <div className="p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-10">
                 <div className="flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
@@ -65,9 +65,16 @@ const TripCard = ({ trip }: { trip: Trip }) => {
                 </div>
 
                 <div className="flex flex-col md:items-end gap-6 w-full md:w-auto">
-                    <div className="flex items-center justify-center md:justify-end gap-2 text-primary font-bold uppercase text-[10px] tracking-widest">
-                        <Clock size={14} />
-                        <span>{trip.status}</span>
+                    <div className="flex items-center justify-center md:justify-end gap-2">
+                        {isCurrent && (
+                            <span className="bg-primary text-brand-navy text-[9px] uppercase font-black px-2 py-0.5 rounded-md tracking-widest animate-pulse">
+                                Up Next
+                            </span>
+                        )}
+                        <div className="flex items-center gap-2 text-primary font-bold uppercase text-[10px] tracking-widest">
+                            <Clock size={14} />
+                            <span>{trip.status}</span>
+                        </div>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4">
                         <div className="flex flex-col sm:flex-row gap-3">
@@ -192,12 +199,32 @@ const SchedulePage = () => {
     const [trips, setTrips] = useState<Trip[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'All' | 'Mini Safari' | 'Full Liveaboard'>('All');
+    const [nearestFutureId, setNearestFutureId] = useState<string | null>(null);
+    const hasScrolled = useRef(false);
     const supabase = createClient();
 
     const parseStartDate = (datesStr: string): number => {
-        const match = datesStr.match(/(\d{1,2})\s*[-–]\s*\d{1,2}\s+(\w+(?:\s+\w+)?)\s+(\d{4})/);
+        let match = datesStr.match(/^(\d{1,2})\s+(\w+)\s+(\d{4})/);
+        if (match) return new Date(`${match[1]} ${match[2]} ${match[3]}`).getTime();
+        match = datesStr.match(/^(\d{1,2})\s+(\w+)\s*[-–]\s*\d{1,2}\s+(\w+)\s+(\d{4})/);
+        if (match) return new Date(`${match[1]} ${match[2]} ${match[4]}`).getTime();
+        match = datesStr.match(/^(\d{1,2})\s*[-–]\s*\d{1,2}\s+(\w+)\s+(\d{4})/);
         if (match) return new Date(`${match[1]} ${match[2]} ${match[3]}`).getTime();
         return 0;
+    };
+
+    const findNearestFutureTrip = (tripsList: Trip[]): Trip | null => {
+        const now = Date.now();
+        let nearest: Trip | null = null;
+        let nearestDiff = Infinity;
+        for (const trip of tripsList) {
+            const startTime = parseStartDate(trip.dates);
+            if (startTime > now && startTime - now < nearestDiff) {
+                nearestDiff = startTime - now;
+                nearest = trip;
+            }
+        }
+        return nearest;
     };
 
     useEffect(() => {
@@ -211,6 +238,8 @@ const SchedulePage = () => {
 
                 if (error) {
                     setTrips(fallbackTrips);
+                    const nearest = findNearestFutureTrip(fallbackTrips);
+                    if (nearest) setNearestFutureId(nearest.id);
                 } else if (data && data.length > 0) {
                     const mappedData = data.map((item: any) => ({
                         ...item,
@@ -218,12 +247,19 @@ const SchedulePage = () => {
                         notIncluded: item.not_included || item.notIncluded || []
                     }));
                     mappedData.sort((a: any, b: any) => parseStartDate(b.dates) - parseStartDate(a.dates));
-                    setTrips(mappedData as Trip[]);
+                    const mapped = mappedData as Trip[];
+                    setTrips(mapped);
+                    const nearest = findNearestFutureTrip(mapped);
+                    if (nearest) setNearestFutureId(nearest.id);
                 } else {
                     setTrips(fallbackTrips);
+                    const nearest = findNearestFutureTrip(fallbackTrips);
+                    if (nearest) setNearestFutureId(nearest.id);
                 }
             } catch (e) {
                 setTrips(fallbackTrips);
+                const nearest = findNearestFutureTrip(fallbackTrips);
+                if (nearest) setNearestFutureId(nearest.id);
             } finally {
                 setLoading(false);
             }
@@ -231,6 +267,19 @@ const SchedulePage = () => {
 
         fetchSafaris();
     }, []);
+
+    useEffect(() => {
+        if (nearestFutureId && !hasScrolled.current) {
+            hasScrolled.current = true;
+            const timer = setTimeout(() => {
+                const el = document.getElementById(`trip-${nearestFutureId}`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [nearestFutureId]);
 
     const filteredTrips = filter === 'All' ? trips : trips.filter(t => t.type === filter);
 
@@ -289,7 +338,7 @@ const SchedulePage = () => {
 
                 <div className="grid gap-8">
                     {filteredTrips.map((trip) => (
-                        <TripCard key={trip.id} trip={trip} />
+                        <TripCard key={trip.id} trip={trip} isCurrent={trip.id === nearestFutureId} />
                     ))}
                 </div>
 
