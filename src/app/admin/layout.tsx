@@ -16,7 +16,9 @@ import {
     Anchor,
     Ship,
     Loader2,
-    Wrench
+    Wrench,
+    Package,
+    BookOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -24,6 +26,8 @@ import { cn } from "@/lib/utils";
 const navigation = [
     { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Safaris", href: "/admin/safaris", icon: Anchor },
+    { name: "Packages", href: "/admin/packages", icon: Package },
+    { name: "Courses", href: "/admin/courses", icon: BookOpen },
     { name: "Offers", href: "/admin/offers", icon: Tag },
     { name: "Updates", href: "/admin/updates", icon: Newspaper },
     { name: "Settings", href: "/admin/settings", icon: Settings },
