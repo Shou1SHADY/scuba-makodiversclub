@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { BookOpen, Award, Target, Users, Zap, ShieldCheck, ArrowRight, HelpCircle, Clock, CheckCircle, Loader2 } from 'lucide-react';
 import WaveSeparator from '@/components/ui/wave-separator';
 import { createClient } from '@/lib/supabase/client';
+import { GOOGLE_FORM_URL } from '@/lib/config';
 
 const iconMap: Record<string, any> = {
     'BookOpen': <BookOpen className="w-7 h-7" />,
@@ -150,13 +151,24 @@ const CoursesPage = () => {
                                     ))}
                                 </div>
 
-                                <Link
-                                    href={`/courses/${course.id}`}
-                                    className="inline-flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white font-bold uppercase text-[10px] tracking-[0.2em] py-4 rounded-xl hover:bg-primary hover:text-brand-navy hover:border-primary transition-all duration-300 group/btn"
-                                >
-                                    View Course
-                                    <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                                </Link>
+                                <div className="flex flex-col gap-2">
+                                    <a
+                                        href={GOOGLE_FORM_URL}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center justify-center gap-3 bg-primary text-brand-navy font-bold uppercase text-[10px] tracking-[0.2em] py-4 rounded-xl hover:bg-white transition-all duration-300"
+                                    >
+                                        Enroll Now
+                                        <ArrowRight size={14} />
+                                    </a>
+                                    <Link
+                                        href={`/courses/${course.id}`}
+                                        className="inline-flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white/70 font-bold uppercase text-[10px] tracking-[0.2em] py-3 rounded-xl hover:bg-white/10 hover:text-white transition-all duration-300 group/btn"
+                                    >
+                                        View Details
+                                        <ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform" />
+                                    </Link>
+                                </div>
                             </div>
                             </div>
                         ))}

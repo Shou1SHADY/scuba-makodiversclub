@@ -110,10 +110,12 @@ const CourseDetailPage = () => {
         );
     }
 
+    const sanitize = (url: string) => url.replace(/%(?![0-9a-fA-F]{2})/g, '%25');
+
     // Use the gallery if provided, otherwise fall back to the single cover image
     const images = (course.images && course.images.length > 0)
-        ? course.images
-        : (course.image ? [course.image] : []);
+        ? course.images.map(sanitize)
+        : (course.image ? [sanitize(course.image)] : []);
     const hasGallery = images.length > 0;
 
     return (

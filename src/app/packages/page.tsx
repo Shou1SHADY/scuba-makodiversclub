@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { MapPin, Hotel, Car, Waves, CheckCircle2, ArrowRight, ShieldCheck, Zap, CalendarDays, Loader2 } from 'lucide-react';
 import WaveSeparator from '@/components/ui/wave-separator';
 import { createClient } from '@/lib/supabase/client';
+import { GOOGLE_FORM_URL } from '@/lib/config';
 
 interface Package {
     id: string;
@@ -167,13 +168,22 @@ const PackagesPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col sm:flex-row items-center gap-8">
-                                    <Link
-                                        href={`/packages/${pkg.id}`}
+                                <div className="flex flex-col sm:flex-row items-center gap-4">
+                                    <a
+                                        href={GOOGLE_FORM_URL}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         className="inline-flex items-center justify-center gap-3 bg-primary text-brand-navy font-bold uppercase text-sm tracking-widest py-5 px-10 rounded-xl hover:bg-white hover:scale-105 transition-all w-full sm:w-auto shadow-lg shadow-primary/20"
                                     >
-                                        View Package
+                                        Reserve My Spot
                                         <ArrowRight size={18} />
+                                    </a>
+                                    <Link
+                                        href={`/packages/${pkg.id}`}
+                                        className="inline-flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white/70 font-bold uppercase text-sm tracking-widest py-5 px-8 rounded-xl hover:bg-white/10 hover:text-white transition-all w-full sm:w-auto"
+                                    >
+                                        View Details
+                                        <ArrowRight size={16} />
                                     </Link>
                                     <div className="flex flex-col items-center sm:items-start opacity-60">
                                         <span className="text-gray-400 text-[10px] uppercase font-bold tracking-[0.2em] mb-1">Expert Support</span>
