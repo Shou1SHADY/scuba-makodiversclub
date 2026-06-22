@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { BookOpen, Award, Target, Users, Zap, ShieldCheck, ArrowRight, HelpCircle, Clock, CheckCircle, Loader2 } from 'lucide-react';
-import { GOOGLE_FORM_URL } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
 import { createClient } from '@/lib/supabase/client';
 
@@ -150,15 +150,13 @@ const CoursesPage = () => {
                                     ))}
                                 </div>
 
-                                <a
-                                    href={GOOGLE_FORM_URL}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                <Link
+                                    href={`/courses/${course.id}`}
                                     className="inline-flex items-center justify-center gap-3 bg-white/5 border border-white/10 text-white font-bold uppercase text-[10px] tracking-[0.2em] py-4 rounded-xl hover:bg-primary hover:text-brand-navy hover:border-primary transition-all duration-300 group/btn"
                                 >
-                                    Enroll Now
+                                    View Course
                                     <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                                </a>
+                                </Link>
                             </div>
                             </div>
                         ))}

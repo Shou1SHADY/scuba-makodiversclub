@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { MapPin, Hotel, Car, Waves, CheckCircle2, ArrowRight, ShieldCheck, Zap, CalendarDays, Loader2 } from 'lucide-react';
-import { GOOGLE_FORM_URL } from '@/lib/config';
 import WaveSeparator from '@/components/ui/wave-separator';
 import { createClient } from '@/lib/supabase/client';
 
@@ -168,13 +168,13 @@ const PackagesPage = () => {
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row items-center gap-8">
-                                    <a
-                                        href={GOOGLE_FORM_URL}
+                                    <Link
+                                        href={`/packages/${pkg.id}`}
                                         className="inline-flex items-center justify-center gap-3 bg-primary text-brand-navy font-bold uppercase text-sm tracking-widest py-5 px-10 rounded-xl hover:bg-white hover:scale-105 transition-all w-full sm:w-auto shadow-lg shadow-primary/20"
                                     >
-                                        Reserve My Spot
+                                        View Package
                                         <ArrowRight size={18} />
-                                    </a>
+                                    </Link>
                                     <div className="flex flex-col items-center sm:items-start opacity-60">
                                         <span className="text-gray-400 text-[10px] uppercase font-bold tracking-[0.2em] mb-1">Expert Support</span>
                                         <div className="flex items-center gap-1.5 text-white text-xs font-semibold uppercase tracking-widest">

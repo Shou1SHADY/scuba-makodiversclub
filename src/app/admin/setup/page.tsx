@@ -57,11 +57,60 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- PACKAGES TABLE
+CREATE TABLE IF NOT EXISTS public.packages (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    city TEXT NOT NULL,
+    details TEXT NOT NULL DEFAULT '',
+    duration TEXT NOT NULL DEFAULT '',
+    description TEXT NOT NULL DEFAULT '',
+    highlights JSONB NOT NULL DEFAULT '[]',
+    dates JSONB NOT NULL DEFAULT '[]',
+    featured BOOLEAN NOT NULL DEFAULT false,
+    accent TEXT NOT NULL DEFAULT 'from-blue-600',
+    image TEXT NOT NULL DEFAULT '',
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- COURSES TABLE
+CREATE TABLE IF NOT EXISTS public.courses (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title TEXT NOT NULL,
+    level TEXT NOT NULL DEFAULT '',
+    description TEXT NOT NULL DEFAULT '',
+    icon TEXT NOT NULL DEFAULT 'BookOpen',
+    color TEXT NOT NULL DEFAULT 'from-cyan-500 to-blue-600',
+    image TEXT NOT NULL DEFAULT '',
+    duration TEXT NOT NULL DEFAULT '',
+    highlights JSONB NOT NULL DEFAULT '[]',
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- RICH DETAIL-PAGE COLUMNS FOR PACKAGES & COURSES
+ALTER TABLE public.packages ADD COLUMN IF NOT EXISTS long_description TEXT;
+ALTER TABLE public.packages ADD COLUMN IF NOT EXISTS price TEXT;
+ALTER TABLE public.packages ADD COLUMN IF NOT EXISTS itinerary JSONB DEFAULT '[]';
+ALTER TABLE public.packages ADD COLUMN IF NOT EXISTS included JSONB DEFAULT '[]';
+ALTER TABLE public.packages ADD COLUMN IF NOT EXISTS not_included JSONB DEFAULT '[]';
+ALTER TABLE public.packages ADD COLUMN IF NOT EXISTS images JSONB DEFAULT '[]';
+ALTER TABLE public.packages ADD COLUMN IF NOT EXISTS "customDetails" JSONB DEFAULT '[]';
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS long_description TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS price TEXT;
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS itinerary JSONB DEFAULT '[]';
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS included JSONB DEFAULT '[]';
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS not_included JSONB DEFAULT '[]';
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS images JSONB DEFAULT '[]';
+ALTER TABLE public.courses ADD COLUMN IF NOT EXISTS "customDetails" JSONB DEFAULT '[]';
+
 -- ENABLE RLS
 ALTER TABLE public.safaris ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.offers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.updates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.packages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
 
 -- RLS POLICIES FOR SAFARIS
 DROP POLICY IF EXISTS "Public can read safaris" ON public.safaris;
@@ -87,6 +136,18 @@ CREATE POLICY "Public can read site settings" ON public.site_settings FOR SELECT
 DROP POLICY IF EXISTS "Authenticated users can manage site settings" ON public.site_settings;
 CREATE POLICY "Authenticated users can manage site settings" ON public.site_settings FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
+-- RLS POLICIES FOR PACKAGES
+DROP POLICY IF EXISTS "Public can read packages" ON public.packages;
+CREATE POLICY "Public can read packages" ON public.packages FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Authenticated users can manage packages" ON public.packages;
+CREATE POLICY "Authenticated users can manage packages" ON public.packages FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+-- RLS POLICIES FOR COURSES
+DROP POLICY IF EXISTS "Public can read courses" ON public.courses;
+CREATE POLICY "Public can read courses" ON public.courses FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Authenticated users can manage courses" ON public.courses;
+CREATE POLICY "Authenticated users can manage courses" ON public.courses FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
 -- SEED DEFAULT BANNER
 INSERT INTO public.site_settings (key, value)
 VALUES ('homepage_banner', '{"text": "North Expedition Mini Safari - Limited Spots Available - Book Now!", "link": "/mini-safaris", "active": true}')
@@ -104,7 +165,7 @@ export default function AdminSetupPage() {
     const [results, setResults] = useState<TestResult[]>([]);
     const supabase = createClient();
 
-    const TABLES = ['safaris', 'offers', 'updates', 'site_settings'];
+    const TABLES = ['safaris', 'offers', 'updates', 'site_settings', 'packages', 'courses'];
 
     const runDiagnostics = async () => {
         setTesting(true);

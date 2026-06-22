@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Plus, Edit2, Trash2, Loader2, Package, X, PlusCircle, Star, Upload } from "lucide-react";
+import { Plus, Edit2, Trash2, Loader2, Package, X, PlusCircle, Star, Upload, Eye, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -13,6 +13,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+
+interface CustomDetailSection {
+    header: string;
+    items: string[];
+}
+
+interface ItineraryDay {
+    day: string;
+    activities: string[];
+}
 
 export default function PackagesAdminPage() {
     const [packages, setPackages] = useState<any[]>([]);
@@ -24,7 +35,9 @@ export default function PackagesAdminPage() {
     const [deletingPkg, setDeletingPkg] = useState<any>(null);
     const [deleting, setDeleting] = useState(false);
     const [uploadingImage, setUploadingImage] = useState(false);
+    const [uploadingGallery, setUploadingGallery] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const galleryInputRef = useRef<HTMLInputElement>(null);
     const supabase = createClient();
 
     const emptyForm = {
@@ -32,11 +45,18 @@ export default function PackagesAdminPage() {
         details: "",
         duration: "",
         description: "",
+        long_description: "",
+        price: "",
         highlights: ["", "", ""],
         dates: [""],
         featured: false,
         accent: "from-blue-600",
         image: "",
+        itinerary: [{ day: "Day 1", activities: [""] }],
+        included: [""],
+        notIncluded: [""],
+        images: [] as string[],
+        customDetails: [] as CustomDetailSection[],
     };
 
     const [formData, setFormData] = useState<any>(emptyForm);
@@ -61,8 +81,15 @@ export default function PackagesAdminPage() {
             setSelectedPkg(pkg);
             setFormData({
                 ...pkg,
+                long_description: pkg.long_description || "",
+                price: pkg.price || "",
                 highlights: pkg.highlights?.length > 0 ? pkg.highlights : ["", "", ""],
                 dates: pkg.dates?.length > 0 ? pkg.dates : [""],
+                itinerary: pkg.itinerary?.length > 0 ? pkg.itinerary : [{ day: "Day 1", activities: [""] }],
+                included: pkg.included?.length > 0 ? pkg.included : [""],
+                notIncluded: (pkg.notIncluded || pkg.not_included)?.length > 0 ? (pkg.notIncluded || pkg.not_included) : [""],
+                images: pkg.images || [],
+                customDetails: pkg.customDetails || [],
             });
         } else {
             setSelectedPkg(null);
@@ -76,16 +103,28 @@ export default function PackagesAdminPage() {
         if (!formData.city?.trim()) { toast.error("Please enter a city / destination name."); return; }
         setSubmitting(true);
         try {
-            const cleaned = {
+            const cleaned: any = {
                 city: formData.city.trim(),
                 details: formData.details?.trim() || "",
                 duration: formData.duration?.trim() || "",
                 description: formData.description?.trim() || "",
+                long_description: formData.long_description?.trim() || "",
+                price: formData.price?.trim() || "",
                 highlights: (formData.highlights || []).filter((h: string) => h?.trim() !== ""),
                 dates: (formData.dates || []).filter((d: string) => d?.trim() !== ""),
                 featured: formData.featured || false,
                 accent: formData.accent?.trim() || "from-blue-600",
                 image: formData.image?.trim() || "",
+                itinerary: (formData.itinerary || []).map((d: ItineraryDay) => ({
+                    day: d.day?.trim() || "",
+                    activities: (d.activities || []).filter((a: string) => a?.trim() !== "")
+                })).filter((d: { activities: string[] }) => d.activities.length > 0),
+                included: (formData.included || []).filter((x: string) => x?.trim() !== ""),
+                not_included: (formData.notIncluded || []).filter((x: string) => x?.trim() !== ""),
+                images: formData.images || [],
+                customDetails: (formData.customDetails || [])
+                    .filter((s: CustomDetailSection) => s.header?.trim() !== "" && (s.items || []).filter((i: string) => i?.trim() !== "").length > 0)
+                    .map((s: CustomDetailSection) => ({ header: s.header?.trim() || "", items: (s.items || []).filter((i: string) => i?.trim() !== "") })),
             };
 
             const result = selectedPkg
@@ -155,6 +194,99 @@ export default function PackagesAdminPage() {
         const arr = [...formData[field]];
         arr.splice(index, 1);
         setFormData({ ...formData, [field]: arr.length > 0 ? arr : [""] });
+    };
+
+    const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+        setUploadingGallery(true);
+        const uploadedUrls: string[] = [];
+        for (const file of Array.from(files)) {
+            const fileExt = file.name.split(".").pop();
+            const filePath = `trip-images/pkg_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+            const { error } = await supabase.storage.from("trip-images").upload(filePath, file, { upsert: true });
+            if (error) { toast.error(`Failed to upload ${file.name}: ${error.message}`); continue; }
+            const { data: urlData } = supabase.storage.from("trip-images").getPublicUrl(filePath);
+            if (urlData?.publicUrl) uploadedUrls.push(urlData.publicUrl);
+        }
+        if (uploadedUrls.length > 0) {
+            setFormData((prev: any) => ({ ...prev, images: [...(prev.images || []), ...uploadedUrls] }));
+            toast.success(`${uploadedUrls.length} image(s) uploaded`);
+        }
+        setUploadingGallery(false);
+        if (galleryInputRef.current) galleryInputRef.current.value = "";
+    };
+
+    const removeGalleryImage = (index: number) => {
+        const arr = [...formData.images];
+        arr.splice(index, 1);
+        setFormData({ ...formData, images: arr });
+    };
+
+    // Itinerary helpers
+    const addItineraryDay = () => setFormData({ ...formData, itinerary: [...formData.itinerary, { day: `Day ${formData.itinerary.length + 1}`, activities: [""] }] });
+    const updateItineraryDay = (dayIndex: number, value: string) => {
+        const itin = [...formData.itinerary];
+        itin[dayIndex] = { ...itin[dayIndex], day: value };
+        setFormData({ ...formData, itinerary: itin });
+    };
+    const addItineraryActivity = (dayIndex: number) => {
+        const itin = [...formData.itinerary];
+        itin[dayIndex] = { ...itin[dayIndex], activities: [...itin[dayIndex].activities, ""] };
+        setFormData({ ...formData, itinerary: itin });
+    };
+    const updateItineraryActivity = (dayIndex: number, actIndex: number, value: string) => {
+        const itin = [...formData.itinerary];
+        const acts = [...itin[dayIndex].activities];
+        acts[actIndex] = value;
+        itin[dayIndex] = { ...itin[dayIndex], activities: acts };
+        setFormData({ ...formData, itinerary: itin });
+    };
+    const removeItineraryActivity = (dayIndex: number, actIndex: number) => {
+        const itin = [...formData.itinerary];
+        const acts = [...itin[dayIndex].activities];
+        acts.splice(actIndex, 1);
+        if (acts.length === 0) acts.push("");
+        itin[dayIndex] = { ...itin[dayIndex], activities: acts };
+        setFormData({ ...formData, itinerary: itin });
+    };
+    const removeItineraryDay = (dayIndex: number) => {
+        const itin = [...formData.itinerary];
+        itin.splice(dayIndex, 1);
+        setFormData({ ...formData, itinerary: itin.length > 0 ? itin : [{ day: "Day 1", activities: [""] }] });
+    };
+
+    // Custom section helpers
+    const addCustomSection = () => setFormData({ ...formData, customDetails: [...(formData.customDetails || []), { header: "", items: [""] }] });
+    const updateCustomHeader = (sectionIndex: number, value: string) => {
+        const sections = [...(formData.customDetails || [])];
+        sections[sectionIndex] = { ...sections[sectionIndex], header: value };
+        setFormData({ ...formData, customDetails: sections });
+    };
+    const addCustomItem = (sectionIndex: number) => {
+        const sections = [...(formData.customDetails || [])];
+        sections[sectionIndex] = { ...sections[sectionIndex], items: [...sections[sectionIndex].items, ""] };
+        setFormData({ ...formData, customDetails: sections });
+    };
+    const updateCustomItem = (sectionIndex: number, itemIndex: number, value: string) => {
+        const sections = [...(formData.customDetails || [])];
+        const items = [...sections[sectionIndex].items];
+        items[itemIndex] = value;
+        sections[sectionIndex] = { ...sections[sectionIndex], items };
+        setFormData({ ...formData, customDetails: sections });
+    };
+    const removeCustomItem = (sectionIndex: number, itemIndex: number) => {
+        const sections = [...(formData.customDetails || [])];
+        const items = [...sections[sectionIndex].items];
+        items.splice(itemIndex, 1);
+        if (items.length === 0) items.push("");
+        sections[sectionIndex] = { ...sections[sectionIndex], items };
+        setFormData({ ...formData, customDetails: sections });
+    };
+    const removeCustomSection = (sectionIndex: number) => {
+        const sections = [...(formData.customDetails || [])];
+        sections.splice(sectionIndex, 1);
+        setFormData({ ...formData, customDetails: sections });
     };
 
     return (
@@ -238,6 +370,15 @@ export default function PackagesAdminPage() {
                                         </TableCell>
                                         <TableCell className="text-right pr-8">
                                             <div className="flex items-center justify-end gap-2">
+                                                <Link href={`/packages/${pkg.id}`} target="_blank">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-12 w-12 rounded-xl text-gray-500 hover:text-primary hover:bg-primary/10"
+                                                    >
+                                                        <Eye className="w-5 h-5" />
+                                                    </Button>
+                                                </Link>
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
@@ -320,13 +461,32 @@ export default function PackagesAdminPage() {
                                     </div>
                                 </div>
                                 <div className="space-y-3">
-                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Description</Label>
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Short Description (card)</Label>
                                     <Textarea
                                         value={formData.description}
                                         onChange={e => setFormData({ ...formData, description: e.target.value })}
                                         className="min-h-[80px] bg-white/5 border-white/10 rounded-2xl p-6 focus:border-primary/50 text-white placeholder:text-white/20 resize-none"
                                         placeholder="A short quote-style description shown on the card..."
                                         rows={3}
+                                    />
+                                </div>
+                                <div className="space-y-3">
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Full Overview (detail page)</Label>
+                                    <Textarea
+                                        value={formData.long_description}
+                                        onChange={e => setFormData({ ...formData, long_description: e.target.value })}
+                                        className="min-h-[100px] bg-white/5 border-white/10 rounded-2xl p-6 focus:border-primary/50 text-white placeholder:text-white/20 resize-none"
+                                        placeholder="A longer description shown on the package detail page..."
+                                        rows={4}
+                                    />
+                                </div>
+                                <div className="space-y-3">
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Price</Label>
+                                    <Input
+                                        value={formData.price}
+                                        onChange={e => setFormData({ ...formData, price: e.target.value })}
+                                        className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 focus:border-primary/50 text-white placeholder:text-white/20"
+                                        placeholder="e.g. 18,000 EGP"
                                     />
                                 </div>
                             </div>
@@ -412,10 +572,168 @@ export default function PackagesAdminPage() {
                                 </div>
                             </div>
 
+                            {/* Itinerary */}
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-sm font-black uppercase tracking-[0.3em] text-emerald-400 flex items-center gap-3">
+                                        <div className="h-px flex-1 bg-white/10" /> ITINERARY <div className="h-px flex-1 bg-white/10" />
+                                    </h3>
+                                    <Button type="button" variant="ghost" size="sm" onClick={addItineraryDay} className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-400/10 text-[10px] font-black uppercase tracking-[0.2em] gap-2">
+                                        <PlusCircle className="w-4 h-4" /> Add Day
+                                    </Button>
+                                </div>
+                                <div className="space-y-6">
+                                    {(formData.itinerary || []).map((day: ItineraryDay, dayIndex: number) => (
+                                        <div key={dayIndex} className="bg-white/[0.03] border border-white/5 rounded-2xl p-6 space-y-4">
+                                            <div className="flex items-center gap-3">
+                                                <Input
+                                                    value={day.day}
+                                                    onChange={e => updateItineraryDay(dayIndex, e.target.value)}
+                                                    className="h-12 bg-white/5 border-white/10 rounded-xl px-4 text-white text-sm font-bold flex-1"
+                                                    placeholder="Day title..."
+                                                />
+                                                {(formData.itinerary || []).length > 1 && (
+                                                    <Button type="button" variant="ghost" size="icon" onClick={() => removeItineraryDay(dayIndex)} className="h-10 w-10 rounded-xl text-gray-500 hover:text-red-400 hover:bg-red-400/10">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                )}
+                                            </div>
+                                            <div className="space-y-2 pl-2">
+                                                {day.activities.map((act: string, actIndex: number) => (
+                                                    <div key={actIndex} className="flex items-center gap-2">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 shrink-0" />
+                                                        <Input
+                                                            value={act}
+                                                            onChange={e => updateItineraryActivity(dayIndex, actIndex, e.target.value)}
+                                                            className="h-10 bg-white/5 border-white/5 rounded-xl px-4 text-white text-sm flex-1"
+                                                            placeholder="Activity description..."
+                                                        />
+                                                        <Button type="button" variant="ghost" size="icon" onClick={() => removeItineraryActivity(dayIndex, actIndex)} className="h-8 w-8 rounded-lg text-gray-500 hover:text-red-400 shrink-0">
+                                                            <X className="w-3 h-3" />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <Button type="button" variant="ghost" size="sm" onClick={() => addItineraryActivity(dayIndex)} className="text-emerald-400/60 hover:text-emerald-400 text-[10px] font-bold uppercase tracking-[0.15em] ml-2">
+                                                <Plus className="w-3 h-3 mr-1" /> Add Activity
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* What's Included */}
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-sm font-black uppercase tracking-[0.3em] text-emerald-400 flex items-center gap-3">
+                                        <div className="h-px flex-1 bg-white/10" /> WHAT'S INCLUDED <div className="h-px flex-1 bg-white/10" />
+                                    </h3>
+                                    <Button type="button" variant="ghost" size="sm" onClick={() => addArrayItem("included")} className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-400/10 text-[10px] font-black uppercase tracking-[0.2em] gap-2">
+                                        <PlusCircle className="w-4 h-4" /> Add Item
+                                    </Button>
+                                </div>
+                                <div className="space-y-3">
+                                    {(formData.included || []).map((item: string, index: number) => (
+                                        <div key={index} className="flex items-center gap-3">
+                                            <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                                            <Input value={item} onChange={e => updateArrayItem("included", index, e.target.value)} className="h-12 bg-white/5 border-white/5 rounded-xl px-4 text-white text-sm flex-1" placeholder="e.g. Full-board accommodation" />
+                                            <Button type="button" variant="ghost" size="icon" onClick={() => removeArrayItem("included", index)} className="h-10 w-10 rounded-xl text-gray-500 hover:text-red-400 hover:bg-red-400/10 shrink-0">
+                                                <X className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Not Included */}
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-sm font-black uppercase tracking-[0.3em] text-rose-400 flex items-center gap-3">
+                                        <div className="h-px flex-1 bg-white/10" /> NOT INCLUDED <div className="h-px flex-1 bg-white/10" />
+                                    </h3>
+                                    <Button type="button" variant="ghost" size="sm" onClick={() => addArrayItem("notIncluded")} className="text-rose-400 hover:text-rose-300 hover:bg-rose-400/10 text-[10px] font-black uppercase tracking-[0.2em] gap-2">
+                                        <PlusCircle className="w-4 h-4" /> Add Item
+                                    </Button>
+                                </div>
+                                <div className="space-y-3">
+                                    {(formData.notIncluded || []).map((item: string, index: number) => (
+                                        <div key={index} className="flex items-center gap-3">
+                                            <X className="w-4 h-4 text-rose-400 shrink-0" />
+                                            <Input value={item} onChange={e => updateArrayItem("notIncluded", index, e.target.value)} className="h-12 bg-white/5 border-white/5 rounded-xl px-4 text-white text-sm flex-1" placeholder="e.g. International flights" />
+                                            <Button type="button" variant="ghost" size="icon" onClick={() => removeArrayItem("notIncluded", index)} className="h-10 w-10 rounded-xl text-gray-500 hover:text-red-400 hover:bg-red-400/10 shrink-0">
+                                                <X className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Custom Detail Sections */}
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-sm font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+                                        <div className="h-px flex-1 bg-white/10" /> CUSTOM SECTIONS <div className="h-px flex-1 bg-white/10" />
+                                    </h3>
+                                    <Button type="button" variant="ghost" size="sm" onClick={addCustomSection} className="text-primary hover:text-primary-light hover:bg-primary/10 text-[10px] font-black uppercase tracking-[0.2em] gap-2">
+                                        <PlusCircle className="w-4 h-4" /> Add Section
+                                    </Button>
+                                </div>
+                                <div className="space-y-6">
+                                    {(formData.customDetails || []).map((section: CustomDetailSection, secIndex: number) => (
+                                        <div key={secIndex} className="bg-white/[0.03] border border-white/5 rounded-2xl p-6 space-y-4">
+                                            <div className="flex items-center gap-3">
+                                                <Input value={section.header} onChange={e => updateCustomHeader(secIndex, e.target.value)} className="h-12 bg-white/5 border-white/10 rounded-xl px-4 text-white text-sm font-bold flex-1" placeholder="Section header (e.g. Accommodation)" />
+                                                <Button type="button" variant="ghost" size="icon" onClick={() => removeCustomSection(secIndex)} className="h-10 w-10 rounded-xl text-gray-500 hover:text-red-400 hover:bg-red-400/10">
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </div>
+                                            <div className="space-y-2 pl-2">
+                                                {section.items.map((item: string, itemIndex: number) => (
+                                                    <div key={itemIndex} className="flex items-center gap-2">
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-primary/50 shrink-0" />
+                                                        <Input value={item} onChange={e => updateCustomItem(secIndex, itemIndex, e.target.value)} className="h-10 bg-white/5 border-white/5 rounded-xl px-4 text-white text-sm flex-1" placeholder="Detail item..." />
+                                                        <Button type="button" variant="ghost" size="icon" onClick={() => removeCustomItem(secIndex, itemIndex)} className="h-8 w-8 rounded-lg text-gray-500 hover:text-red-400 shrink-0">
+                                                            <X className="w-3 h-3" />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <Button type="button" variant="ghost" size="sm" onClick={() => addCustomItem(secIndex)} className="text-primary/60 hover:text-primary text-[10px] font-bold uppercase tracking-[0.15em] ml-2">
+                                                <Plus className="w-3 h-3 mr-1" /> Add Item
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Image Gallery */}
+                            <div className="space-y-6">
+                                <h3 className="text-sm font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
+                                    <div className="h-px flex-1 bg-white/10" /> IMAGE GALLERY <div className="h-px flex-1 bg-white/10" />
+                                </h3>
+                                <input ref={galleryInputRef} type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
+                                <Button type="button" variant="outline" onClick={() => galleryInputRef.current?.click()} disabled={uploadingGallery} className="w-full h-16 border-dashed border-2 border-white/10 rounded-2xl text-gray-400 hover:text-primary hover:border-primary/30 transition-all gap-3">
+                                    {uploadingGallery ? <Loader2 className="w-5 h-5 animate-spin" /> : <Upload className="w-5 h-5" />}
+                                    {uploadingGallery ? "Uploading..." : "Upload Gallery Images"}
+                                </Button>
+                                {(formData.images || []).length > 0 && (
+                                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                                        {(formData.images || []).map((img: string, index: number) => (
+                                            <div key={index} className="relative group aspect-video rounded-xl overflow-hidden border border-white/5">
+                                                <img src={img} alt={`Gallery ${index + 1}`} className="w-full h-full object-cover" />
+                                                <button type="button" onClick={() => removeGalleryImage(index)} className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-red-500/90 hover:bg-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <X className="w-3.5 h-3.5 text-white" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
                             {/* Styling & Image */}
                             <div className="space-y-6">
                                 <h3 className="text-sm font-black uppercase tracking-[0.3em] text-primary flex items-center gap-3">
-                                    <div className="h-px flex-1 bg-white/10" /> STYLING & IMAGE <div className="h-px flex-1 bg-white/10" />
+                                    <div className="h-px flex-1 bg-white/10" /> STYLING & COVER IMAGE <div className="h-px flex-1 bg-white/10" />
                                 </h3>
                                 <div className="space-y-3">
                                     <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Accent Gradient (Tailwind)</Label>
