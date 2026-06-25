@@ -2,14 +2,22 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Calendar, User, ArrowRight, Newspaper, Loader2, ChevronRight } from 'lucide-react';
 import WaveSeparator from '@/components/ui/wave-separator';
+
+interface BlogSection {
+    title: string;
+    description: string;
+    image_url: string;
+}
 
 interface Post {
     id: string;
     title: string;
     content: string;
+    sections: BlogSection[];
     author: string;
     published_at: string;
 }
@@ -28,7 +36,7 @@ export default function UpdatesPage() {
                     .order('published_at', { ascending: false });
 
                 if (error) throw error;
-                setPosts(data || []);
+                setPosts((data || []).map(p => ({ ...p, sections: p.sections || [] })));
             } catch (e) {
                 console.error("Error fetching updates:", e);
             } finally {
@@ -78,42 +86,64 @@ export default function UpdatesPage() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {posts.map((post) => (
-                            <article
-                                key={post.id}
-                                className="group glass-card rounded-[2.5rem] border border-white/5 overflow-hidden hover:border-primary/30 transition-all duration-500 flex flex-col h-full"
-                            >
-                                <div className="p-6 md:p-8 lg:p-10 flex flex-col h-full">
-                                    <div className="flex items-center gap-4 mb-6">
-                                        <div className="flex items-center gap-2 text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
-                                            <Calendar size={12} />
-                                            {new Date(post.published_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        {posts.map((post) => {
+                            const excerpt = post.sections && post.sections.length > 0
+                                ? post.sections[0].description
+                                : post.content;
+                            const coverImage = post.sections && post.sections.length > 0 && post.sections[0].image_url
+                                ? post.sections[0].image_url
+                                : null;
+
+                            return (
+                                <Link
+                                    key={post.id}
+                                    href={`/updates/${post.id}`}
+                                    className="group glass-card rounded-[2.5rem] border border-white/5 overflow-hidden hover:border-primary/30 transition-all duration-500 flex flex-col h-full"
+                                >
+                                    {/* Cover image from first section */}
+                                    {coverImage && (
+                                        <div className="relative h-48 overflow-hidden">
+                                            <img
+                                                src={coverImage}
+                                                alt={post.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-[#020408]/80 to-transparent" />
                                         </div>
-                                    </div>
+                                    )}
 
-                                    <h2 className="text-2xl font-display font-bold text-white mb-4 group-hover:text-primary transition-colors leading-tight">
-                                        {post.title}
-                                    </h2>
-
-                                    <p className="text-gray-400 text-sm leading-relaxed mb-8 line-clamp-4 flex-grow italic">
-                                        {post.content}
-                                    </p>
-
-                                    <div className="pt-6 border-t border-white/5 flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-primary border border-white/10">
-                                                <User size={14} />
+                                    <div className="p-6 md:p-8 lg:p-10 flex flex-col h-full">
+                                        <div className="flex items-center gap-4 mb-6">
+                                            <div className="flex items-center gap-2 text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
+                                                <Calendar size={12} />
+                                                {new Date(post.published_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                             </div>
-                                            <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">{post.author}</span>
                                         </div>
-                                        <button className="text-primary group/link flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em]">
-                                            Read More
-                                            <ArrowRight size={12} className="group-hover/link:translate-x-1 transition-transform" />
-                                        </button>
+
+                                        <h2 className="text-2xl font-display font-bold text-white mb-4 group-hover:text-primary transition-colors leading-tight">
+                                            {post.title}
+                                        </h2>
+
+                                        <p className="text-gray-400 text-sm leading-relaxed mb-8 line-clamp-4 flex-grow italic">
+                                            {excerpt}
+                                        </p>
+
+                                        <div className="pt-6 border-t border-white/5 flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-primary border border-white/10">
+                                                    <User size={14} />
+                                                </div>
+                                                <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">{post.author}</span>
+                                            </div>
+                                            <span className="text-primary group-hover:text-white flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] transition-colors">
+                                                Read More
+                                                <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </article>
-                        ))}
+                                </Link>
+                            );
+                        })}
                     </div>
                 )}
             </div>

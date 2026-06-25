@@ -13,7 +13,10 @@ import {
     Eye,
     Loader2,
     AlertCircle,
-    FileText
+    FileText,
+    Image as ImageIcon,
+    X,
+    GripVertical
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +34,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -47,15 +50,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
+interface BlogSection {
+    title: string;
+    description: string;
+    image_url: string;
+}
+
 interface Post {
     id: string;
     title: string;
     content: string;
+    sections: BlogSection[];
     author: string;
     status: 'published' | 'draft';
     published_at: string | null;
     created_at: string;
 }
+
+const emptySection = (): BlogSection => ({ title: '', description: '', image_url: '' });
 
 export default function UpdatesPage() {
     const [posts, setPosts] = useState<Post[]>([]);
@@ -67,13 +79,12 @@ export default function UpdatesPage() {
     const [submitting, setSubmitting] = useState(false);
     const supabase = createClient();
 
-    // Form State
     const [formData, setFormData] = useState({
         title: "",
-        content: "",
         author: "",
         status: "draft" as Post['status']
     });
+    const [sections, setSections] = useState<BlogSection[]>([emptySection()]);
 
     useEffect(() => {
         fetchPosts();
@@ -88,10 +99,10 @@ export default function UpdatesPage() {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            setPosts(data || []);
+            setPosts((data || []).map(p => ({ ...p, sections: p.sections || [] })));
         } catch (error: any) {
             console.error("Fetch error:", error);
-            toast.error("Failed to load updates. Did you run the SQL migration?");
+            toast.error("Failed to load updates.");
         } finally {
             setLoading(false);
         }
@@ -100,20 +111,12 @@ export default function UpdatesPage() {
     const handleOpenDialog = (post?: Post) => {
         if (post) {
             setSelectedPost(post);
-            setFormData({
-                title: post.title,
-                content: post.content,
-                author: post.author,
-                status: post.status
-            });
+            setFormData({ title: post.title, author: post.author, status: post.status });
+            setSections(post.sections && post.sections.length > 0 ? post.sections : [emptySection()]);
         } else {
             setSelectedPost(null);
-            setFormData({
-                title: "",
-                content: "",
-                author: "Mako Team",
-                status: "draft"
-            });
+            setFormData({ title: "", author: "Mako Team", status: "draft" });
+            setSections([emptySection()]);
         }
         setIsDialogOpen(true);
     };
@@ -122,22 +125,20 @@ export default function UpdatesPage() {
         e.preventDefault();
         setSubmitting(true);
         try {
+            const validSections = sections.filter(s => s.title.trim() || s.description.trim() || s.image_url.trim());
             const dbData = {
                 ...formData,
+                sections: validSections,
+                content: validSections.length > 0 ? validSections[0].description : '',
                 published_at: formData.status === 'published' ? new Date().toISOString() : null
             };
 
             if (selectedPost) {
-                const { error } = await supabase
-                    .from('updates')
-                    .update(dbData)
-                    .eq('id', selectedPost.id);
+                const { error } = await supabase.from('updates').update(dbData).eq('id', selectedPost.id);
                 if (error) throw error;
-                toast.success("Update improved successfully");
+                toast.success("Update saved");
             } else {
-                const { error } = await supabase
-                    .from('updates')
-                    .insert([dbData]);
+                const { error } = await supabase.from('updates').insert([dbData]);
                 if (error) throw error;
                 toast.success("New update published");
             }
@@ -154,10 +155,7 @@ export default function UpdatesPage() {
         if (!selectedPost) return;
         setSubmitting(true);
         try {
-            const { error } = await supabase
-                .from('updates')
-                .delete()
-                .eq('id', selectedPost.id);
+            const { error } = await supabase.from('updates').delete().eq('id', selectedPost.id);
             if (error) throw error;
             toast.success("Post deleted");
             setIsDeleteDialogOpen(false);
@@ -167,6 +165,16 @@ export default function UpdatesPage() {
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const updateSection = (idx: number, field: keyof BlogSection, value: string) => {
+        setSections(prev => prev.map((s, i) => i === idx ? { ...s, [field]: value } : s));
+    };
+
+    const addSection = () => setSections(prev => [...prev, emptySection()]);
+
+    const removeSection = (idx: number) => {
+        setSections(prev => prev.length === 1 ? [emptySection()] : prev.filter((_, i) => i !== idx));
     };
 
     const filteredPosts = posts.filter(post =>
@@ -211,6 +219,7 @@ export default function UpdatesPage() {
                             <TableRow className="border-white/5 hover:bg-transparent h-16">
                                 <TableHead className="text-gray-500 font-black uppercase tracking-[0.2em] text-[10px] pl-8">Transmission Title</TableHead>
                                 <TableHead className="text-gray-500 font-black uppercase tracking-[0.2em] text-[10px]">Origin</TableHead>
+                                <TableHead className="text-gray-500 font-black uppercase tracking-[0.2em] text-[10px] text-center">Sections</TableHead>
                                 <TableHead className="text-gray-500 font-black uppercase tracking-[0.2em] text-[10px] text-center">Status</TableHead>
                                 <TableHead className="text-gray-500 font-black uppercase tracking-[0.2em] text-[10px] text-center">Timestamp</TableHead>
                                 <TableHead className="text-gray-500 font-black uppercase tracking-[0.2em] text-[10px] text-right pr-8">Actions</TableHead>
@@ -219,20 +228,20 @@ export default function UpdatesPage() {
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-32">
+                                    <TableCell colSpan={6} className="text-center py-32">
                                         <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-6 opacity-50" />
                                         <p className="text-gray-500 font-display text-xs uppercase tracking-[0.3em]">Decoding Signal...</p>
                                     </TableCell>
                                 </TableRow>
                             ) : filteredPosts.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-32">
+                                    <TableCell colSpan={6} className="text-center py-32">
                                         <div className="flex flex-col items-center gap-4">
                                             <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mb-2">
                                                 <Newspaper className="w-10 h-10 text-gray-700" />
                                             </div>
                                             <p className="text-white font-display font-black text-xl uppercase tracking-widest">Silence on Frequencies</p>
-                                            <p className="text-gray-500 text-xs uppercase tracking-widest max-w-[240px] leading-relaxed">No updates have been transmitted yet. Initiate a broadcast to inform the community.</p>
+                                            <p className="text-gray-500 text-xs uppercase tracking-widest max-w-[240px] leading-relaxed">No updates transmitted yet.</p>
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -246,6 +255,9 @@ export default function UpdatesPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-gray-400 font-bold text-xs uppercase tracking-widest">{post.author}</TableCell>
+                                        <TableCell className="text-center text-gray-400 font-bold text-xs">
+                                            {post.sections?.length || 0}
+                                        </TableCell>
                                         <TableCell className="text-center">
                                             <Badge className={cn(
                                                 "font-black uppercase tracking-[0.2em] text-[9px] px-4 py-1.5 border-2 rounded-full",
@@ -263,9 +275,11 @@ export default function UpdatesPage() {
                                         </TableCell>
                                         <TableCell className="text-right pr-8">
                                             <div className="flex justify-end gap-2">
-                                                <Button variant="ghost" size="icon" className="h-10 w-10 text-gray-500 hover:text-primary hover:bg-primary/5 rounded-xl">
-                                                    <Eye className="w-5 h-5" />
-                                                </Button>
+                                                <a href={`/updates/${post.id}`} target="_blank" rel="noopener noreferrer">
+                                                    <Button variant="ghost" size="icon" className="h-10 w-10 text-gray-500 hover:text-primary hover:bg-primary/5 rounded-xl">
+                                                        <Eye className="w-5 h-5" />
+                                                    </Button>
+                                                </a>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
                                                         <Button variant="ghost" size="icon" className="h-10 w-10 text-gray-500 hover:text-white hover:bg-white/5 rounded-xl">
@@ -299,80 +313,172 @@ export default function UpdatesPage() {
 
             {/* Add/Edit Dialog */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="bg-brand-navy border-white/5 text-white max-w-3xl rounded-[3rem] p-0 overflow-hidden shadow-[0_32px_128px_-16px_rgba(0,0,0,0.8)] border border-white/10">
-                    <div className="bg-black/40 p-10 border-b border-white/5">
+                <DialogContent className="bg-brand-navy border-white/5 text-white max-w-4xl rounded-[3rem] p-0 overflow-hidden shadow-[0_32px_128px_-16px_rgba(0,0,0,0.8)] border border-white/10 max-h-[90vh] flex flex-col">
+                    <div className="bg-black/40 p-10 border-b border-white/5 flex-shrink-0">
                         <DialogHeader className="space-y-4">
                             <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-2">
                                 <Newspaper className="w-7 h-7 text-primary" />
                             </div>
                             <DialogTitle className="text-3xl font-display font-black uppercase tracking-tighter">
-                                {selectedPost ? "EQUIP" : "COMPOSE"} <span className="text-primary italic">TRANSMISSION</span>
+                                {selectedPost ? "EDIT" : "COMPOSE"} <span className="text-primary italic">BLOG POST</span>
                             </DialogTitle>
                             <DialogDescription className="text-gray-400 text-base font-light font-body">
-                                Draft your message. Published updates are instantly distributed to the homepage news feed.
+                                Add a main title then build your article with multiple sections — each with an image, a heading, and a description.
                             </DialogDescription>
                         </DialogHeader>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="p-10 space-y-8">
-                        <div className="grid grid-cols-2 gap-8">
-                            <div className="space-y-3 col-span-2 md:col-span-1">
-                                <Label htmlFor="post-title" className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Headline</Label>
-                                <Input
-                                    id="post-title"
-                                    required
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 focus:border-primary/50 text-white placeholder:text-white/20"
-                                    placeholder="Enter transmission subject..."
-                                />
+                    <form onSubmit={handleSubmit} className="overflow-y-auto flex-1">
+                        <div className="p-10 space-y-8">
+                            {/* Main Info */}
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-3 col-span-2 md:col-span-1">
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Main Title</Label>
+                                    <Input
+                                        required
+                                        value={formData.title}
+                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                        className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 focus:border-primary/50 text-white placeholder:text-white/20"
+                                        placeholder="Blog post headline..."
+                                    />
+                                </div>
+                                <div className="space-y-3 col-span-2 md:col-span-1">
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Author</Label>
+                                    <Input
+                                        required
+                                        value={formData.author}
+                                        onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                                        className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 focus:border-primary/50 text-white placeholder:text-white/20"
+                                    />
+                                </div>
+                                <div className="space-y-3 col-span-2 md:col-span-1">
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Status</Label>
+                                    <Select
+                                        value={formData.status}
+                                        onValueChange={(val: any) => setFormData({ ...formData, status: val })}
+                                    >
+                                        <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 focus:ring-0 focus:border-primary/50">
+                                            <SelectValue placeholder="Select status" />
+                                        </SelectTrigger>
+                                        <SelectContent className="bg-brand-navy border-white/10 text-white rounded-2xl">
+                                            <SelectItem value="published" className="py-4 cursor-pointer focus:bg-white/5 rounded-xl">Published</SelectItem>
+                                            <SelectItem value="draft" className="py-4 cursor-pointer focus:bg-white/5 rounded-xl">Draft</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
-                            <div className="space-y-3 col-span-2 md:col-span-1">
-                                <Label htmlFor="author" className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Operator Signature</Label>
-                                <Input
-                                    id="author"
-                                    required
-                                    value={formData.author}
-                                    onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                                    className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 focus:border-primary/50 text-white placeholder:text-white/20"
-                                />
-                            </div>
-                            <div className="space-y-3 col-span-2">
-                                <Label htmlFor="content" className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Payload Content</Label>
-                                <Textarea
-                                    id="content"
-                                    required
-                                    value={formData.content}
-                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                    className="min-h-[200px] bg-white/5 border-white/10 rounded-2xl p-6 focus:border-primary/50 text-white placeholder:text-white/20 leading-relaxed resize-none"
-                                    placeholder="Input signal data..."
-                                />
-                            </div>
-                            <div className="space-y-3 col-span-2 md:col-span-1">
-                                <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80 ml-1">Deployment Level</Label>
-                                <Select
-                                    value={formData.status}
-                                    onValueChange={(val: any) => setFormData({ ...formData, status: val })}
+
+                            {/* Sections */}
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <Label className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/80">
+                                        Content Sections ({sections.length})
+                                    </Label>
+                                    <Button
+                                        type="button"
+                                        onClick={addSection}
+                                        variant="outline"
+                                        size="sm"
+                                        className="h-9 px-5 rounded-xl border-primary/30 text-primary hover:bg-primary/10 font-bold uppercase text-[10px] tracking-widest gap-2"
+                                    >
+                                        <Plus className="w-3.5 h-3.5" /> Add Section
+                                    </Button>
+                                </div>
+
+                                <div className="space-y-6">
+                                    {sections.map((section, idx) => (
+                                        <div
+                                            key={idx}
+                                            className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 space-y-4 relative group"
+                                        >
+                                            {/* Section header */}
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-primary/60">
+                                                    <GripVertical className="w-4 h-4" />
+                                                    Section {idx + 1}
+                                                </div>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => removeSection(idx)}
+                                                    className="h-8 w-8 rounded-lg text-gray-600 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                                                >
+                                                    <X className="w-4 h-4" />
+                                                </Button>
+                                            </div>
+
+                                            {/* Section title */}
+                                            <div className="space-y-2">
+                                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Section Title</Label>
+                                                <Input
+                                                    value={section.title}
+                                                    onChange={(e) => updateSection(idx, 'title', e.target.value)}
+                                                    className="h-12 bg-white/5 border-white/10 rounded-xl px-5 focus:border-primary/50 text-white placeholder:text-white/20"
+                                                    placeholder="Section heading..."
+                                                />
+                                            </div>
+
+                                            {/* Image URL */}
+                                            <div className="space-y-2">
+                                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Image URL</Label>
+                                                <div className="flex gap-3">
+                                                    <div className="relative flex-1">
+                                                        <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+                                                        <Input
+                                                            value={section.image_url}
+                                                            onChange={(e) => updateSection(idx, 'image_url', e.target.value)}
+                                                            className="h-12 bg-white/5 border-white/10 rounded-xl pl-10 pr-5 focus:border-primary/50 text-white placeholder:text-white/20"
+                                                            placeholder="https://..."
+                                                        />
+                                                    </div>
+                                                    {section.image_url && (
+                                                        <div className="h-12 w-20 rounded-xl overflow-hidden border border-white/10 flex-shrink-0">
+                                                            <img
+                                                                src={section.image_url}
+                                                                alt="preview"
+                                                                className="w-full h-full object-cover"
+                                                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Description */}
+                                            <div className="space-y-2">
+                                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Description</Label>
+                                                <Textarea
+                                                    value={section.description}
+                                                    onChange={(e) => updateSection(idx, 'description', e.target.value)}
+                                                    className="min-h-[120px] bg-white/5 border-white/10 rounded-xl p-5 focus:border-primary/50 text-white placeholder:text-white/20 leading-relaxed resize-none"
+                                                    placeholder="Write the section content..."
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <Button
+                                    type="button"
+                                    onClick={addSection}
+                                    variant="ghost"
+                                    className="w-full h-14 rounded-2xl border border-dashed border-white/10 text-gray-500 hover:text-primary hover:border-primary/30 hover:bg-primary/5 font-bold uppercase text-[10px] tracking-widest gap-2 transition-all"
                                 >
-                                    <SelectTrigger className="h-14 bg-white/5 border-white/10 rounded-2xl px-6 focus:ring-0 focus:border-primary/50">
-                                        <SelectValue placeholder="Select status" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-brand-navy border-white/10 text-white rounded-2xl">
-                                        <SelectItem value="published" className="py-4 cursor-pointer focus:bg-white/5 rounded-xl">PUBLIC BROADCAST</SelectItem>
-                                        <SelectItem value="draft" className="py-4 cursor-pointer focus:bg-white/5 rounded-xl">LOCAL DRAFT</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                    <Plus className="w-4 h-4" /> Add Another Section
+                                </Button>
                             </div>
                         </div>
-                        <DialogFooter className="pt-6 gap-4">
+
+                        <div className="px-10 pb-10 pt-2 border-t border-white/5 flex justify-end gap-4 flex-shrink-0">
                             <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)} className="h-14 px-8 rounded-2xl text-gray-500 hover:text-white font-display text-[10px] font-black uppercase tracking-widest">
-                                Abort
+                                Cancel
                             </Button>
                             <Button type="submit" disabled={submitting} className="h-14 px-12 rounded-2xl bg-primary hover:bg-white text-brand-navy font-display font-black uppercase text-[10px] tracking-[0.3em] shadow-xl shadow-primary/20 transition-all">
                                 {submitting ? <Loader2 className="w-5 h-5 animate-spin mr-3" /> : null}
-                                {selectedPost ? "Update Transmission" : "Launch Broadcast"}
+                                {selectedPost ? "Save Changes" : "Publish Post"}
                             </Button>
-                        </DialogFooter>
+                        </div>
                     </form>
                 </DialogContent>
             </Dialog>
@@ -385,10 +491,10 @@ export default function UpdatesPage() {
                             <AlertCircle className="w-8 h-8 text-red-500" />
                         </div>
                         <DialogTitle className="text-2xl font-display font-black uppercase tracking-tighter">
-                            CONFIRM <span className="text-red-500 italic">PURGE</span>
+                            CONFIRM <span className="text-red-500 italic">DELETE</span>
                         </DialogTitle>
                         <DialogDescription className="text-gray-400 text-base leading-relaxed">
-                            Are you certain you want to terminate signal <span className="text-white font-bold uppercase">{selectedPost?.title}</span>? This action will purge the transmission from the public grid.
+                            Delete <span className="text-white font-bold">{selectedPost?.title}</span>? This cannot be undone.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="mt-10 gap-4 flex-col sm:flex-row">
@@ -397,7 +503,7 @@ export default function UpdatesPage() {
                         </Button>
                         <Button onClick={handleDelete} disabled={submitting} className="h-14 flex-1 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-display font-black uppercase text-[10px] tracking-[0.2em] shadow-xl shadow-red-500/20">
                             {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                            Confirm Purge
+                            Delete Post
                         </Button>
                     </DialogFooter>
                 </DialogContent>
