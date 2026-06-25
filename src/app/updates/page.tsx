@@ -102,7 +102,7 @@ export default function UpdatesPage() {
                                 >
                                     {/* Cover image from first section */}
                                     {coverImage && (
-                                        <div className="relative h-48 overflow-hidden">
+                                        <div className="relative h-64 overflow-hidden">
                                             <img
                                                 src={coverImage}
                                                 alt={post.title}
