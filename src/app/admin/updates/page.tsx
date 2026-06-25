@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
     Plus,
@@ -16,7 +16,9 @@ import {
     FileText,
     Image as ImageIcon,
     X,
-    GripVertical
+    GripVertical,
+    Upload,
+    Link as LinkIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -78,6 +80,10 @@ export default function UpdatesPage() {
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const supabase = createClient();
+
+    const [uploadingSection, setUploadingSection] = useState<number | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const uploadTargetRef = useRef<number>(-1);
 
     const [formData, setFormData] = useState({
         title: "",
@@ -165,6 +171,35 @@ export default function UpdatesPage() {
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const handleSectionImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        const idx = uploadTargetRef.current;
+        if (!file || idx < 0) return;
+
+        setUploadingSection(idx);
+        try {
+            const fileExt = file.name.split('.').pop();
+            const filePath = `trip-images/update_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+            const { error } = await supabase.storage.from('trip-images').upload(filePath, file, { upsert: true });
+            if (error) throw error;
+            const { data: urlData } = supabase.storage.from('trip-images').getPublicUrl(filePath);
+            if (urlData?.publicUrl) {
+                updateSection(idx, 'image_url', urlData.publicUrl);
+                toast.success("Image uploaded");
+            }
+        } catch (err: any) {
+            toast.error(`Upload failed: ${err.message}`);
+        } finally {
+            setUploadingSection(null);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
+
+    const triggerUpload = (idx: number) => {
+        uploadTargetRef.current = idx;
+        fileInputRef.current?.click();
     };
 
     const updateSection = (idx: number, field: keyof BlogSection, value: string) => {
@@ -329,6 +364,14 @@ export default function UpdatesPage() {
                     </div>
 
                     <form onSubmit={handleSubmit} className="overflow-y-auto flex-1">
+                        {/* Hidden file input shared across all sections */}
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleSectionImageUpload}
+                        />
                         <div className="p-10 space-y-8">
                             {/* Main Info */}
                             <div className="grid grid-cols-2 gap-6">
@@ -419,29 +462,61 @@ export default function UpdatesPage() {
                                                 />
                                             </div>
 
-                                            {/* Image URL */}
+                                            {/* Image — URL or Upload */}
                                             <div className="space-y-2">
-                                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Image URL</Label>
-                                                <div className="flex gap-3">
-                                                    <div className="relative flex-1">
-                                                        <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
-                                                        <Input
-                                                            value={section.image_url}
-                                                            onChange={(e) => updateSection(idx, 'image_url', e.target.value)}
-                                                            className="h-12 bg-white/5 border-white/10 rounded-xl pl-10 pr-5 focus:border-primary/50 text-white placeholder:text-white/20"
-                                                            placeholder="https://..."
+                                                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">Section Image</Label>
+
+                                                {/* Preview */}
+                                                {section.image_url && (
+                                                    <div className="relative w-full h-40 rounded-xl overflow-hidden border border-white/10 mb-2">
+                                                        <img
+                                                            src={section.image_url}
+                                                            alt="preview"
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                                                         />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => updateSection(idx, 'image_url', '')}
+                                                            className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 hover:bg-red-500/80 flex items-center justify-center text-white transition-all"
+                                                        >
+                                                            <X className="w-3.5 h-3.5" />
+                                                        </button>
                                                     </div>
-                                                    {section.image_url && (
-                                                        <div className="h-12 w-20 rounded-xl overflow-hidden border border-white/10 flex-shrink-0">
-                                                            <img
-                                                                src={section.image_url}
-                                                                alt="preview"
-                                                                className="w-full h-full object-cover"
-                                                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                                                            />
-                                                        </div>
+                                                )}
+
+                                                {/* Upload button */}
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    onClick={() => triggerUpload(idx)}
+                                                    disabled={uploadingSection === idx}
+                                                    className="w-full h-12 border-dashed border-2 border-white/10 rounded-xl text-gray-400 hover:text-primary hover:border-primary/30 transition-all gap-2 font-bold uppercase text-[10px] tracking-widest"
+                                                >
+                                                    {uploadingSection === idx ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                    ) : (
+                                                        <Upload className="w-4 h-4" />
                                                     )}
+                                                    {uploadingSection === idx ? "Uploading..." : "Upload Image"}
+                                                </Button>
+
+                                                {/* Divider */}
+                                                <div className="flex items-center gap-3">
+                                                    <div className="h-px flex-1 bg-white/10" />
+                                                    <span className="text-gray-600 text-[10px] uppercase tracking-widest font-bold">or paste URL</span>
+                                                    <div className="h-px flex-1 bg-white/10" />
+                                                </div>
+
+                                                {/* URL input */}
+                                                <div className="relative">
+                                                    <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+                                                    <Input
+                                                        value={section.image_url}
+                                                        onChange={(e) => updateSection(idx, 'image_url', e.target.value)}
+                                                        className="h-12 bg-white/5 border-white/10 rounded-xl pl-10 pr-5 focus:border-primary/50 text-white placeholder:text-white/20"
+                                                        placeholder="https://example.com/image.jpg"
+                                                    />
                                                 </div>
                                             </div>
 
